@@ -51,24 +51,31 @@ const ProductDetail = () => {
         </div>
         
         <div className="w-full md:w-1/2 flex flex-col">
-          <h1 className="text-3xl font-bold text-lightText dark:text-darkText mb-2">{product.name}</h1>
-          <p className="text-lightBlue dark:text-aqua text-2xl font-bold mb-4">Rs {product.price}</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-lightText dark:text-darkText mb-1">{product.name}</h1>
+          <p className="text-sm md:text-base font-semibold text-lightTextSecondary dark:text-darkTextSecondary mb-4">
+            Brand: <span className="text-darkBlue dark:text-cyan hover:underline cursor-pointer">AJ Special</span>
+          </p>
+          <p className="text-lightBlue dark:text-aqua text-3xl font-bold mb-5">Rs. {product.price}</p>
           
           <div className="mb-6">
             {product.stock > 0 ? (
-               <span className="inline-block bg-success-light dark:bg-success-dark/20 text-success-light dark:text-success-dark px-3 py-1 rounded-full text-sm font-semibold">
+               <div className="inline-flex items-center gap-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-success-dark px-3 py-1.5 rounded-full text-sm font-semibold border border-green-200 dark:border-green-800/50">
+                 <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
                  In Stock ({product.stock} available)
-               </span>
+               </div>
             ) : (
-               <span className="inline-block bg-error-light dark:bg-error-dark/20 text-error-light dark:text-error-dark px-3 py-1 rounded-full text-sm font-semibold">
+               <div className="inline-flex items-center gap-1.5 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-error-dark px-3 py-1.5 rounded-full text-sm font-semibold border border-red-200 dark:border-red-800/50">
+                 <span className="w-2 h-2 rounded-full bg-red-500"></span>
                  Out of Stock
-               </span>
+               </div>
             )}
           </div>
 
-          <div className="text-lightTextSecondary dark:text-darkTextSecondary mb-8 flex-grow">
-            <h4 className="text-sm text-lightTextSecondary dark:text-darkTextSecondary uppercase tracking-wider mb-2">Description</h4>
-            <p>{product.description || 'No description available.'}</p>
+          <div className="text-lightText dark:text-[#e0e0e0] mb-8 flex-grow">
+            <h4 className="bg-darkBlue dark:bg-[#1a1a1a] text-white px-3 py-2 text-sm font-bold uppercase tracking-wider rounded-t-md">Product Description</h4>
+            <div className="whitespace-pre-wrap text-[15px] leading-relaxed border border-lightBorder dark:border-darkBorder p-4 rounded-b-md bg-white dark:bg-[#0a0a0a]">
+              {product.description || 'No description available.'}
+            </div>
           </div>
 
           <div className="flex items-center gap-4 mt-auto">
