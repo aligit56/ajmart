@@ -47,7 +47,7 @@ const Checkout = () => {
     setLoading(true);
     try {
       const orderPayload = {
-        items: cart.map(item => ({ product_id: item.product_id, quantity: item.quantity, price: item.price })),
+        items: cart.map(item => ({ product_id: item.product_id, quantity: item.quantity, price: item.price, variant_name: item.variant_name })),
         total_price: cartTotal,
         delivery_address: formData.address,
         notes: formData.notes

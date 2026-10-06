@@ -186,9 +186,9 @@ app.post('/api/orders', verifyToken, (req, res) => {
                     return res.status(400).json({ error: err.message });
                 }
                 const order_id = this.lastID;
-                const stmt = db.prepare(`INSERT INTO OrderItems (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)`);
+                const stmt = db.prepare(`INSERT INTO OrderItems (order_id, product_id, quantity, price, variant_name) VALUES (?, ?, ?, ?, ?)`);
                 items.forEach(item => {
-                    stmt.run([order_id, item.product_id, item.quantity, item.price]);
+                    stmt.run([order_id, item.product_id, item.quantity, item.price, item.variant_name || null]);
                 });
                 stmt.finalize();
                 db.run('COMMIT');

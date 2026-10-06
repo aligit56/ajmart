@@ -12,12 +12,26 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [variants, setVariants] = useState([]);
+  const [selectedVariant, setSelectedVariant] = useState(null);
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const res = await api.get(`/products/${id}`);
-        setProduct(res.data);
+        const prod = res.data;
+        setProduct(prod);
+        if (prod.variants) {
+          try {
+            const parsedVariants = JSON.parse(prod.variants);
+            if (Array.isArray(parsedVariants) && parsedVariants.length > 0) {
+              setVariants(parsedVariants);
+              setSelectedVariant(parsedVariants[0]);
+            }
+          } catch (e) {
+            console.error("Failed to parse variants", e);
+          }
+        }
       } catch (err) {
         console.error(err);
       } finally {
@@ -31,9 +45,11 @@ const ProductDetail = () => {
   if (!product) return <div className="text-center py-20">Product not found</div>;
 
   const handleAdd = () => {
-    addToCart(product, quantity);
+    addToCart(product, quantity, selectedVariant);
     toast.success(`Added ${quantity} to cart!`);
   };
+
+  const currentPrice = selectedVariant ? selectedVariant.price : product.price;
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -55,8 +71,29 @@ const ProductDetail = () => {
           <p className="text-sm md:text-base font-semibold text-lightTextSecondary dark:text-darkTextSecondary mb-4">
             Brand: <span className="text-darkBlue dark:text-cyan hover:underline cursor-pointer">AJ Special</span>
           </p>
-          <p className="text-lightBlue dark:text-aqua text-3xl font-bold mb-5">Rs. {product.price}</p>
+          <p className="text-lightBlue dark:text-aqua text-3xl font-bold mb-5">Rs. {currentPrice}</p>
           
+          {variants.length > 0 && (
+            <div className="mb-6">
+              <h3 className="font-semibold mb-2">Select Size/Type:</h3>
+              <div className="flex flex-wrap gap-2">
+                {variants.map((v, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedVariant(v)}
+                    className={`px-4 py-2 rounded border font-medium text-sm transition-colors ${
+                      selectedVariant?.name === v.name
+                        ? 'bg-darkBlue dark:bg-cyan text-white border-darkBlue dark:border-cyan'
+                        : 'bg-white dark:bg-darkBg text-lightText dark:text-darkText border-lightBorder dark:border-darkBorder hover:border-darkBlue dark:hover:border-cyan'
+                    }`}
+                  >
+                    {v.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="mb-6">
             {product.stock > 0 ? (
                <div className="inline-flex items-center gap-1.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-success-dark px-3 py-1.5 rounded-full text-sm font-semibold border border-green-200 dark:border-green-800/50">

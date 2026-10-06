@@ -24,27 +24,37 @@ const Cart = () => {
       
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-2/3 space-y-4">
-          {cart.map(item => (
-            <div key={item.product_id} className="card p-4 flex flex-col sm:flex-row items-center gap-4">
-              <div className="w-20 h-20 bg-lightBg dark:bg-darkBg rounded flex-shrink-0 flex items-center justify-center overflow-hidden">
-                {item.image_url ? <img src={item.image_url} alt={item.name} className="object-cover" /> : <span className="text-xs text-lightTextSecondary dark:text-darkTextSecondary">Img</span>}
-              </div>
-              <div className="flex-grow">
-                <Link to={`/product/${item.product_id}`} className="font-semibold text-lg hover:text-darkBlue dark:hover:text-cyan">{item.name}</Link>
-                <div className="text-lightBlue dark:text-aqua font-bold">Rs {item.price}</div>
-              </div>
-              <div className="flex items-center gap-4 mt-4 sm:mt-0">
-                <div className="flex items-center bg-lightBg dark:bg-darkBg rounded border border-lightBorder dark:border-darkBorder">
-                  <button className="px-3 py-1 hover:bg-lightBorder dark:hover:bg-darkBorder" onClick={() => updateQuantity(item.product_id, item.quantity - 1)}>-</button>
-                  <span className="px-3 py-1 font-bold">{item.quantity}</span>
-                  <button className="px-3 py-1 hover:bg-lightBorder dark:hover:bg-darkBorder" onClick={() => updateQuantity(item.product_id, item.quantity + 1)}>+</button>
+          {cart.map((item, index) => {
+            const cartItemId = item.cart_id || `${item.product_id}`;
+            return (
+              <div key={cartItemId + index} className="card p-4 flex flex-col sm:flex-row items-center gap-4">
+                <div className="w-20 h-20 bg-lightBg dark:bg-darkBg rounded flex-shrink-0 flex items-center justify-center overflow-hidden">
+                  {item.image_url ? <img src={item.image_url} alt={item.name} className="object-cover" /> : <span className="text-xs text-lightTextSecondary dark:text-darkTextSecondary">Img</span>}
                 </div>
-                <button onClick={() => removeFromCart(item.product_id)} className="text-lightTextSecondary dark:text-darkTextSecondary hover:text-error-light dark:hover:text-error-dark p-2">
-                  <Trash2 size={20} />
-                </button>
+                <div className="flex-grow">
+                  <Link to={`/product/${item.product_id}`} className="font-semibold text-lg hover:text-darkBlue dark:hover:text-cyan">
+                    {item.name}
+                  </Link>
+                  {item.variant_name && (
+                    <div className="text-sm text-lightTextSecondary dark:text-darkTextSecondary">
+                      Size/Type: {item.variant_name}
+                    </div>
+                  )}
+                  <div className="text-lightBlue dark:text-aqua font-bold mt-1">Rs {item.price}</div>
+                </div>
+                <div className="flex items-center gap-4 mt-4 sm:mt-0">
+                  <div className="flex items-center bg-lightBg dark:bg-darkBg rounded border border-lightBorder dark:border-darkBorder">
+                    <button className="px-3 py-1 hover:bg-lightBorder dark:hover:bg-darkBorder" onClick={() => updateQuantity(cartItemId, item.quantity - 1)}>-</button>
+                    <span className="px-3 py-1 font-bold">{item.quantity}</span>
+                    <button className="px-3 py-1 hover:bg-lightBorder dark:hover:bg-darkBorder" onClick={() => updateQuantity(cartItemId, item.quantity + 1)}>+</button>
+                  </div>
+                  <button onClick={() => removeFromCart(cartItemId)} className="text-lightTextSecondary dark:text-darkTextSecondary hover:text-error-light dark:hover:text-error-dark p-2">
+                    <Trash2 size={20} />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="w-full md:w-1/3">

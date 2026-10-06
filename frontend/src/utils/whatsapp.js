@@ -8,7 +8,8 @@ export const generateWhatsAppLink = (order, userDetails) => {
     message += `*ITEMS:*\n`;
     
     order.items.forEach((item, index) => {
-        message += `${index + 1}. ${item.name} (x${item.quantity}) - Rs ${item.price * item.quantity}\n`;
+        const variantText = item.variant_name ? ` [${item.variant_name}]` : '';
+        message += `${index + 1}. ${item.name}${variantText} (x${item.quantity}) - Rs ${item.price * item.quantity}\n`;
     });
     
     message += `\n*TOTAL: Rs ${order.total_price}*\n`;
