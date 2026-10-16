@@ -52,15 +52,15 @@ const ProductDetail = () => {
   const currentPrice = selectedVariant ? selectedVariant.price : product.price;
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-5xl mx-auto">
       <button onClick={() => navigate(-1)} className="flex items-center text-lightTextSecondary dark:text-darkTextSecondary hover:text-darkBlue dark:hover:text-cyan mb-6">
         <ArrowLeft size={20} className="mr-1" /> Back
       </button>
 
       <div className="card p-6 md:p-8 flex flex-col md:flex-row gap-8">
-        <div className="w-full md:w-1/2 h-64 md:h-96 bg-lightBg dark:bg-darkBg rounded-lg flex items-center justify-center">
+        <div className="w-full md:w-1/2 min-h-[380px] md:min-h-[480px] h-96 md:h-[480px] bg-white dark:bg-darkBg rounded-xl flex items-center justify-center p-4 md:p-6 border border-lightBorder dark:border-darkBorder shadow-sm">
           {product.image_url ? (
-               <img src={product.image_url} alt={product.name} className="object-cover h-full w-full rounded-lg" />
+               <img src={product.image_url} alt={product.name} className="object-contain w-full h-full max-h-[440px] rounded-lg transition-transform duration-300 hover:scale-105" />
            ) : (
                <span className="text-lightTextSecondary dark:text-darkTextSecondary">No Image</span>
            )}
@@ -69,7 +69,7 @@ const ProductDetail = () => {
         <div className="w-full md:w-1/2 flex flex-col">
           <h1 className="text-3xl md:text-4xl font-bold text-lightText dark:text-darkText mb-1">{product.name}</h1>
           <p className="text-sm md:text-base font-semibold text-lightTextSecondary dark:text-darkTextSecondary mb-4">
-            Brand: <span className="text-darkBlue dark:text-cyan hover:underline cursor-pointer">AJ Special</span>
+            Brand: <span className="text-darkBlue dark:text-cyan font-bold">{product.brand || 'AJ Brand'}</span>
           </p>
           <p className="text-lightBlue dark:text-aqua text-3xl font-bold mb-5">Rs. {currentPrice}</p>
           

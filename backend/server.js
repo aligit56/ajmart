@@ -146,18 +146,18 @@ app.get('/api/products/:id', (req, res) => {
 });
 
 app.post('/api/products', verifyToken, isAdmin, (req, res) => {
-    const { name, category_id, price, stock, image_url, description } = req.body;
-    db.run(`INSERT INTO Products (name, category_id, price, stock, image_url, description) VALUES (?, ?, ?, ?, ?, ?)`,
-        [name, category_id, price, stock, image_url, description], function(err) {
+    const { name, category_id, brand, price, stock, image_url, description, variants } = req.body;
+    db.run(`INSERT INTO Products (name, category_id, brand, price, stock, image_url, description, variants) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [name, category_id, brand || 'AJ Brand', price, stock, image_url, description, variants ? JSON.stringify(variants) : null], function(err) {
             if (err) return res.status(400).json({ error: err.message });
             res.status(201).json({ id: this.lastID, message: "Product created" });
         });
 });
 
 app.put('/api/products/:id', verifyToken, isAdmin, (req, res) => {
-    const { name, category_id, price, stock, image_url, description, is_active } = req.body;
-    db.run(`UPDATE Products SET name = COALESCE(?, name), category_id = COALESCE(?, category_id), price = COALESCE(?, price), stock = COALESCE(?, stock), image_url = COALESCE(?, image_url), description = COALESCE(?, description), is_active = COALESCE(?, is_active) WHERE id = ?`,
-        [name, category_id, price, stock, image_url, description, is_active, req.params.id], function(err) {
+    const { name, category_id, brand, price, stock, image_url, description, is_active, variants } = req.body;
+    db.run(`UPDATE Products SET name = COALESCE(?, name), category_id = COALESCE(?, category_id), brand = COALESCE(?, brand), price = COALESCE(?, price), stock = COALESCE(?, stock), image_url = COALESCE(?, image_url), description = COALESCE(?, description), is_active = COALESCE(?, is_active), variants = COALESCE(?, variants) WHERE id = ?`,
+        [name, category_id, brand, price, stock, image_url, description, is_active, variants !== undefined ? (typeof variants === 'string' ? variants : JSON.stringify(variants)) : null, req.params.id], function(err) {
             if (err) return res.status(400).json({ error: err.message });
             res.json({ message: "Product updated", changes: this.changes });
         });

@@ -15,19 +15,23 @@ const ProductCard = ({ product }) => {
 
   return (
     <div className="card hover:shadow-lg transition-transform hover:scale-[1.02] flex flex-col h-full overflow-hidden">
-      <Link to={`/product/${product.id}`} className="block relative h-48 bg-lightBg dark:bg-darkBg">
-        {/* Placeholder for real images */}
-        <div className="w-full h-full flex items-center justify-center text-lightTextSecondary dark:text-darkTextSecondary">
-           {product.image_url ? (
-               <img src={product.image_url} alt={product.name} className="object-cover h-full w-full" />
-           ) : (
-               <span>No Image</span>
-           )}
-        </div>
+      <Link to={`/product/${product.id}`} className="block relative h-64 bg-white dark:bg-darkBg p-2 flex items-center justify-center overflow-hidden border-b border-lightBorder dark:border-darkBorder group">
+        {product.image_url ? (
+            <img 
+              src={product.image_url} 
+              alt={product.name} 
+              className="object-contain w-full h-full transition-transform duration-300 group-hover:scale-105" 
+            />
+        ) : (
+            <span className="text-lightTextSecondary dark:text-darkTextSecondary text-sm">No Image</span>
+        )}
       </Link>
       <div className="p-4 flex flex-col flex-grow">
-        <Link to={`/product/${product.id}`}>
-          <h3 className="font-semibold text-lg mb-1 hover:text-darkBlue dark:hover:text-cyan line-clamp-2">{product.name}</h3>
+        <Link to={`/product/${product.id}`} className="block mb-1">
+          <span className="text-[11px] font-semibold tracking-wider uppercase text-lightBlue dark:text-cyan block">
+            {product.brand || 'AJ Brand'}
+          </span>
+          <h3 className="font-semibold text-lg hover:text-darkBlue dark:hover:text-cyan line-clamp-2">{product.name}</h3>
         </Link>
         <div className="text-sm text-lightTextSecondary dark:text-darkTextSecondary mb-3 flex-grow">
           {product.stock > 0 ? (

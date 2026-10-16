@@ -8,7 +8,7 @@ const Products = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState({ name: '', category_id: 1, price: '', stock: '', description: '', image_url: '' });
+  const [currentProduct, setCurrentProduct] = useState({ name: '', brand: 'AJ Brand', category_id: 1, price: '', stock: '', description: '', image_url: '' });
 
   const fetchData = async () => {
     try {
@@ -52,7 +52,7 @@ const Products = () => {
     }
   };
 
-  const openModal = (product = { name: '', category_id: 1, price: '', stock: '', description: '', image_url: '' }) => {
+  const openModal = (product = { name: '', brand: 'AJ Brand', category_id: 1, price: '', stock: '', description: '', image_url: '' }) => {
     setCurrentProduct(product);
     setIsModalOpen(true);
   };
@@ -71,6 +71,7 @@ const Products = () => {
           <thead>
             <tr className="bg-lightBg dark:bg-darkBg border-b border-lightBorder dark:border-darkBorder">
               <th className="p-4 text-darkBlue dark:text-cyan">Name</th>
+              <th className="p-4 text-darkBlue dark:text-cyan">Brand</th>
               <th className="p-4 text-darkBlue dark:text-cyan">Price (Rs)</th>
               <th className="p-4 text-darkBlue dark:text-cyan">Stock</th>
               <th className="p-4 text-darkBlue dark:text-cyan">Actions</th>
@@ -80,6 +81,7 @@ const Products = () => {
             {products.map(p => (
               <tr key={p.id} className="border-b border-lightBorder dark:border-darkBorder hover:bg-lightBg dark:bg-darkBg transition-colors">
                 <td className="p-4">{p.name}</td>
+                <td className="p-4 text-sm font-semibold text-darkBlue dark:text-cyan">{p.brand || 'AJ Brand'}</td>
                 <td className="p-4 font-bold text-lightBlue dark:text-aqua">{p.price}</td>
                 <td className="p-4">
                   <span className={p.stock < 5 ? "text-error-light dark:text-error-dark font-bold" : "text-success-light dark:text-success-dark"}>{p.stock}</span>
@@ -101,14 +103,17 @@ const Products = () => {
             <form onSubmit={handleSave} className="space-y-4">
               <div><label className="block text-sm mb-1">Name</label><input type="text" value={currentProduct.name} onChange={e=>setCurrentProduct({...currentProduct, name: e.target.value})} className="input-field" required /></div>
               <div className="flex gap-4">
+                <div className="flex-1"><label className="block text-sm mb-1">Brand</label><input type="text" value={currentProduct.brand || ''} placeholder="e.g. AJ Brand, Golden Pearl" onChange={e=>setCurrentProduct({...currentProduct, brand: e.target.value})} className="input-field" /></div>
+                <div className="flex-1">
+                  <label className="block text-sm mb-1">Category</label>
+                  <select value={currentProduct.category_id} onChange={e=>setCurrentProduct({...currentProduct, category_id: e.target.value})} className="input-field">
+                    {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="flex gap-4">
                 <div className="flex-1"><label className="block text-sm mb-1">Price (Rs)</label><input type="number" value={currentProduct.price} onChange={e=>setCurrentProduct({...currentProduct, price: e.target.value})} className="input-field" required /></div>
                 <div className="flex-1"><label className="block text-sm mb-1">Stock</label><input type="number" value={currentProduct.stock} onChange={e=>setCurrentProduct({...currentProduct, stock: e.target.value})} className="input-field" required /></div>
-              </div>
-              <div>
-                <label className="block text-sm mb-1">Category</label>
-                <select value={currentProduct.category_id} onChange={e=>setCurrentProduct({...currentProduct, category_id: e.target.value})} className="input-field">
-                  {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                </select>
               </div>
               <div><label className="block text-sm mb-1">Image URL (Optional)</label><input type="text" value={currentProduct.image_url} onChange={e=>setCurrentProduct({...currentProduct, image_url: e.target.value})} className="input-field" /></div>
               <div className="flex justify-end gap-3 mt-6">
