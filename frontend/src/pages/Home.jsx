@@ -125,7 +125,7 @@ const Home = () => {
       <HeroSlider />
 
       {/* 2. Shop by Category (EXISTING) */}
-      <section>
+      <section id="categories" className="scroll-mt-24">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl md:text-3xl font-bold text-lightText dark:text-darkText border-l-4 border-darkBlue dark:border-cyan pl-3">
             Shop by Category
@@ -138,7 +138,7 @@ const Home = () => {
       </section>
 
       {/* 3. Featured Products */}
-      <section>
+      <section id="featured-products" className="scroll-mt-24">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-2xl md:text-3xl font-bold text-lightText dark:text-darkText border-l-4 border-darkBlue dark:border-cyan pl-3 flex items-center gap-2">
@@ -160,11 +160,13 @@ const Home = () => {
       </section>
 
       {/* 4. Featured Videos */}
-      <FeaturedVideos />
+      <div id="featured-videos" className="scroll-mt-24">
+        <FeaturedVideos />
+      </div>
 
       {/* 5. Today's Deals (Only shown if active discounts exist) */}
       {dealsProducts.length > 0 && (
-        <section className="bg-gradient-to-r from-red-500/10 via-amber-500/10 to-red-500/5 p-6 md:p-8 rounded-2xl border border-red-500/20">
+        <section id="todays-deals" className="scroll-mt-24 bg-gradient-to-r from-red-500/10 via-amber-500/10 to-red-500/5 p-6 md:p-8 rounded-2xl border border-red-500/20">
           <div className="flex items-center justify-between mb-6">
             <div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-error-light/20 dark:bg-error-dark/30 text-error-light dark:text-error-dark text-xs font-bold uppercase tracking-wider mb-2">
@@ -187,7 +189,7 @@ const Home = () => {
       )}
 
       {/* 6. New Arrivals */}
-      <section>
+      <section id="new-arrivals" className="scroll-mt-24">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-2xl md:text-3xl font-bold text-lightText dark:text-darkText border-l-4 border-darkBlue dark:border-cyan pl-3 flex items-center gap-2">
@@ -209,7 +211,9 @@ const Home = () => {
       </section>
 
       {/* 7. Trust Strip */}
-      <TrustStrip />
+      <div id="trust-strip" className="scroll-mt-24">
+        <TrustStrip />
+      </div>
     </div>
   );
 };

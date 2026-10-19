@@ -16,6 +16,7 @@ const ProductDetail = () => {
   const [selectedVariant, setSelectedVariant] = useState(null);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     const fetchProduct = async () => {
       try {
         const res = await api.get(`/products/${id}`);

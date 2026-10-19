@@ -24,6 +24,7 @@ import Register from './pages/Register';
 import Checkout from './pages/Checkout';
 import OrderHistory from './pages/OrderHistory';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
       <AuthProvider>
         <CartProvider>
           <Router>
+            <ScrollToTop />
             <div className="min-h-screen flex flex-col bg-lightBg dark:bg-darkBg text-lightText dark:text-darkText transition-colors duration-200">
               <Header />
               <main className="flex-grow container mx-auto px-4 py-8 max-w-7xl">

@@ -46,6 +46,11 @@ const Products = () => {
     }
   }, [categoryParam]);
 
+  // Scroll to top of catalog when page changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentPage]);
+
   const handleCategoryChange = (catIdOrName) => {
     setSelectedCategory(catIdOrName);
     setCurrentPage(1);
