@@ -7,14 +7,21 @@ import { CartContext } from '../context/CartContext';
 const ProductCard = ({ product }) => {
   const { addToCart } = useContext(CartContext);
 
+  const effectivePrice = product.discounted_price || product.price;
+
   const handleAdd = (e) => {
     e.preventDefault();
-    addToCart(product);
+    addToCart({ ...product, price: effectivePrice });
     toast.success(`${product.name} added to cart!`);
   };
 
   return (
-    <div className="card hover:shadow-lg transition-transform hover:scale-[1.02] flex flex-col h-full overflow-hidden">
+    <div className="card hover:shadow-lg transition-transform hover:scale-[1.02] flex flex-col h-full overflow-hidden relative">
+      {product.discount_percent && (
+        <span className="absolute top-2 left-2 z-10 bg-error-light dark:bg-error-dark text-white text-[11px] font-black px-2 py-0.5 rounded-md shadow-md uppercase tracking-wider">
+          {product.discount_percent}% OFF
+        </span>
+      )}
       <Link to={`/product/${product.id}`} className="block relative h-64 bg-white dark:bg-darkBg p-2 flex items-center justify-center overflow-hidden border-b border-lightBorder dark:border-darkBorder group">
         {product.image_url ? (
             <img 
@@ -35,17 +42,25 @@ const ProductCard = ({ product }) => {
         </Link>
         <div className="text-sm text-lightTextSecondary dark:text-darkTextSecondary mb-3 flex-grow">
           {product.stock > 0 ? (
-             <span className="text-success-light dark:text-success-dark text-xs">In Stock ({product.stock})</span>
+             <span className="text-success-light dark:text-success-dark text-xs font-medium">In Stock ({product.stock})</span>
           ) : (
-             <span className="text-error-light dark:text-error-dark text-xs">Out of Stock</span>
+             <span className="text-error-light dark:text-error-dark text-xs font-medium">Out of Stock</span>
           )}
         </div>
         <div className="flex justify-between items-center mt-auto">
-          <span className="text-xl font-bold text-lightBlue dark:text-aqua">Rs {product.price}</span>
+          {product.discounted_price ? (
+            <div className="flex flex-col">
+              <span className="text-lg font-extrabold text-error-light dark:text-error-dark">Rs {product.discounted_price}</span>
+              <span className="text-xs text-lightTextSecondary dark:text-darkTextSecondary line-through -mt-1">Rs {product.price}</span>
+            </div>
+          ) : (
+            <span className="text-xl font-bold text-lightBlue dark:text-aqua">Rs {product.price}</span>
+          )}
           <button 
             onClick={handleAdd}
             disabled={product.stock <= 0}
-            className="bg-darkBlue dark:bg-cyan text-black p-2 rounded hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-darkBlue dark:bg-cyan text-white dark:text-black p-2 rounded-lg hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            title="Add to Cart"
           >
             <ShoppingCart size={20} />
           </button>

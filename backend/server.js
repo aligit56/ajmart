@@ -123,6 +123,39 @@ app.get('/api/products/search', (req, res) => {
     });
 });
 
+app.get('/api/products/featured', (req, res) => {
+    db.all(`SELECT * FROM Products WHERE is_active = 1 AND is_featured = 1 LIMIT 8`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (rows && rows.length > 0) return res.json(rows);
+        db.all(`SELECT * FROM Products WHERE is_active = 1 ORDER BY created_at DESC LIMIT 8`, [], (e2, newest) => {
+            if (e2) return res.status(500).json({ error: e2.message });
+            res.json(newest);
+        });
+    });
+});
+
+app.get('/api/products/new-arrivals', (req, res) => {
+    db.all(`SELECT * FROM Products WHERE is_active = 1 ORDER BY created_at DESC LIMIT 8`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+app.get('/api/products/deals', (req, res) => {
+    const query = `
+        SELECT p.*, d.discount_percent, d.valid_until,
+               ROUND(p.price * (100.0 - d.discount_percent) / 100.0, 2) AS discounted_price
+        FROM Products p
+        JOIN Discounts d ON p.id = d.product_id
+        WHERE p.is_active = 1 AND d.valid_until >= datetime('now')
+        ORDER BY d.discount_percent DESC
+    `;
+    db.all(query, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
 app.get('/api/products', (req, res) => {
     const category_id = req.query.category;
     let query = `SELECT * FROM Products WHERE is_active = 1`;
@@ -146,18 +179,18 @@ app.get('/api/products/:id', (req, res) => {
 });
 
 app.post('/api/products', verifyToken, isAdmin, (req, res) => {
-    const { name, category_id, brand, price, stock, image_url, description, variants } = req.body;
-    db.run(`INSERT INTO Products (name, category_id, brand, price, stock, image_url, description, variants) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [name, category_id, brand || 'AJ Brand', price, stock, image_url, description, variants ? JSON.stringify(variants) : null], function(err) {
+    const { name, category_id, brand, price, stock, image_url, description, variants, is_featured } = req.body;
+    db.run(`INSERT INTO Products (name, category_id, brand, price, stock, image_url, description, variants, is_featured) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [name, category_id, brand || 'AJ Brand', price, stock, image_url, description, variants ? JSON.stringify(variants) : null, is_featured ? 1 : 0], function(err) {
             if (err) return res.status(400).json({ error: err.message });
             res.status(201).json({ id: this.lastID, message: "Product created" });
         });
 });
 
 app.put('/api/products/:id', verifyToken, isAdmin, (req, res) => {
-    const { name, category_id, brand, price, stock, image_url, description, is_active, variants } = req.body;
-    db.run(`UPDATE Products SET name = COALESCE(?, name), category_id = COALESCE(?, category_id), brand = COALESCE(?, brand), price = COALESCE(?, price), stock = COALESCE(?, stock), image_url = COALESCE(?, image_url), description = COALESCE(?, description), is_active = COALESCE(?, is_active), variants = COALESCE(?, variants) WHERE id = ?`,
-        [name, category_id, brand, price, stock, image_url, description, is_active, variants !== undefined ? (typeof variants === 'string' ? variants : JSON.stringify(variants)) : null, req.params.id], function(err) {
+    const { name, category_id, brand, price, stock, image_url, description, is_active, variants, is_featured } = req.body;
+    db.run(`UPDATE Products SET name = COALESCE(?, name), category_id = COALESCE(?, category_id), brand = COALESCE(?, brand), price = COALESCE(?, price), stock = COALESCE(?, stock), image_url = COALESCE(?, image_url), description = COALESCE(?, description), is_active = COALESCE(?, is_active), variants = COALESCE(?, variants), is_featured = COALESCE(?, is_featured) WHERE id = ?`,
+        [name, category_id, brand, price, stock, image_url, description, is_active, variants !== undefined ? (typeof variants === 'string' ? variants : JSON.stringify(variants)) : null, is_featured !== undefined ? (is_featured ? 1 : 0) : null, req.params.id], function(err) {
             if (err) return res.status(400).json({ error: err.message });
             res.json({ message: "Product updated", changes: this.changes });
         });
@@ -167,6 +200,115 @@ app.delete('/api/products/:id', verifyToken, isAdmin, (req, res) => {
     db.run(`UPDATE Products SET is_active = 0 WHERE id = ?`, [req.params.id], function(err) {
         if (err) return res.status(400).json({ error: err.message });
         res.json({ message: "Product soft deleted (deactivated)" });
+    });
+});
+
+// --- HERO SLIDES ENDPOINTS ---
+app.get('/api/hero-slides', (req, res) => {
+    db.all(`SELECT * FROM hero_slides WHERE is_active = 1 ORDER BY sort_order ASC, id ASC`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+app.get('/api/admin/hero-slides', verifyToken, isAdmin, (req, res) => {
+    db.all(`SELECT * FROM hero_slides ORDER BY sort_order ASC, id ASC`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+app.post('/api/hero-slides', verifyToken, isAdmin, (req, res) => {
+    const { media_type, media_url, title, subtitle, button_text, button_link, sort_order, is_active } = req.body;
+    db.run(`INSERT INTO hero_slides (media_type, media_url, title, subtitle, button_text, button_link, sort_order, is_active)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [media_type || 'image', media_url, title, subtitle, button_text, button_link, sort_order || 0, is_active !== undefined ? is_active : 1], function(err) {
+            if (err) return res.status(400).json({ error: err.message });
+            res.status(201).json({ id: this.lastID, message: "Slide created" });
+        });
+});
+
+app.put('/api/hero-slides/:id', verifyToken, isAdmin, (req, res) => {
+    const { media_type, media_url, title, subtitle, button_text, button_link, sort_order, is_active } = req.body;
+    db.run(`UPDATE hero_slides SET media_type = COALESCE(?, media_type), media_url = COALESCE(?, media_url), title = COALESCE(?, title), subtitle = COALESCE(?, subtitle), button_text = COALESCE(?, button_text), button_link = COALESCE(?, button_link), sort_order = COALESCE(?, sort_order), is_active = COALESCE(?, is_active) WHERE id = ?`,
+        [media_type, media_url, title, subtitle, button_text, button_link, sort_order, is_active, req.params.id], function(err) {
+            if (err) return res.status(400).json({ error: err.message });
+            res.json({ message: "Slide updated", changes: this.changes });
+        });
+});
+
+app.delete('/api/hero-slides/:id', verifyToken, isAdmin, (req, res) => {
+    db.run(`DELETE FROM hero_slides WHERE id = ?`, [req.params.id], function(err) {
+        if (err) return res.status(400).json({ error: err.message });
+        res.json({ message: "Slide deleted" });
+    });
+});
+
+// --- FEATURED VIDEOS ENDPOINTS ---
+app.get('/api/featured-videos', (req, res) => {
+    db.all(`SELECT * FROM featured_videos WHERE is_active = 1 ORDER BY sort_order ASC, id ASC`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+app.get('/api/admin/featured-videos', verifyToken, isAdmin, (req, res) => {
+    db.all(`SELECT * FROM featured_videos ORDER BY sort_order ASC, id ASC`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+app.post('/api/featured-videos', verifyToken, isAdmin, (req, res) => {
+    const { title, video_url, thumbnail_url, sort_order, is_active } = req.body;
+    db.run(`INSERT INTO featured_videos (title, video_url, thumbnail_url, sort_order, is_active) VALUES (?, ?, ?, ?, ?)`,
+        [title, video_url || '', thumbnail_url, sort_order || 0, is_active !== undefined ? is_active : 1], function(err) {
+            if (err) return res.status(400).json({ error: err.message });
+            res.status(201).json({ id: this.lastID, message: "Video created" });
+        });
+});
+
+app.put('/api/featured-videos/:id', verifyToken, isAdmin, (req, res) => {
+    const { title, video_url, thumbnail_url, sort_order, is_active } = req.body;
+    db.run(`UPDATE featured_videos SET title = COALESCE(?, title), video_url = COALESCE(?, video_url), thumbnail_url = COALESCE(?, thumbnail_url), sort_order = COALESCE(?, sort_order), is_active = COALESCE(?, is_active) WHERE id = ?`,
+        [title, video_url, thumbnail_url, sort_order, is_active, req.params.id], function(err) {
+            if (err) return res.status(400).json({ error: err.message });
+            res.json({ message: "Video updated", changes: this.changes });
+        });
+});
+
+app.delete('/api/featured-videos/:id', verifyToken, isAdmin, (req, res) => {
+    db.run(`DELETE FROM featured_videos WHERE id = ?`, [req.params.id], function(err) {
+        if (err) return res.status(400).json({ error: err.message });
+        res.json({ message: "Video deleted" });
+    });
+});
+
+// --- SETTINGS ENDPOINTS ---
+app.get('/api/settings', (req, res) => {
+    db.all(`SELECT key, value FROM settings`, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        const settingsObj = {};
+        rows.forEach(r => { settingsObj[r.key] = r.value; });
+        res.json(settingsObj);
+    });
+});
+
+app.put('/api/settings', verifyToken, isAdmin, (req, res) => {
+    const settings = req.body; // e.g. { whatsapp_number: '...', phone: '...' }
+    if (!settings || typeof settings !== 'object') {
+        return res.status(400).json({ error: "Invalid settings payload" });
+    }
+    const entries = Object.entries(settings);
+    db.serialize(() => {
+        const stmt = db.prepare(`INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value`);
+        entries.forEach(([k, v]) => {
+            stmt.run(k, v ? v.toString() : '');
+        });
+        stmt.finalize((err) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ message: "Settings updated successfully" });
+        });
     });
 });
 

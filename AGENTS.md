@@ -39,3 +39,4 @@
 
 ## Change Log
 - 2026-10-16: Reorganized backend scripts, added generic CSV importer, created /backend/data/, archived one-off scripts, and verified 157 products (0 duplicates).
+- 2026-10-19: Added store layout: navigation bar with mega menu, hero slider, featured sections, footer, floating WhatsApp, 8 new pages (/products, /categories, /offers, /about, /contact, /faq, /terms, /privacy), admin management for hero slides, featured videos, store settings, and product featuring (migration 002).

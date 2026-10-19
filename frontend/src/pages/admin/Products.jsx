@@ -52,7 +52,7 @@ const Products = () => {
     }
   };
 
-  const openModal = (product = { name: '', brand: 'AJ Brand', category_id: 1, price: '', stock: '', description: '', image_url: '' }) => {
+  const openModal = (product = { name: '', brand: 'AJ Brand', category_id: 1, price: '', stock: '', description: '', image_url: '', is_featured: 0 }) => {
     setCurrentProduct(product);
     setIsModalOpen(true);
   };
@@ -74,17 +74,27 @@ const Products = () => {
               <th className="p-4 text-darkBlue dark:text-cyan">Brand</th>
               <th className="p-4 text-darkBlue dark:text-cyan">Price (Rs)</th>
               <th className="p-4 text-darkBlue dark:text-cyan">Stock</th>
+              <th className="p-4 text-darkBlue dark:text-cyan">Featured</th>
               <th className="p-4 text-darkBlue dark:text-cyan">Actions</th>
             </tr>
           </thead>
           <tbody>
             {products.map(p => (
               <tr key={p.id} className="border-b border-lightBorder dark:border-darkBorder hover:bg-lightBg dark:bg-darkBg transition-colors">
-                <td className="p-4">{p.name}</td>
+                <td className="p-4 font-medium">{p.name}</td>
                 <td className="p-4 text-sm font-semibold text-darkBlue dark:text-cyan">{p.brand || 'AJ Brand'}</td>
                 <td className="p-4 font-bold text-lightBlue dark:text-aqua">{p.price}</td>
                 <td className="p-4">
                   <span className={p.stock < 5 ? "text-error-light dark:text-error-dark font-bold" : "text-success-light dark:text-success-dark"}>{p.stock}</span>
+                </td>
+                <td className="p-4">
+                  {p.is_featured ? (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+                      ★ Featured
+                    </span>
+                  ) : (
+                    <span className="text-xs text-lightTextSecondary dark:text-darkTextSecondary">—</span>
+                  )}
                 </td>
                 <td className="p-4 flex gap-3">
                   <button onClick={() => openModal(p)} className="text-lightTextSecondary dark:text-darkTextSecondary hover:text-darkBlue dark:hover:text-cyan"><Edit2 size={18} /></button>
@@ -116,6 +126,20 @@ const Products = () => {
                 <div className="flex-1"><label className="block text-sm mb-1">Stock</label><input type="number" value={currentProduct.stock} onChange={e=>setCurrentProduct({...currentProduct, stock: e.target.value})} className="input-field" required /></div>
               </div>
               <div><label className="block text-sm mb-1">Image URL (Optional)</label><input type="text" value={currentProduct.image_url} onChange={e=>setCurrentProduct({...currentProduct, image_url: e.target.value})} className="input-field" /></div>
+              
+              <div className="flex items-center gap-2 pt-2">
+                <input
+                  type="checkbox"
+                  id="is_featured"
+                  checked={Boolean(currentProduct.is_featured)}
+                  onChange={e => setCurrentProduct({ ...currentProduct, is_featured: e.target.checked ? 1 : 0 })}
+                  className="w-4 h-4 rounded text-darkBlue dark:text-cyan border-lightBorder dark:border-darkBorder cursor-pointer"
+                />
+                <label htmlFor="is_featured" className="text-sm font-semibold cursor-pointer select-none">
+                  Show in Homepage "Featured Products" Section
+                </label>
+              </div>
+
               <div className="flex justify-end gap-3 mt-6">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 hover:bg-lightBorder dark:hover:bg-darkBorder rounded">Cancel</button>
                 <button type="submit" className="btn-primary">Save</button>
