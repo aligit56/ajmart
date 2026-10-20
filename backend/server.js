@@ -3,12 +3,27 @@ const cors = require('cors');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const sharp = require('sharp');
+const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public')); // Serve static images
+
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB max
+    fileFilter: (req, file, cb) => {
+        if (!file.mimetype.match(/^image\/(jpeg|png|webp|jpg)$/i)) {
+            return cb(new Error('Allowed formats: JPG, PNG, WebP (max 5 MB)'));
+        }
+        cb(null, true);
+    }
+});
 
 const db = new sqlite3.Database('./database.sqlite', (err) => {
     if (err) console.error("Database connection error: " + err.message);
@@ -200,6 +215,133 @@ app.delete('/api/products/:id', verifyToken, isAdmin, (req, res) => {
     db.run(`UPDATE Products SET is_active = 0 WHERE id = ?`, [req.params.id], function(err) {
         if (err) return res.status(400).json({ error: err.message });
         res.json({ message: "Product soft deleted (deactivated)" });
+    });
+});
+
+app.post('/api/products/upload-image', verifyToken, isAdmin, (req, res) => {
+    upload.single('image')(req, res, async (uploadErr) => {
+        if (uploadErr) {
+            return res.status(400).json({ error: uploadErr.message });
+        }
+        if (!req.file) {
+            return res.status(400).json({ error: 'No image file uploaded' });
+        }
+
+        try {
+            const productId = req.body.productId;
+            let productName = req.body.name;
+            let categoryName = req.body.category_name;
+            let categoryId = req.body.category_id;
+
+            const slugify = (str) => {
+                return (str || '')
+                    .toLowerCase()
+                    .replace(/&/g, 'and')
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .trim()
+                    .replace(/\s+/g, '-');
+            };
+
+            // If existing product ID, fetch details from DB if not provided
+            if (productId && productId !== 'new') {
+                const prod = await new Promise((resolve, reject) => {
+                    db.get(`SELECT p.id, p.name, p.category_id, c.name as category_name 
+                            FROM Products p 
+                            LEFT JOIN Categories c ON p.category_id = c.id 
+                            WHERE p.id = ?`, [productId], (err, row) => {
+                        if (err) reject(err);
+                        else resolve(row);
+                    });
+                });
+                if (prod) {
+                    productName = productName || prod.name;
+                    categoryName = categoryName || prod.category_name;
+                    categoryId = categoryId || prod.category_id;
+                }
+            } else if (categoryId && !categoryName) {
+                const cat = await new Promise((resolve, reject) => {
+                    db.get('SELECT name FROM Categories WHERE id = ?', [categoryId], (err, row) => {
+                        if (err) reject(err);
+                        else resolve(row);
+                    });
+                });
+                if (cat) categoryName = cat.name;
+            }
+
+            const categorySlug = slugify(categoryName || 'general');
+            const productSlug = slugify(productName || `product-${Date.now()}`);
+            const filename = `${productSlug}.jpg`;
+            const targetDir = path.join(__dirname, 'public/images/products', categorySlug);
+
+            if (!fs.existsSync(targetDir)) {
+                fs.mkdirSync(targetDir, { recursive: true });
+            }
+
+            const targetFilePath = path.join(targetDir, filename);
+
+            // Task 4 standard: 800x800 canvas, pure white #FFFFFF, product centered (approx 80-85% fill = max 680px), JPG quality 85
+            const resizedBuffer = await sharp(req.file.buffer)
+                .flatten({ background: '#ffffff' })
+                .resize(680, 680, { fit: 'inside' })
+                .toBuffer();
+
+            const meta = await sharp(resizedBuffer).metadata();
+            const top = Math.floor((800 - meta.height) / 2);
+            const bottom = 800 - meta.height - top;
+            const left = Math.floor((800 - meta.width) / 2);
+            const right = 800 - meta.width - left;
+
+            await sharp(resizedBuffer)
+                .extend({ top, bottom, left, right, background: '#ffffff' })
+                .jpeg({ quality: 85 })
+                .toFile(targetFilePath);
+
+            const relativeUrl = `/images/products/${categorySlug}/${filename}`;
+            const csvImageFilename = `${categorySlug}/${filename}`;
+
+            // Update database if productId exists
+            if (productId && productId !== 'new') {
+                await new Promise((resolve, reject) => {
+                    db.run('UPDATE Products SET image_url = ? WHERE id = ?', [relativeUrl, productId], function(err) {
+                        if (err) reject(err);
+                        else resolve(this);
+                    });
+                });
+            }
+
+            // Update CSV template file if it exists
+            const csvPath = path.join(__dirname, 'data/product_images_template.csv');
+            if (fs.existsSync(csvPath) && productName) {
+                try {
+                    const content = fs.readFileSync(csvPath, 'utf8');
+                    const lines = content.split('\n');
+                    const updatedLines = lines.map(line => {
+                        if (!line.trim()) return line;
+                        if (line.includes(`"${productName}"`) || line.includes(productName)) {
+                            const parts = line.split(',');
+                            if (parts.length >= 5) {
+                                parts[4] = `"${csvImageFilename}"\r`;
+                                return parts.join(',');
+                            }
+                        }
+                        return line;
+                    });
+                    fs.writeFileSync(csvPath, updatedLines.join('\n'), 'utf8');
+                } catch (csvErr) {
+                    console.error('Failed to update CSV template:', csvErr.message);
+                }
+            }
+
+            res.json({
+                success: true,
+                imageUrl: relativeUrl,
+                imageFilename: csvImageFilename,
+                message: 'Image processed and saved successfully'
+            });
+        } catch (error) {
+            console.error('Image upload processing error:', error);
+            res.status(500).json({ error: error.message || 'Image processing failed' });
+        }
     });
 });
 

@@ -108,7 +108,7 @@ async function main() {
         const categoryName = (row.category || '').trim();
         const rawPrice = (row.price || '').toString().trim();
         const rawStock = (row.stock || '').toString().trim();
-        const rawImage = (row.image_filename || row.image_url || row.image || '').trim();
+        const rawImage = (row.image_filename || row.image_file_name || row.image_url || row.image || '').trim();
 
         // Validation: product_name
         if (!name) {
@@ -125,20 +125,29 @@ async function main() {
         }
         const categoryId = categoryMap.get(categoryName);
 
+        // Check if product already exists
+        const existing = await getQuery('SELECT id, price, stock, image_url FROM Products WHERE name = ?', [name]);
+
         // Validation: price
-        const price = parseFloat(rawPrice);
+        let price = parseFloat(rawPrice);
         if (isNaN(price) || price < 0) {
-          skipped++;
-          skippedReasons.push(`Row ${rowNum} ("${name}"): Invalid price "${rawPrice}"`);
-          continue;
+          if (existing && existing.price !== undefined && existing.price !== null) {
+            price = existing.price;
+          } else {
+            skipped++;
+            skippedReasons.push(`Row ${rowNum} ("${name}"): Invalid price "${rawPrice}"`);
+            continue;
+          }
         }
 
         // Parse stock
-        const stock = parseInt(rawStock, 10);
-        const validStock = isNaN(stock) || stock < 0 ? 0 : stock;
-
-        // Check if product already exists
-        const existing = await getQuery('SELECT id, image_url FROM Products WHERE name = ?', [name]);
+        let validStock = 0;
+        if (rawStock !== '') {
+          const stock = parseInt(rawStock, 10);
+          validStock = isNaN(stock) || stock < 0 ? 0 : stock;
+        } else if (existing && existing.stock !== undefined && existing.stock !== null) {
+          validStock = existing.stock;
+        }
 
         // Compute image_url
         let finalImageUrl = null;
@@ -151,24 +160,35 @@ async function main() {
         } else if (existing && existing.image_url) {
           finalImageUrl = existing.image_url;
         } else {
-          finalImageUrl = '/images/placeholder.jpg';
+          finalImageUrl = '/images/placeholder-product.jpg';
         }
+
+        const brand = (row.brand || '').trim();
 
         if (existing) {
           // UPDATE
-          await runQuery(
-            `UPDATE Products 
-             SET category_id = ?, price = ?, stock = ?, image_url = ?
-             WHERE id = ?`,
-            [categoryId, price, validStock, finalImageUrl, existing.id]
-          );
+          if (brand) {
+            await runQuery(
+              `UPDATE Products 
+               SET category_id = ?, price = ?, stock = ?, image_url = ?, brand = ?
+               WHERE id = ?`,
+              [categoryId, price, validStock, finalImageUrl, brand, existing.id]
+            );
+          } else {
+            await runQuery(
+              `UPDATE Products 
+               SET category_id = ?, price = ?, stock = ?, image_url = ?
+               WHERE id = ?`,
+              [categoryId, price, validStock, finalImageUrl, existing.id]
+            );
+          }
           updated++;
         } else {
           // INSERT
           await runQuery(
-            `INSERT INTO Products (name, category_id, price, stock, image_url, is_active)
-             VALUES (?, ?, ?, ?, ?, 1)`,
-            [name, categoryId, price, validStock, finalImageUrl]
+            `INSERT INTO Products (name, category_id, price, stock, image_url, brand, is_active)
+             VALUES (?, ?, ?, ?, ?, ?, 1)`,
+            [name, categoryId, price, validStock, finalImageUrl, brand || 'AJ Brand']
           );
           inserted++;
         }

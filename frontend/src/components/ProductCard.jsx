@@ -87,20 +87,26 @@ const ProductCard = ({ product }) => {
       )}
       
       {/* Product Image Area with Slider Controls */}
-      <div className="relative h-64 bg-white dark:bg-darkBg p-2 flex items-center justify-center overflow-hidden border-b border-lightBorder dark:border-darkBorder">
+      <div className="relative aspect-square w-full bg-white p-2 flex items-center justify-center overflow-hidden border-b border-lightBorder dark:border-darkBorder">
         <Link to={`/product/${product.id}`} className="w-full h-full flex items-center justify-center">
           {displayImage ? (
             <img 
               src={displayImage} 
               alt={product.name} 
+              loading="lazy"
               className="object-contain w-full h-full transition-transform duration-300 group-hover:scale-105" 
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = '/images/placeholder.jpg';
+                e.target.src = '/images/placeholder-product.jpg';
               }}
             />
           ) : (
-            <span className="text-lightTextSecondary dark:text-darkTextSecondary text-sm">No Image</span>
+            <img 
+              src="/images/placeholder-product.jpg" 
+              alt="Image coming soon" 
+              loading="lazy"
+              className="object-contain w-full h-full p-2 opacity-90" 
+            />
           )}
         </Link>
 

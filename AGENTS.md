@@ -31,8 +31,11 @@
 6. Category names must match exactly: Pulses, Rice, Oil and Ghee, Tea or Coffee,
    Noodle and Macaronis, Cleaning and Laundry, Personal Care, Cosmetics,
    Spices, Household, Everyday Grocery.
-7. Image filenames: use lowercase, hyphens, no spaces (e.g. dall-chana.jpg).
-   Stored path: /images/products/<filename>.
+7. Image filenames & storage:
+   - Stored path: /images/products/<category-slug>/<filename>
+   - Filename format: brand-product-size.jpg (lowercase, hyphens, no spaces, e.g. personal-care/dove-soap-100g.jpg).
+   - Image Standard: 800 x 800 px, pure white background (#FFFFFF), product centered (80-85% canvas fill, 8-10% padding), JPG (quality 85) or WebP, under 150 KB.
+   - Frontend cards: aspect-square, object-contain, bg-white, padding 8px. Fallback to /images/placeholder-product.jpg.
 8. After every task: update this file's "Change Log" section (one line per change).
 9. Before finishing a task, report: files created, files changed, rows affected,
    and how to verify.
@@ -49,3 +52,7 @@
 - 2026-10-20: Added user-provided Lemon Max Long Bar photo to Max Long Bar and Max Longbar Double, and removed 165gm bar image from Max 60 via migration 007.
 - 2026-10-20: Imported and mapped size-free cropped tea images from products (tea) to all 9 branded Tea products across all sizes via migration 008.
 - 2026-10-20: Imported and mapped size-free cropped oil and ghee images from products(oil and ghee) to all 11 branded Oil & Ghee products via migration 009.
+- 2026-10-20: Created category-slug folder structure for product images, added README.txt and updated image storage & processing standards.
+- 2026-10-20: Sourced, standardized (800x800 white canvas) and imported 19 Personal Care images via generic importer, implemented Admin Image Upload with thumbnail preview and Sharp processing, generated image manifest and needs-owner audit.
+- 2026-10-20: Sourced, standardized (800x800 white canvas) and imported 19 Spices images (Shan, National, Mehran) via generic importer, updated manifest and needs-owner audit.
+- 2026-10-20: Standardized all product images across all categories into category-slug folders (/images/products/<category-slug>/<filename>) via migration 010, updated DB, CSV template, and frontend assets.

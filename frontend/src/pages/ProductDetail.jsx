@@ -121,19 +121,24 @@ const ProductDetail = () => {
       <div className="card p-6 md:p-8 flex flex-col md:flex-row gap-8">
         {/* Left Column: Product Image + Thumbnails */}
         <div className="w-full md:w-1/2 flex flex-col">
-          <div className="relative min-h-[360px] md:min-h-[460px] h-96 md:h-[460px] bg-white dark:bg-darkBg rounded-xl flex items-center justify-center p-4 md:p-6 border border-lightBorder dark:border-darkBorder shadow-sm group">
+          <div className="relative min-h-[360px] md:min-h-[460px] h-96 md:h-[460px] bg-white rounded-xl flex items-center justify-center p-4 md:p-6 border border-lightBorder dark:border-darkBorder shadow-sm group">
             {displayImage ? (
               <img 
                 src={displayImage} 
                 alt={product.name} 
+                loading="lazy"
                 className="object-contain w-full h-full max-h-[420px] rounded-lg transition-transform duration-300 hover:scale-105" 
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = '/images/placeholder.jpg';
+                  e.target.src = '/images/placeholder-product.jpg';
                 }}
               />
             ) : (
-              <span className="text-lightTextSecondary dark:text-darkTextSecondary">No Image</span>
+              <img 
+                src="/images/placeholder-product.jpg" 
+                alt="Image coming soon" 
+                className="object-contain w-full h-full max-h-[420px] opacity-80" 
+              />
             )}
 
             {allImages.length > 1 && (

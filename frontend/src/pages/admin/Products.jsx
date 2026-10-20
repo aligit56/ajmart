@@ -9,6 +9,9 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentProduct, setCurrentProduct] = useState({ name: '', brand: 'AJ Brand', category_id: 1, price: '', stock: '', description: '', image_url: '' });
+  const [uploadFile, setUploadFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -24,20 +27,64 @@ const Products = () => {
 
   useEffect(() => { fetchData(); }, []);
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      toast.error('Allowed formats: JPG, PNG, WebP');
+      e.target.value = '';
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('File size exceeds 5 MB limit');
+      e.target.value = '';
+      return;
+    }
+
+    setUploadFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
-      if (currentProduct.id) {
-        await api.put(`/products/${currentProduct.id}`, currentProduct);
+      let finalProduct = { ...currentProduct };
+
+      // Handle image file upload if chosen
+      if (uploadFile) {
+        const formData = new FormData();
+        formData.append('image', uploadFile);
+        if (finalProduct.id) formData.append('productId', finalProduct.id);
+        formData.append('name', finalProduct.name);
+        formData.append('category_id', finalProduct.category_id);
+        const selectedCat = categories.find(c => c.id == finalProduct.category_id);
+        if (selectedCat) formData.append('category_name', selectedCat.name);
+
+        const uploadRes = await api.post('/products/upload-image', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+
+        finalProduct.image_url = uploadRes.data.imageUrl;
+      }
+
+      if (finalProduct.id) {
+        await api.put(`/products/${finalProduct.id}`, finalProduct);
         toast.success('Product updated');
       } else {
-        await api.post('/products', currentProduct);
+        await api.post('/products', finalProduct);
         toast.success('Product added');
       }
       setIsModalOpen(false);
+      setUploadFile(null);
+      setPreviewUrl(null);
       fetchData();
     } catch (err) {
       toast.error(err.response?.data?.error || 'Failed to save');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -54,6 +101,8 @@ const Products = () => {
 
   const openModal = (product = { name: '', brand: 'AJ Brand', category_id: 1, price: '', stock: '', description: '', image_url: '', is_featured: 0 }) => {
     setCurrentProduct(product);
+    setUploadFile(null);
+    setPreviewUrl(product.image_url || null);
     setIsModalOpen(true);
   };
 
@@ -125,7 +174,50 @@ const Products = () => {
                 <div className="flex-1"><label className="block text-sm mb-1">Price (Rs)</label><input type="number" value={currentProduct.price} onChange={e=>setCurrentProduct({...currentProduct, price: e.target.value})} className="input-field" required /></div>
                 <div className="flex-1"><label className="block text-sm mb-1">Stock</label><input type="number" value={currentProduct.stock} onChange={e=>setCurrentProduct({...currentProduct, stock: e.target.value})} className="input-field" required /></div>
               </div>
-              <div><label className="block text-sm mb-1">Image URL (Optional)</label><input type="text" value={currentProduct.image_url} onChange={e=>setCurrentProduct({...currentProduct, image_url: e.target.value})} className="input-field" /></div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Product Image (JPG, PNG, WebP &le; 5 MB)</label>
+                <div className="flex items-center gap-4 p-3 bg-lightBg dark:bg-darkBg rounded-lg border border-lightBorder dark:border-darkBorder">
+                  {previewUrl ? (
+                    <div className="w-16 h-16 bg-white rounded border border-lightBorder dark:border-darkBorder p-1 flex items-center justify-center shrink-0">
+                      <img
+                        src={previewUrl}
+                        alt="Preview"
+                        className="max-w-full max-h-full object-contain"
+                        onError={(e) => { e.target.src = '/images/placeholder-product.jpg'; }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-16 h-16 bg-white dark:bg-darkCard rounded border border-dashed border-lightBorder dark:border-darkBorder flex items-center justify-center text-xs text-center text-lightTextSecondary dark:text-darkTextSecondary p-1 shrink-0">
+                      No Image
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={handleFileChange}
+                      className="text-xs file:mr-2 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-darkBlue file:text-white dark:file:bg-cyan dark:file:text-darkBg hover:file:opacity-90 cursor-pointer"
+                    />
+                    <p className="text-[11px] text-lightTextSecondary dark:text-darkTextSecondary mt-1">
+                      Auto-resized to 800×800 square, centered on white background.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm mb-1">Image URL (Optional Manual Path)</label>
+                <input
+                  type="text"
+                  value={currentProduct.image_url || ''}
+                  onChange={e => {
+                    setCurrentProduct({...currentProduct, image_url: e.target.value});
+                    if (!uploadFile) setPreviewUrl(e.target.value);
+                  }}
+                  className="input-field"
+                  placeholder="/images/products/category-slug/filename.jpg"
+                />
+              </div>
               
               <div className="flex items-center gap-2 pt-2">
                 <input
@@ -142,7 +234,9 @@ const Products = () => {
 
               <div className="flex justify-end gap-3 mt-6">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 hover:bg-lightBorder dark:hover:bg-darkBorder rounded">Cancel</button>
-                <button type="submit" className="btn-primary">Save</button>
+                <button type="submit" disabled={isSubmitting} className="btn-primary">
+                  {isSubmitting ? 'Saving...' : 'Save'}
+                </button>
               </div>
             </form>
           </div>

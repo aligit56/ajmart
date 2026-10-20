@@ -1,0 +1,41 @@
+category,product_id,product_name,variant,image_filename,dimensions,filesize_kb,source_type,source_url,status
+Personal Care,110,Bio Amla Shampoo,275 ml,personal-care/bio-amla-shampoo.jpg,800x800,39.2,retailer,https://www.naheed.pk/bio-amla-shampoo-280ml,OK
+Personal Care,121,Capri Soap,Standard,personal-care/capri-soap.jpg,800x800,47.0,retailer,https://www.naheed.pk/capri-glow-rose-pink-soap-150g,OK
+Personal Care,116,Conditioner Mclay,275 ml,personal-care/conditioner-mclay.jpg,800x800,38.7,retailer,https://www.naheed.pk/meclay-london-collagen-keratin-elastin-smooth-straight-conditioner-vitamin-e-180ml,OK
+Personal Care,125,Door Soap,Standard,images/placeholder-product.jpg,800x800,23.5,placeholder,local placeholder,NEEDS_OWNER
+Personal Care,126,Dove Soap,Standard,personal-care/dove-soap.jpg,800x800,34.4,retailer,https://www.naheed.pk/dove-beauty-cream-bar-soap-100g,OK
+Personal Care,114,Head & Shoulders,275 ml,personal-care/head-shoulders.jpg,800x800,36.3,retailer,https://www.naheed.pk/head-shof-classic-clean-sh-360ml,OK
+Personal Care,112,Hello Hair Shampoo,275 ml,personal-care/hello-hair-shampoo.jpg,800x800,25.8,retailer,https://www.naheed.pk/golden-pearl-hello-hair-herbal-shampoo-conditioner-naturally-thick-strong-with-amla-shikakai-reetha-olive-oil-385ml,OK
+Personal Care,124,Laar Soap,Standard,images/placeholder-product.jpg,800x800,23.5,placeholder,local placeholder,NEEDS_OWNER
+Personal Care,106,Lifeboy Shampoo,275 ml,personal-care/lifeboy-shampoo.jpg,800x800,60.3,retailer,https://www.naheed.pk/lifebuoy-herbal-strong-strength-shampoo-175ml,OK
+Personal Care,117,Lifeboy Soap,Standard,personal-care/lifeboy-soap.jpg,800x800,32.5,retailer,https://www.naheed.pk/lifebuoy-total-protect-red-soap-115g,OK
+Personal Care,109,Loreal Shampoo,275 ml,personal-care/loreal-shampoo.jpg,800x800,51.6,retailer,https://www.naheed.pk/l-oreal-paris-elvive-total-repair-5-repairing-shampoo-360ml,OK
+Personal Care,122,Lux Soap,Standard,personal-care/lux-soap.jpg,800x800,36.1,retailer,https://www.naheed.pk/lux-velvet-glow-jasmine-beauty-soap-100g,OK
+Personal Care,113,Mclay Shampoo,275 ml,personal-care/mclay-shampoo.jpg,800x800,30.2,retailer,https://www.naheed.pk/meclay-london-calcium-keratin-biotin-damage-repair-shampoo-185ml,OK
+Personal Care,119,Palmolive Soap,Standard,personal-care/palmolive-soap.jpg,800x800,40.5,retailer,https://www.naheed.pk/palmolive-naturals-refreshing-glow-citrus-cream-soap-165g,OK
+Personal Care,115,Pantene Shampoo,275 ml,personal-care/pantene-shampoo.jpg,800x800,24.5,retailer,https://www.naheed.pk/pantene-pro-v-anti-hair-fall-shampoo-400ml,OK
+Personal Care,120,Safeguard Soap,Standard,personal-care/safeguard-soap.jpg,800x800,48.2,retailer,https://www.naheed.pk/safeguard-pure-white-soap-95g,OK
+Personal Care,123,Sufi Classic Soap,Standard,personal-care/sufi-classic-soap.jpg,800x800,58.9,retailer,https://www.naheed.pk/sufi-classic-beauty-soap-130g,OK
+Personal Care,107,Sunsilk Shampoo,275 ml,personal-care/sunsilk-shampoo.jpg,800x800,27.9,retailer,https://www.naheed.pk/sunsilk-co-creations-black-shine-shampoo-370ml,OK
+Personal Care,118,Tibet Soap,Standard,personal-care/tibet-soap.jpg,800x800,75.8,retailer,https://www.naheed.pk/tibet-deluxe-beauty-soap-125g,OK
+Personal Care,108,Tresme Shampoo,275 ml,personal-care/tresme-shampoo.jpg,800x800,28.3,retailer,https://www.naheed.pk/tresemme-keratin-smooth-shampoo-370ml,OK
+Personal Care,111,Vatika Shampoo,275 ml,personal-care/vatika-shampoo.jpg,800x800,37.3,retailer,https://www.naheed.pk/dabur-vatika-naturals-reetha-shikakai-silky-shine-shampoo-185ml,OK
+Spices,53,Shan Korma,Standard,spices/shan-korma.jpg,800x800,74.4,retailer,https://www.naheed.pk/shan-korma-recipe-masala-50g,OK
+Spices,54,Shan Biryani,Standard,spices/shan-biryani.jpg,800x800,36.3,retailer,https://www.naheed.pk/shan-biryani-recipe-masala-50g,OK
+Spices,55,Shan Tikka,Standard,spices/shan-tikka.jpg,800x800,87.5,retailer,https://www.naheed.pk/shan-chicken-tikka-recipe-masala-50g,OK
+Spices,56,Shan Bihari Kabab,Standard,spices/shan-bihari-kabab.jpg,800x800,73.1,retailer,https://www.naheed.pk/shan-bihari-kabab-recipe-masala-50gm,OK
+Spices,57,Shan Nihari,Standard,spices/shan-nihari.jpg,800x800,63.8,retailer,https://www.naheed.pk/shan-nihari-recipe-masala-60gm,OK
+Spices,58,Shan Haleem Mix,Standard,spices/shan-haleem-mix.jpg,800x800,67.5,retailer,https://www.naheed.pk/shan-haleem-recipe-masala-shahi-haleem-mix,OK
+Spices,59,Shan Adrak,Standard,spices/shan-adrak.jpg,800x800,36.3,retailer,https://www.naheed.pk/shan-ginger-paste-310gm-bottle,OK
+Spices,60,National Haleem Mix,Standard,spices/national-haleem-mix.jpg,800x800,80.8,retailer,https://www.naheed.pk/national-haleem-masala-mix-86g,OK
+Spices,61,National Tikka,Standard,spices/national-tikka.jpg,800x800,77.3,retailer,https://www.naheed.pk/national-chicken-tikka-recipe-masala-50g,OK
+Spices,62,National Pulao,Standard,spices/national-pulao.jpg,800x800,83.2,retailer,https://www.naheed.pk/national-pulao-masala-mix-50g,OK
+Spices,63,National Biryani,Standard,spices/national-biryani.jpg,800x800,87.7,retailer,https://www.naheed.pk/national-biryani-masala-mix-90g,OK
+Spices,64,National Murgi,Standard,spices/national-murgi.jpg,800x800,64.8,official,https://www.nfoods.com/app/uploads/2021/06/MURGHI.webp,OK
+Spices,65,Mahran Tikka,Standard,spices/mahran-tikka.jpg,800x800,76.4,retailer,https://www.naheed.pk/mehran-tikka-boti-masala-50g,OK
+Spices,66,Mahran Fish,Standard,spices/mahran-fish.jpg,800x800,75.6,retailer,https://www.naheed.pk/mehran-fish-fry-masala-50g,OK
+Spices,67,Mahran Haleem,Standard,spices/mahran-haleem.jpg,800x800,74.0,retailer,https://www.naheed.pk/mehran-recipe-haleem-masala-50g,OK
+Spices,68,Mahran Chapli Kabab,Standard,spices/mahran-chapli-kabab.jpg,800x800,81.3,retailer,https://www.naheed.pk/mehran-chapli-kabab-masala-50g,OK
+Spices,69,Mahran Shami Kabab,Standard,spices/mahran-shami-kabab.jpg,800x800,76.7,retailer,https://www.naheed.pk/mehran-shami-kabab-masala-50g,OK
+Spices,70,Mahran Paya,Standard,spices/mahran-paya.jpg,800x800,66.9,official,https://mehrangroup.com/assets/uploads/2025/11/6912f0415ec52.webp,OK
+Spices,71,Mahran Chat Masala,Standard,spices/mahran-chat-masala.jpg,800x800,78.0,retailer,https://www.naheed.pk/mehran-chaat-masala-100g,OK
