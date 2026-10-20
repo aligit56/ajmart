@@ -61,7 +61,15 @@ const ProductDetail = () => {
       <div className="card p-6 md:p-8 flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-1/2 min-h-[380px] md:min-h-[480px] h-96 md:h-[480px] bg-white dark:bg-darkBg rounded-xl flex items-center justify-center p-4 md:p-6 border border-lightBorder dark:border-darkBorder shadow-sm">
           {product.image_url ? (
-               <img src={product.image_url} alt={product.name} className="object-contain w-full h-full max-h-[440px] rounded-lg transition-transform duration-300 hover:scale-105" />
+               <img 
+                 src={product.image_url} 
+                 alt={product.name} 
+                 className="object-contain w-full h-full max-h-[440px] rounded-lg transition-transform duration-300 hover:scale-105" 
+                 onError={(e) => {
+                   e.target.onerror = null;
+                   e.target.src = '/images/placeholder.jpg';
+                 }}
+               />
            ) : (
                <span className="text-lightTextSecondary dark:text-darkTextSecondary">No Image</span>
            )}

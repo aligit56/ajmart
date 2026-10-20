@@ -28,6 +28,10 @@ const ProductCard = ({ product }) => {
               src={product.image_url} 
               alt={product.name} 
               className="object-contain w-full h-full transition-transform duration-300 group-hover:scale-105" 
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = '/images/placeholder.jpg';
+              }}
             />
         ) : (
             <span className="text-lightTextSecondary dark:text-darkTextSecondary text-sm">No Image</span>

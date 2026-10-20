@@ -42,3 +42,4 @@
 - 2026-10-19: Added store layout: navigation bar with mega menu, hero slider, featured sections, footer, floating WhatsApp, 8 new pages (/products, /categories, /offers, /about, /contact, /faq, /terms, /privacy), admin management for hero slides, featured videos, store settings, and product featuring (migration 002).
 - 2026-10-19: Fixed page scroll alignment: added ScrollToTop listener, scroll-margin-top / scroll-padding-top for sticky header offset, and smooth pagination reset.
 - 2026-10-20: Updated Sufi Oil and Ghee brand from 'AJ Brand' to 'Sufi' via migration 003, updated CSV template, and generated categorized branded products breakdown.
+- 2026-10-20: Imported 17 product images across Cleaning, Household, and Everyday Grocery via migration 004, standardized to /images/products/, updated CSV template, and verified outer card and detail page dimensions.
