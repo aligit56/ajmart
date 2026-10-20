@@ -1,9 +1,22 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { CartContext } from '../context/CartContext';
-import { Loader2, ArrowLeft, ShoppingCart } from 'lucide-react';
+import { Loader2, ArrowLeft, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
+
+const parseImages = (imageUrl) => {
+  if (!imageUrl) return [];
+  if (typeof imageUrl === 'string' && imageUrl.trim().startsWith('[')) {
+    try {
+      const parsed = JSON.parse(imageUrl);
+      if (Array.isArray(parsed)) return parsed.filter(Boolean);
+    } catch (e) {
+      // fallback
+    }
+  }
+  return [imageUrl];
+};
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -14,6 +27,7 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [variants, setVariants] = useState([]);
   const [selectedVariant, setSelectedVariant] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
@@ -22,16 +36,26 @@ const ProductDetail = () => {
         const res = await api.get(`/products/${id}`);
         const prod = res.data;
         setProduct(prod);
+
+        let initialVariant = null;
         if (prod.variants) {
           try {
-            const parsedVariants = JSON.parse(prod.variants);
+            const parsedVariants = typeof prod.variants === 'string' ? JSON.parse(prod.variants) : prod.variants;
             if (Array.isArray(parsedVariants) && parsedVariants.length > 0) {
               setVariants(parsedVariants);
-              setSelectedVariant(parsedVariants[0]);
+              initialVariant = parsedVariants[0];
+              setSelectedVariant(initialVariant);
             }
           } catch (e) {
             console.error("Failed to parse variants", e);
           }
+        }
+
+        const parsedImgs = parseImages(prod.image_url);
+        if (initialVariant?.image_url) {
+          setSelectedImage(initialVariant.image_url);
+        } else if (parsedImgs.length > 0) {
+          setSelectedImage(parsedImgs[0]);
         }
       } catch (err) {
         console.error(err);
@@ -42,15 +66,51 @@ const ProductDetail = () => {
     fetchProduct();
   }, [id]);
 
+  const allImages = useMemo(() => {
+    if (!product) return [];
+    const baseImages = parseImages(product.image_url);
+    // Include any variant images that aren't already in baseImages
+    const variantImages = variants.map(v => v.image_url).filter(Boolean);
+    const combined = [...baseImages];
+    for (const vImg of variantImages) {
+      if (!combined.includes(vImg)) {
+        combined.push(vImg);
+      }
+    }
+    return combined;
+  }, [product, variants]);
+
   if (loading) return <div className="flex justify-center py-20"><Loader2 className="animate-spin text-darkBlue dark:text-cyan" size={40} /></div>;
   if (!product) return <div className="text-center py-20">Product not found</div>;
+
+  const handleVariantSelect = (v) => {
+    setSelectedVariant(v);
+    if (v.image_url) {
+      setSelectedImage(v.image_url);
+    }
+  };
+
+  const handlePrevImage = () => {
+    if (allImages.length <= 1) return;
+    const curIdx = allImages.indexOf(selectedImage);
+    const nextIdx = (curIdx - 1 + allImages.length) % allImages.length;
+    setSelectedImage(allImages[nextIdx]);
+  };
+
+  const handleNextImage = () => {
+    if (allImages.length <= 1) return;
+    const curIdx = allImages.indexOf(selectedImage);
+    const nextIdx = (curIdx + 1) % allImages.length;
+    setSelectedImage(allImages[nextIdx]);
+  };
 
   const handleAdd = () => {
     addToCart(product, quantity, selectedVariant);
     toast.success(`Added ${quantity} to cart!`);
   };
 
-  const currentPrice = selectedVariant ? selectedVariant.price : product.price;
+  const currentPrice = selectedVariant ? selectedVariant.price : (product.discounted_price || product.price);
+  const displayImage = selectedImage || allImages[0] || product.image_url;
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -59,22 +119,65 @@ const ProductDetail = () => {
       </button>
 
       <div className="card p-6 md:p-8 flex flex-col md:flex-row gap-8">
-        <div className="w-full md:w-1/2 min-h-[380px] md:min-h-[480px] h-96 md:h-[480px] bg-white dark:bg-darkBg rounded-xl flex items-center justify-center p-4 md:p-6 border border-lightBorder dark:border-darkBorder shadow-sm">
-          {product.image_url ? (
-               <img 
-                 src={product.image_url} 
-                 alt={product.name} 
-                 className="object-contain w-full h-full max-h-[440px] rounded-lg transition-transform duration-300 hover:scale-105" 
-                 onError={(e) => {
-                   e.target.onerror = null;
-                   e.target.src = '/images/placeholder.jpg';
-                 }}
-               />
-           ) : (
-               <span className="text-lightTextSecondary dark:text-darkTextSecondary">No Image</span>
-           )}
+        {/* Left Column: Product Image + Thumbnails */}
+        <div className="w-full md:w-1/2 flex flex-col">
+          <div className="relative min-h-[360px] md:min-h-[460px] h-96 md:h-[460px] bg-white dark:bg-darkBg rounded-xl flex items-center justify-center p-4 md:p-6 border border-lightBorder dark:border-darkBorder shadow-sm group">
+            {displayImage ? (
+              <img 
+                src={displayImage} 
+                alt={product.name} 
+                className="object-contain w-full h-full max-h-[420px] rounded-lg transition-transform duration-300 hover:scale-105" 
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = '/images/placeholder.jpg';
+                }}
+              />
+            ) : (
+              <span className="text-lightTextSecondary dark:text-darkTextSecondary">No Image</span>
+            )}
+
+            {allImages.length > 1 && (
+              <>
+                <button
+                  onClick={handlePrevImage}
+                  aria-label="Previous Image"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/50 hover:bg-black/80 text-white transition-opacity shadow cursor-pointer"
+                >
+                  <ChevronLeft size={22} />
+                </button>
+                <button
+                  onClick={handleNextImage}
+                  aria-label="Next Image"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/50 hover:bg-black/80 text-white transition-opacity shadow cursor-pointer"
+                >
+                  <ChevronRight size={22} />
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Thumbnails row if multiple images exist */}
+          {allImages.length > 1 && (
+            <div className="flex gap-2.5 mt-3 overflow-x-auto pb-1">
+              {allImages.map((img, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setSelectedImage(img)}
+                  className={`w-16 h-16 rounded-lg border-2 p-1 bg-white dark:bg-darkBg flex-shrink-0 transition-all cursor-pointer ${
+                    displayImage === img
+                      ? 'border-darkBlue dark:border-cyan ring-2 ring-darkBlue/20 dark:ring-cyan/20 scale-105'
+                      : 'border-lightBorder dark:border-darkBorder opacity-70 hover:opacity-100'
+                  }`}
+                >
+                  <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-contain" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
         
+        {/* Right Column: Info & Actions */}
         <div className="w-full md:w-1/2 flex flex-col">
           <h1 className="text-3xl md:text-4xl font-bold text-lightText dark:text-darkText mb-1">{product.name}</h1>
           <p className="text-sm md:text-base font-semibold text-lightTextSecondary dark:text-darkTextSecondary mb-4">
@@ -84,21 +187,25 @@ const ProductDetail = () => {
           
           {variants.length > 0 && (
             <div className="mb-6">
-              <h3 className="font-semibold mb-2">Select Size/Type:</h3>
+              <h3 className="font-semibold mb-2">Select Variant / Flavour:</h3>
               <div className="flex flex-wrap gap-2">
-                {variants.map((v, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setSelectedVariant(v)}
-                    className={`px-4 py-2 rounded border font-medium text-sm transition-colors ${
-                      selectedVariant?.name === v.name
-                        ? 'bg-darkBlue dark:bg-cyan text-white border-darkBlue dark:border-cyan'
-                        : 'bg-white dark:bg-darkBg text-lightText dark:text-darkText border-lightBorder dark:border-darkBorder hover:border-darkBlue dark:hover:border-cyan'
-                    }`}
-                  >
-                    {v.name}
-                  </button>
-                ))}
+                {variants.map((v, idx) => {
+                  const isSelected = selectedVariant?.name === v.name;
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => handleVariantSelect(v)}
+                      className={`px-4 py-2 rounded-lg border font-medium text-sm transition-all ${
+                        isSelected
+                          ? 'bg-darkBlue dark:bg-cyan text-white dark:text-black border-darkBlue dark:border-cyan shadow-sm'
+                          : 'bg-white dark:bg-darkBg text-lightText dark:text-darkText border-lightBorder dark:border-darkBorder hover:border-darkBlue dark:hover:border-cyan'
+                      }`}
+                    >
+                      {v.name}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
