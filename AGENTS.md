@@ -46,3 +46,4 @@
 - 2026-10-20: Replaced low-res 60x60 thumbnail images for all Max household products with high-resolution 1000x1000 product images, eliminating card and detail view blurriness.
 - 2026-10-20: Updated image mapping for Max Long Bar and Max 60 via migration 005 and updated CSV template.
 - 2026-10-20: Replaced Max Long Bar images with clean size-free 1000x1000 visuals, imported 10 noodles/macaroni images via migration 006, implemented multi-image card slider for Indomie Noodles (3 images), and interactive variant image switching (Chatpatta vs Chicken) for Knorr Family Pack on card and detail views.
+- 2026-10-20: Added user-provided Lemon Max Long Bar photo to Max Long Bar and Max Longbar Double, and removed 165gm bar image from Max 60 via migration 007.
