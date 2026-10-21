@@ -35,15 +35,44 @@ const ProductCard = ({ product }) => {
   );
 
   const images = useMemo(() => {
+    if (Array.isArray(product.images) && product.images.length > 0) {
+      return product.images.map(img => typeof img === 'string' ? img : img.image_url).filter(Boolean);
+    }
     return parseImages(product.image_url);
-  }, [product.image_url]);
+  }, [product.images, product.image_url]);
 
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
+
+  // Touch gesture handling for mobile swipe
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const minSwipeDistance = 40;
+
+  const handleTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd || images.length <= 1) return;
+    const distance = touchStart - touchEnd;
+    if (distance > minSwipeDistance) {
+      setCurrentImgIndex((prev) => (prev + 1) % images.length);
+    } else if (distance < -minSwipeDistance) {
+      setCurrentImgIndex((prev) => (prev - 1 + images.length) % images.length);
+    }
+  };
 
   // Active display image: if selectedVariant has its own image_url, show that; otherwise use images[currentImgIndex]
   const displayImage = (selectedVariant && selectedVariant.image_url)
     ? selectedVariant.image_url
     : (images[currentImgIndex] || null);
+
+  const hasDualGallery = !selectedVariant?.image_url && images.length > 1;
 
   const effectivePrice = (selectedVariant && selectedVariant.price)
     ? selectedVariant.price
@@ -86,10 +115,40 @@ const ProductCard = ({ product }) => {
         </span>
       )}
       
-      {/* Product Image Area with Slider Controls */}
-      <div className="relative aspect-square w-full bg-white p-2 flex items-center justify-center overflow-hidden border-b border-lightBorder dark:border-darkBorder">
-        <Link to={`/product/${product.id}`} className="w-full h-full flex items-center justify-center">
-          {displayImage ? (
+      {/* Product Image Area with Hover transition & Mobile Swipe */}
+      <div 
+        className="relative aspect-square w-full bg-white p-2 flex items-center justify-center overflow-hidden border-b border-lightBorder dark:border-darkBorder"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <Link to={`/product/${product.id}`} className="w-full h-full flex items-center justify-center relative">
+          {hasDualGallery && currentImgIndex === 0 ? (
+            <>
+              {/* Primary Image (Hand Photo) */}
+              <img 
+                src={images[0]} 
+                alt={product.name} 
+                loading="lazy"
+                className="object-contain w-full h-full transition-opacity duration-300 md:group-hover:opacity-0" 
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = '/images/placeholder-product.jpg';
+                }}
+              />
+              {/* Secondary Image (Bag Image shown on desktop hover) */}
+              <img 
+                src={images[1]} 
+                alt={`${product.name} bag`} 
+                loading="lazy"
+                className="object-contain w-full h-full absolute inset-0 transition-opacity duration-300 opacity-0 md:group-hover:opacity-100 pointer-events-none" 
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = '/images/placeholder-product.jpg';
+                }}
+              />
+            </>
+          ) : displayImage ? (
             <img 
               src={displayImage} 
               alt={product.name} 

@@ -63,3 +63,14 @@ These products are currently mapped to `/images/placeholder-product.jpg` until c
 - **Mahran vs Mehran**: All 7 products (`Mahran Tikka`, `Mahran Fish`, `Mahran Haleem`, `Mahran Chapli Kabab`, `Mahran Shami Kabab`, `Mahran Paya`, `Mahran Chat Masala`) are registered under brand **Mehran** (Mehran Spice & Food Industries). In the database, the product name uses the spelling `Mahran`. The official Mehran packaging has been matched and loaded.
 - **National Murgi**: Sourced the official **National Murghi Recipe Mix / Chicken Masala** packshot from National Foods.
 - **Shan Adrak**: Sourced the official **Shan Ginger Paste** bottle (Rs 250 in DB, matching the paste bottle in market). If the owner meant Shan Adrak (Ginger) Powder (50g box), this can be adjusted upon owner confirmation.
+
+---
+
+### 6. Pulses Status & Missing Products
+- **Malka Sabit Masar** (#22):
+  - **Status**: MISSING PHOTO. Retained with `/images/placeholder-product.jpg`.
+  - **Note**: No photo matching Malka Sabit Masar was found in the uploaded pulses folder.
+- **Extra Photos Provided**:
+  - `white lobia.jfif`: High quality photo of White Lobia (Black-eyed peas / Safaid Lobia). No matching "White Lobia" product exists in the DB currently.
+  - `mash chilka.jfif`: High quality photo of Daal Mash Chilka (Split Urad with husk). The DB currently has `Mong Chilka Dall` (#24) and `Dall Mash` (#21), but no dedicated `Daal Mash Chilka`.
+  - These two photos are preserved in the pulses folder and ready whenever these products are added to the catalog.

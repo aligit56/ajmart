@@ -51,11 +51,17 @@ const ProductDetail = () => {
           }
         }
 
-        const parsedImgs = parseImages(prod.image_url);
+        let baseImgs = [];
+        if (Array.isArray(prod.images) && prod.images.length > 0) {
+          baseImgs = prod.images.map(img => typeof img === 'string' ? img : img.image_url).filter(Boolean);
+        } else {
+          baseImgs = parseImages(prod.image_url);
+        }
+
         if (initialVariant?.image_url) {
           setSelectedImage(initialVariant.image_url);
-        } else if (parsedImgs.length > 0) {
-          setSelectedImage(parsedImgs[0]);
+        } else if (baseImgs.length > 0) {
+          setSelectedImage(baseImgs[0]);
         }
       } catch (err) {
         console.error(err);
@@ -68,7 +74,12 @@ const ProductDetail = () => {
 
   const allImages = useMemo(() => {
     if (!product) return [];
-    const baseImages = parseImages(product.image_url);
+    let baseImages = [];
+    if (Array.isArray(product.images) && product.images.length > 0) {
+      baseImages = product.images.map(img => typeof img === 'string' ? img : img.image_url).filter(Boolean);
+    } else {
+      baseImages = parseImages(product.image_url);
+    }
     // Include any variant images that aren't already in baseImages
     const variantImages = variants.map(v => v.image_url).filter(Boolean);
     const combined = [...baseImages];

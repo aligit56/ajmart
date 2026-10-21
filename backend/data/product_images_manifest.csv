@@ -39,3 +39,48 @@ Spices,68,Mahran Chapli Kabab,Standard,spices/mahran-chapli-kabab.jpg,800x800,81
 Spices,69,Mahran Shami Kabab,Standard,spices/mahran-shami-kabab.jpg,800x800,76.7,retailer,https://www.naheed.pk/mehran-shami-kabab-masala-50g,OK
 Spices,70,Mahran Paya,Standard,spices/mahran-paya.jpg,800x800,66.9,official,https://mehrangroup.com/assets/uploads/2025/11/6912f0415ec52.webp,OK
 Spices,71,Mahran Chat Masala,Standard,spices/mahran-chat-masala.jpg,800x800,78.0,retailer,https://www.naheed.pk/mehran-chaat-masala-100g,OK
+Pulses,12,Dall Chana,Standard,pulses/dall-chana.jpg,800x800,108.8,user_provided,frontend/public/images/products/pulses/daal channasupreme.jfif,OK
+Pulses,13,Lobia Kapsool,Standard,pulses/lobia-kapsool.jpg,800x800,94.9,user_provided,frontend/public/images/products/pulses/lobia kapsooljfif.jfif,OK
+Pulses,14,Dall Mong,Standard,pulses/dall-mong.jpg,800x800,143.1,user_provided,frontend/public/images/products/pulses/daal mong.jfif,OK
+Pulses,15,Dall Masar,Standard,pulses/dall-masar.jpg,800x800,148.0,user_provided,frontend/public/images/products/pulses/daal masar.jfif,OK
+Pulses,16,Mota Chana,Standard,pulses/mota-chana.jpg,800x800,103.9,user_provided,frontend/public/images/products/pulses/mota whitechanna.jfif,OK
+Pulses,17,Kala Masar,Standard,pulses/kala-masar.jpg,800x800,147.2,user_provided,frontend/public/images/products/pulses/kalay masar.jfif,OK
+Pulses,18,Kala Mash,Standard,pulses/kala-mash.jpg,800x800,139.9,user_provided,frontend/public/images/products/pulses/kalay mash.jfif,OK
+Pulses,19,Chana Bareek,Standard,pulses/chana-bareek.jpg,800x800,114.1,user_provided,frontend/public/images/products/pulses/bareek channa.webp,OK
+Pulses,20,Mong Sabit,Standard,pulses/mong-sabit.jpg,800x800,147.5,user_provided,frontend/public/images/products/pulses/mong sabit.jfif,OK
+Pulses,21,Dall Mash,Standard,pulses/dall-mash.jpg,800x800,139.6,user_provided,frontend/public/images/products/pulses/daal maash.jfif,OK
+Pulses,22,Malka Sabit Masar,Standard,images/placeholder-product.jpg,800x800,0,placeholder,local placeholder,MISSING
+Pulses,23,Kala Chana,Standard,pulses/kala-chana.jpg,800x800,139.3,user_provided,frontend/public/images/products/pulses/kala channa.jfif,OK
+Pulses,24,Mong Chilka Dall,Standard,pulses/mong-chilka-dall.jpg,800x800,140.2,user_provided,frontend/public/images/products/pulses/mong chilka.jfif,OK
+Pulses,25,Lobia Chitri Red,Standard,pulses/lobia-chitri-red.jpg,800x800,142.0,user_provided,frontend/public/images/products/pulses/lobia chitri.jfif,OK
+Pulses,26,Lobia Desi Bareek,Standard,pulses/lobia-desi-bareek.jpg,800x800,144.7,user_provided,frontend/public/images/products/pulses/DDS Lobia.jfif,OK
+Pulses,12,Dall Chana,Bag Mockup,pulses/dall-chana-bag.png,1000x1000,838.5,generated,bag-generator pipeline,OK
+Pulses,12,Dall Chana,Hand Photo,pulses/dall-chana-hand.jpg,800x800,124.6,owner,whatsapp user provided,OK
+Pulses,13,Lobia Kapsool,Bag Mockup,pulses/lobia-kapsool-bag.png,1000x1000,754.9,generated,bag-generator pipeline,OK
+Pulses,13,Lobia Kapsool,Hand Photo,pulses/lobia-kapsool-hand.jpg,800x800,109.0,owner,whatsapp user provided,OK
+Pulses,14,Dall Mong,Bag Mockup,pulses/dall-mong-bag.png,1000x1000,821.9,generated,bag-generator pipeline,OK
+Pulses,14,Dall Mong,Hand Photo,pulses/dall-mong-hand.jpg,800x800,188.5,owner,whatsapp user provided,OK
+Pulses,15,Dall Masar,Bag Mockup,pulses/dall-masar-bag.png,1000x1000,827.5,generated,bag-generator pipeline,OK
+Pulses,15,Dall Masar,Hand Photo,pulses/dall-masar-hand.jpg,800x800,177.7,owner,whatsapp user provided,OK
+Pulses,16,Mota Chana,Bag Mockup,pulses/mota-chana-bag.png,1000x1000,812.1,generated,bag-generator pipeline,OK
+Pulses,16,Mota Chana,Hand Photo,pulses/mota-chana-hand.jpg,800x800,119.8,owner,whatsapp user provided,OK
+Pulses,17,Kala Masar,Bag Mockup,pulses/kala-masar-bag.png,1000x1000,790.7,generated,bag-generator pipeline,OK
+Pulses,17,Kala Masar,Hand Photo,pulses/kala-masar-hand.jpg,800x800,177.8,owner,whatsapp user provided,OK
+Pulses,18,Kala Mash,Bag Mockup,pulses/kala-mash-bag.png,1000x1000,772.9,generated,bag-generator pipeline,OK
+Pulses,18,Kala Mash,Hand Photo,pulses/kala-mash-hand.jpg,800x800,189.2,owner,whatsapp user provided,OK
+Pulses,19,Chana Bareek,Bag Mockup,pulses/chana-bareek-bag.png,1000x1000,824.6,generated,bag-generator pipeline,OK
+Pulses,19,Chana Bareek,Hand Photo,pulses/chana-bareek-hand.jpg,800x800,133.4,owner,whatsapp user provided,OK
+Pulses,20,Mong Sabit,Bag Mockup,pulses/mong-sabit-bag.png,1000x1000,820.9,generated,bag-generator pipeline,OK
+Pulses,20,Mong Sabit,Hand Photo,pulses/mong-sabit-hand.jpg,800x800,194.8,owner,whatsapp user provided,OK
+Pulses,21,Dall Mash,Bag Mockup,pulses/dall-mash-bag.png,1000x1000,762.7,generated,bag-generator pipeline,OK
+Pulses,21,Dall Mash,Hand Photo,pulses/dall-mash-hand.jpg,800x800,186.1,owner,whatsapp user provided,OK
+Pulses,23,Kala Chana,Bag Mockup,pulses/kala-chana-bag.png,1000x1000,815.7,generated,bag-generator pipeline,OK
+Pulses,23,Kala Chana,Hand Photo,pulses/kala-chana-hand.jpg,800x800,184.2,owner,whatsapp user provided,OK
+Pulses,24,Mong Chilka Dall,Bag Mockup,pulses/mong-chilka-dall-bag.png,1000x1000,850.1,generated,bag-generator pipeline,OK
+Pulses,24,Mong Chilka Dall,Hand Photo,pulses/mong-chilka-dall-hand.jpg,800x800,184.4,owner,whatsapp user provided,OK
+Pulses,25,Lobia Chitri Red,Bag Mockup,pulses/lobia-chitri-red-bag.png,1000x1000,865.7,generated,bag-generator pipeline,OK
+Pulses,25,Lobia Chitri Red,Hand Photo,pulses/lobia-chitri-red-hand.jpg,800x800,197.2,owner,whatsapp user provided,OK
+Pulses,26,Lobia Desi Bareek,Bag Mockup,pulses/lobia-desi-bareek-bag.png,1000x1000,849.6,generated,bag-generator pipeline,OK
+Pulses,26,Lobia Desi Bareek,Hand Photo,pulses/lobia-desi-bareek-hand.jpg,800x800,188.5,owner,whatsapp user provided,OK
+Pulses,22,Malka Sabit Masar,Bag Mockup,pulses/malka-sabit-masar-bag.png,1000x1000,794.0,generated,bag-generator pipeline,OK
+Pulses,22,Malka Sabit Masar,Hand Photo,pulses/malka-sabit-masar-hand.jpg,800x800,177.7,owner,mapped from dall masar per owner instruction,OK

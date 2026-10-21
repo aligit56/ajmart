@@ -33,9 +33,10 @@
    Spices, Household, Everyday Grocery.
 7. Image filenames & storage:
    - Stored path: /images/products/<category-slug>/<filename>
-   - Filename format: brand-product-size.jpg (lowercase, hyphens, no spaces, e.g. personal-care/dove-soap-100g.jpg).
-   - Image Standard: 800 x 800 px, pure white background (#FFFFFF), product centered (80-85% canvas fill, 8-10% padding), JPG (quality 85) or WebP, under 150 KB.
-   - Frontend cards: aspect-square, object-contain, bg-white, padding 8px. Fallback to /images/placeholder-product.jpg.
+   - Filename format: brand-product-size.jpg (lowercase, hyphens, no spaces, e.g. personal-care/dove-soap-100g.jpg). For pulses gallery: pulses/<slug>-hand.jpg and pulses/<slug>-bag.png.
+   - Image Standard: 800 x 800 px, pure white background (#FFFFFF), product centered (80-85% canvas fill, 8-10% padding), JPG (quality 85) or WebP, under 150 KB (hand photos under 200 KB). Bag images: 1000 x 1000 px transparent PNG.
+   - Product gallery rule: Products can have multiple images stored in `product_images` table. Main gallery order: first image (sort_order 0) = main image (hand photo for pulses), second image (sort_order 1) = bag image.
+   - Frontend cards: aspect-square, object-contain, bg-white, padding 8px. Hover transition to bag image on desktop, swipe indicators on mobile. Fallback to /images/placeholder-product.jpg.
 8. After every task: update this file's "Change Log" section (one line per change).
 9. Before finishing a task, report: files created, files changed, rows affected,
    and how to verify.
@@ -56,3 +57,8 @@
 - 2026-10-20: Sourced, standardized (800x800 white canvas) and imported 19 Personal Care images via generic importer, implemented Admin Image Upload with thumbnail preview and Sharp processing, generated image manifest and needs-owner audit.
 - 2026-10-20: Sourced, standardized (800x800 white canvas) and imported 19 Spices images (Shan, National, Mehran) via generic importer, updated manifest and needs-owner audit.
 - 2026-10-20: Standardized all product images across all categories into category-slug folders (/images/products/<category-slug>/<filename>) via migration 010, updated DB, CSV template, and frontend assets.
+- 2026-10-21: Processed and imported 14 user-provided Pulses images into /images/products/pulses/ (800x800 white canvas, <150KB), mapped to DB via generic importer, updated template CSV, manifest, and flagged Malka Sabit Masar as missing.
+- 2026-10-21: Implemented product gallery support (migration 011), brand asset lockups, pulses hand images gallery mapping, and programmatic clear pouch generator pipeline.
+- 2026-10-21: Generated 14 wide-angle clear pillow pouches with pure pulse fills and AJTraders branding, linked to DB product_images, updated manifest, and verified frontend card hover and gallery switching.
+- 2026-10-21: Re-sampled 100% pure pulse grain patches from sacks/mounds, eliminating all brown hand-skin background artifacts across all 14 pulse pouches.
+- 2026-10-21: Re-sampled and eliminated palm-skin artifacts from Mota Chana and Lobia Chitri Red, and mapped Dall Masar hand & generated pouch visuals to Malka Sabit Masar activating all 15 pulses.

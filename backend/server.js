@@ -128,31 +128,91 @@ app.delete('/api/categories/:id', verifyToken, isAdmin, (req, res) => {
 });
 
 // --- PRODUCTS ENDPOINTS ---
+const attachGalleryImages = (products) => {
+    return new Promise((resolve, reject) => {
+        if (!products || products.length === 0) return resolve(products);
+        const productIds = products.map(p => p.id);
+        const placeholders = productIds.map(() => '?').join(',');
+        const sql = `SELECT product_id, image_url, image_type, sort_order FROM product_images WHERE product_id IN (${placeholders}) ORDER BY sort_order ASC, id ASC`;
+        db.all(sql, productIds, (err, rows) => {
+            if (err) return reject(err);
+            const imagesMap = {};
+            for (const row of rows || []) {
+                if (!imagesMap[row.product_id]) imagesMap[row.product_id] = [];
+                imagesMap[row.product_id].push({
+                    image_url: row.image_url,
+                    image_type: row.image_type,
+                    sort_order: row.sort_order
+                });
+            }
+            for (const prod of products) {
+                const prodImages = imagesMap[prod.id] || [];
+                if (prodImages.length === 0 && prod.image_url) {
+                    prodImages.push({
+                        image_url: prod.image_url,
+                        image_type: 'main',
+                        sort_order: 0
+                    });
+                }
+                prod.images = prodImages;
+                if (prodImages.length > 0) {
+                    const handImg = prodImages.find(img => img.image_type === 'hand');
+                    const mainImg = prodImages.find(img => img.image_type === 'main');
+                    prod.image_url = handImg ? handImg.image_url : (mainImg ? mainImg.image_url : prodImages[0].image_url);
+                }
+            }
+            resolve(products);
+        });
+    });
+};
+
 app.get('/api/products/search', (req, res) => {
     const query = req.query.q?.toLowerCase() || '';
     if (!query) return res.status(400).json({ error: 'Query required' });
     
-    db.all(`SELECT * FROM Products WHERE LOWER(name) LIKE ? AND is_active = 1`, [`%${query}%`], (err, rows) => {
+    db.all(`SELECT * FROM Products WHERE LOWER(name) LIKE ? AND is_active = 1`, [`%${query}%`], async (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.json(rows);
+        try {
+            await attachGalleryImages(rows);
+            res.json(rows);
+        } catch (e) {
+            res.status(500).json({ error: e.message });
+        }
     });
 });
 
 app.get('/api/products/featured', (req, res) => {
-    db.all(`SELECT * FROM Products WHERE is_active = 1 AND is_featured = 1 LIMIT 8`, [], (err, rows) => {
+    db.all(`SELECT * FROM Products WHERE is_active = 1 AND is_featured = 1 LIMIT 8`, [], async (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
-        if (rows && rows.length > 0) return res.json(rows);
-        db.all(`SELECT * FROM Products WHERE is_active = 1 ORDER BY created_at DESC LIMIT 8`, [], (e2, newest) => {
+        if (rows && rows.length > 0) {
+            try {
+                await attachGalleryImages(rows);
+                return res.json(rows);
+            } catch (e) {
+                return res.status(500).json({ error: e.message });
+            }
+        }
+        db.all(`SELECT * FROM Products WHERE is_active = 1 ORDER BY created_at DESC LIMIT 8`, [], async (e2, newest) => {
             if (e2) return res.status(500).json({ error: e2.message });
-            res.json(newest);
+            try {
+                await attachGalleryImages(newest);
+                res.json(newest);
+            } catch (e) {
+                res.status(500).json({ error: e.message });
+            }
         });
     });
 });
 
 app.get('/api/products/new-arrivals', (req, res) => {
-    db.all(`SELECT * FROM Products WHERE is_active = 1 ORDER BY created_at DESC LIMIT 8`, [], (err, rows) => {
+    db.all(`SELECT * FROM Products WHERE is_active = 1 ORDER BY created_at DESC LIMIT 8`, [], async (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.json(rows);
+        try {
+            await attachGalleryImages(rows);
+            res.json(rows);
+        } catch (e) {
+            res.status(500).json({ error: e.message });
+        }
     });
 });
 
@@ -165,9 +225,14 @@ app.get('/api/products/deals', (req, res) => {
         WHERE p.is_active = 1 AND d.valid_until >= datetime('now')
         ORDER BY d.discount_percent DESC
     `;
-    db.all(query, [], (err, rows) => {
+    db.all(query, [], async (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.json(rows);
+        try {
+            await attachGalleryImages(rows);
+            res.json(rows);
+        } catch (e) {
+            res.status(500).json({ error: e.message });
+        }
     });
 });
 
@@ -179,17 +244,27 @@ app.get('/api/products', (req, res) => {
         query += ` AND category_id = ?`;
         params.push(category_id);
     }
-    db.all(query, params, (err, rows) => {
+    db.all(query, params, async (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.json(rows);
+        try {
+            await attachGalleryImages(rows);
+            res.json(rows);
+        } catch (e) {
+            res.status(500).json({ error: e.message });
+        }
     });
 });
 
 app.get('/api/products/:id', (req, res) => {
-    db.get(`SELECT * FROM Products WHERE id = ?`, [req.params.id], (err, row) => {
+    db.get(`SELECT * FROM Products WHERE id = ?`, [req.params.id], async (err, row) => {
         if (err) return res.status(500).json({ error: err.message });
         if (!row) return res.status(404).json({ error: "Product not found" });
-        res.json(row);
+        try {
+            await attachGalleryImages([row]);
+            res.json(row);
+        } catch (e) {
+            res.status(500).json({ error: e.message });
+        }
     });
 });
 
