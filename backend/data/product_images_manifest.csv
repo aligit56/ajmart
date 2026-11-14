@@ -84,3 +84,35 @@ Pulses,26,Lobia Desi Bareek,Bag Mockup,pulses/lobia-desi-bareek-bag.png,1000x100
 Pulses,26,Lobia Desi Bareek,Hand Photo,pulses/lobia-desi-bareek-hand.jpg,800x800,188.5,owner,whatsapp user provided,OK
 Pulses,22,Malka Sabit Masar,Bag Mockup,pulses/malka-sabit-masar-bag.png,1000x1000,794.0,generated,bag-generator pipeline,OK
 Pulses,22,Malka Sabit Masar,Hand Photo,pulses/malka-sabit-masar-hand.jpg,800x800,177.7,owner,mapped from dall masar per owner instruction,OK
+Cleaning and Laundry,90,Surf Aj.,Standard,cleaning-and-laundry/surf-aj.jpg,800x800,54.8,user_provided,local photo standardized,OK
+Household,97,Aj Dish Washer,Standard,household/aj-dish-washer.jpg,800x800,87.6,user_provided,local photo standardized,OK
+Noodle and Macaronis,129,Aj Macroni,Standard,noodle-and-macaronis/aj-macaroni.jpg,800x800,78.2,user_provided,local photo standardized,OK
+Noodle and Macaronis,134,Colourful Vermicelli,Standard,noodle-and-macaronis/golden-colourful-vermicelli.jpg,800x800,75.8,user_provided,local photo standardized,OK
+Everyday Grocery,75,Methi,Standard,everyday-grocery/mehran-kasuri-methi.jpg,800x800,111.4,user_provided,local photo standardized,OK
+Everyday Grocery,72,Talbina,Standard,everyday-grocery/ajwa-talbina.jpg,800x800,57.8,user_provided,local photo standardized,OK
+Tea or Coffee,85,Khulli Pati 1kg,Standard,tea-or-coffee/khulli-pati-1kg.jpg,800x800,87.1,user_provided,local photo standardized,OK
+Oil and Ghee,47,Oil Bottle 5L,Standard,oil-and-ghee/shahtaj-oil-bottle.jpg,800x800,43.1,user_provided,local photo standardized,OK
+Oil and Ghee,48,Oil Bottle 3L,Standard,oil-and-ghee/shahtaj-oil-bottle.jpg,800x800,43.1,user_provided,local photo standardized,OK
+Spices,49,Haldi 200gm,Standard,spices/khan-haldi-200g.jpg,800x800,63.8,user_provided,standardized photo,OK
+Spices,50,Lal Mirch 200gm,Standard,spices/khan-lal-mirch-200g.jpg,800x800,90.3,user_provided,standardized photo,OK
+Spices,51,Dara Mirch 200gm,Standard,spices/khan-dara-mirch-200g.jpg,800x800,110.9,user_provided,standardized photo,OK
+Spices,52,Salan Masala 100gm,Standard,spices/khan-salan-masala-100g.jpg,800x800,114.5,user_provided,standardized photo,OK
+Personal Care,124,Laar Soap,Standard,personal-care/laar-soap.jpg,800x800,53.2,web_sourced,standardized photo,OK
+Personal Care,125,Door Soap,Standard,personal-care/door-soap.jpg,800x800,24.2,web_sourced,standardized photo,OK
+Everyday Grocery,73,Oat Meal,Standard,everyday-grocery/oat-meal.jpg,800x800,54.9,web_sourced,standardized photo,OK
+Household,99,Spiral,Standard,household/spiral.jpg,800x800,122.8,web_sourced,standardized photo,OK
+Spices,169,Dhaniya Powder 200gm,Standard,spices/khan-dhaniya-powder-200g.jpg,800x800,80.2,user_provided,standardized photo,OK
+Rice,27,Seela Supreme,Hand Photo,rice/seela-supreme-hand.jpg,800x800,159.4,sourced_authentic,professional hand photo standardized,OK
+Rice,28,Seela VIP,Hand Photo,rice/seela-vip-hand.jpg,800x800,130.4,sourced_authentic,professional hand photo standardized,OK
+Rice,29,Kainaat 1121 Special,Hand Photo,rice/kainaat-1121-special-hand.jpg,800x800,155.5,sourced_authentic,professional hand photo standardized,OK
+Rice,30,Kainaat 1121 Basmati,Hand Photo,rice/kainaat-1121-basmati-hand.jpg,800x800,132.0,sourced_authentic,professional hand photo standardized,OK
+Rice,31,Kainaat,Hand Photo,rice/kainaat-hand.jpg,800x800,143.6,sourced_authentic,professional hand photo standardized,OK
+Rice,32,Daghi Kainaat Rice 1121,Hand Photo,rice/daghi-kainaat-1121-hand.jpg,800x800,172.3,sourced_authentic,professional hand photo standardized,OK
+Rice,33,Short Grain Poona,Hand Photo,rice/short-grain-poona-hand.jpg,800x800,139.0,sourced_authentic,professional hand photo standardized,OK
+Rice,34,B-1 Tota,Hand Photo,rice/b-1-tota-hand.jpg,800x800,142.6,sourced_authentic,professional hand photo standardized,OK
+Rice,35,B-2 Tota,Hand Photo,rice/b-2-tota-hand.jpg,800x800,136.0,sourced_authentic,professional hand photo standardized,OK
+Spices,49,Haldi 200gm,Bag Image,spices/haldi-200g-bag.png,1000x1000,795.9,generated_pouch,AJ Brand professional transparent bag,OK
+Spices,50,Lal Mirch 200gm,Bag Image,spices/lal-mirch-200g-bag.png,1000x1000,752.9,generated_pouch,AJ Brand professional transparent bag,OK
+Spices,51,Dara Mirch 200gm,Bag Image,spices/dara-mirch-200g-bag.png,1000x1000,853.0,generated_pouch,AJ Brand professional transparent bag,OK
+Spices,52,Salan Masala 100gm,Bag Image,spices/salan-masala-100g-bag.png,1000x1000,873.7,generated_pouch,AJ Brand professional transparent bag,OK
+Spices,169,Dhaniya Powder 200gm,Bag Image,spices/dhaniya-powder-200g-bag.png,1000x1000,677.0,generated_pouch,AJ Brand professional transparent bag,OK

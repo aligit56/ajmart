@@ -9,20 +9,20 @@ id,product_name,category,brand,image_file_name
 19,Chana Bareek,Pulses,AJ Brand,pulses/chana-bareek.jpg
 20,Mong Sabit,Pulses,AJ Brand,pulses/mong-sabit.jpg
 21,Dall Mash,Pulses,AJ Brand,pulses/dall-mash.jpg
-22,Malka Sabit Masar,Pulses,AJ Brand,
+22,Malka Sabit Masar,Pulses,AJ Brand,pulses/malka-sabit-masar-hand.jpg
 23,Kala Chana,Pulses,AJ Brand,pulses/kala-chana.jpg
 24,Mong Chilka Dall,Pulses,AJ Brand,pulses/mong-chilka-dall.jpg
 25,Lobia Chitri Red,Pulses,AJ Brand,pulses/lobia-chitri-red.jpg
 26,Lobia Desi Bareek,Pulses,AJ Brand,pulses/lobia-desi-bareek.jpg
-27,Seela Supreme,Rice,AJ Brand,
-28,Seela VIP,Rice,AJ Brand,
-29,Kainaat 1121 Special,Rice,AJ Brand,
-30,Kainaat 1121 Basmati,Rice,AJ Brand,
-31,Kainaat,Rice,AJ Brand,
-32,Daghi Kainaat Rice 1121,Rice,AJ Brand,
-33,Short Grain Poona,Rice,AJ Brand,
-34,B-1 Tota,Rice,AJ Brand,
-35,B-2 Tota,Rice,AJ Brand,
+27,Seela Supreme,Rice,AJ Brand,rice/seela-supreme-hand.jpg
+28,Seela VIP,Rice,AJ Brand,rice/seela-vip-hand.jpg
+29,Kainaat 1121 Special,Rice,AJ Brand,rice/kainaat-1121-special-hand.jpg
+30,Kainaat 1121 Basmati,Rice,AJ Brand,rice/kainaat-1121-basmati-hand.jpg
+31,Kainaat,Rice,AJ Brand,rice/kainaat-hand.jpg
+32,Daghi Kainaat Rice 1121,Rice,AJ Brand,rice/daghi-kainaat-1121-hand.jpg
+33,Short Grain Poona,Rice,AJ Brand,rice/short-grain-poona-hand.jpg
+34,B-1 Tota,Rice,AJ Brand,rice/b-1-tota-hand.jpg
+35,B-2 Tota,Rice,AJ Brand,rice/b-2-tota-hand.jpg
 36,Dalda Oil 1kg,Oil and Ghee,Dalda,oil-and-ghee/dalda-oil.jpg
 37,Dalda Ghee 1kg,Oil and Ghee,Dalda,oil-and-ghee/dalda-ghee.jpg
 38,Oil Sufi 1kg,Oil and Ghee,Sufi,oil-and-ghee/sufi-oil.webp
@@ -34,12 +34,12 @@ id,product_name,category,brand,image_file_name
 44,Shahtaj Ghee 1kg,Oil and Ghee,Shahtaj,oil-and-ghee/shahtaj-ghee.jpg
 45,Olive Soya Supreme,Oil and Ghee,Soya Supreme,oil-and-ghee/olive-soya-supreme.webp
 46,Soya Supreme 2.5kg Tin,Oil and Ghee,Soya Supreme,oil-and-ghee/soya-supreme-tin.jpg
-47,Oil Bottle 5L,Oil and Ghee,AJ Brand,
-48,Oil Bottle 3L,Oil and Ghee,AJ Brand,
-49,Haldi 200gm,Spices,AJ Brand,
-50,Lal Mirch 200gm,Spices,AJ Brand,
-51,Dara Mirch 200gm,Spices,AJ Brand,
-52,Salan Masala 100gm,Spices,AJ Brand,
+47,Oil Bottle 5L,Oil and Ghee,Shahtaj,oil-and-ghee/shahtaj-oil-bottle.jpg
+48,Oil Bottle 3L,Oil and Ghee,Shahtaj,oil-and-ghee/shahtaj-oil-bottle.jpg
+49,Haldi 200gm,Spices,AJ Brand,spices/khan-haldi-200g.jpg
+50,Lal Mirch 200gm,Spices,AJ Brand,spices/khan-lal-mirch-200g.jpg
+51,Dara Mirch 200gm,Spices,AJ Brand,spices/khan-dara-mirch-200g.jpg
+52,Salan Masala 100gm,Spices,AJ Brand,spices/khan-salan-masala-100g.jpg
 53,Shan Korma,Spices,Shan,spices/shan-korma.jpg
 54,Shan Biryani,Spices,Shan,spices/shan-biryani.jpg
 55,Shan Tikka,Spices,Shan,spices/shan-tikka.jpg
@@ -59,10 +59,10 @@ id,product_name,category,brand,image_file_name
 69,Mahran Shami Kabab,Spices,Mehran,spices/mahran-shami-kabab.jpg
 70,Mahran Paya,Spices,Mehran,spices/mahran-paya.jpg
 71,Mahran Chat Masala,Spices,Mehran,spices/mahran-chat-masala.jpg
-72,Talbina,Everyday Grocery,AJ Brand,
-73,Oat Meal,Everyday Grocery,AJ Brand,
+72,Talbina,Everyday Grocery,Ajwa Food,everyday-grocery/ajwa-talbina.jpg
+73,Oat Meal,Everyday Grocery,AJ Brand,everyday-grocery/oat-meal.jpg
 74,Kisan Dalia,Everyday Grocery,Kisan,everyday-grocery/kisan-dalia.webp
-75,Methi,Everyday Grocery,AJ Brand,
+75,Methi,Everyday Grocery,Mehran,everyday-grocery/mehran-kasuri-methi.jpg
 76,ISL Tea 1kg,Tea or Coffee,ISL,tea-or-coffee/isl-tea.jpg
 77,ISL Tea 500gm,Tea or Coffee,ISL,tea-or-coffee/isl-tea.jpg
 78,ISL Tea 250gm,Tea or Coffee,ISL,tea-or-coffee/isl-tea.jpg
@@ -72,21 +72,21 @@ id,product_name,category,brand,image_file_name
 82,Haizoom Tea 500gm,Tea or Coffee,Haizoom,tea-or-coffee/haizoom-tea.jpg
 83,Meezan Ultra Rich 5kg,Tea or Coffee,Meezan,tea-or-coffee/meezan-ultra-rich.jpg
 84,Tulip 5kg,Tea or Coffee,Tulip,tea-or-coffee/tulip-tea.webp
-85,Khulli Pati 1kg,Tea or Coffee,AJ Brand,
+85,Khulli Pati 1kg,Tea or Coffee,AJ Brand,tea-or-coffee/khulli-pati-1kg.jpg
 86,Brite,Cleaning and Laundry,Brite,cleaning-and-laundry/brite-maximum-power-1-1.jpg
 87,Express,Cleaning and Laundry,Express,cleaning-and-laundry/express.jpeg
 88,Bonus,Cleaning and Laundry,Bonus,cleaning-and-laundry/bonus-tristar-01.jpg
 89,Sufi Detergent,Cleaning and Laundry,Sufi,cleaning-and-laundry/sufi-detergent.jfif
-90,Surf Aj.,Cleaning and Laundry,AJ Brand,
+90,Surf Aj.,Cleaning and Laundry,AJ Brand,cleaning-and-laundry/surf-aj.jpg
 91,Sufi Soap Cloth,Cleaning and Laundry,Sufi,cleaning-and-laundry/sufi-soap-cloth.jpg
 92,Sufi Vermicelli Cloth Soap,Cleaning and Laundry,Sufi,cleaning-and-laundry/sufi-vermicelli-cloth-soap.jfif
 93,Bahu Soap Cloth,Cleaning and Laundry,Bahu,cleaning-and-laundry/bahu-soap-cloth.jfif
 94,Max Liquid,Household,Max,household/max-liquid.jpg
 95,Max Paste,Household,Max,household/max-paste.jpg
 96,Safoon Dish Wash,Household,Safoon,household/safoon-dishwash.jpeg
-97,Aj Dish Washer,Household,AJ Brand,
+97,Aj Dish Washer,Household,AJ Brand,household/aj-dish-washer.jpg
 98,Scotch Brite,Household,Scotch-Brite,household/scotch-brite.jfif
-99,Spiral,Household,AJ Brand,
+99,Spiral,Household,AJ Brand,household/spiral.jpg
 100,Max Long Bar,Household,Max,household/max-longbar.png
 101,Max 35,Household,Max,household/max-35.jpg
 102,Max 60,Household,Max,household/max-35.jpg
@@ -111,17 +111,17 @@ id,product_name,category,brand,image_file_name
 121,Capri Soap,Personal Care,Capri,personal-care/capri-soap.jpg
 122,Lux Soap,Personal Care,Lux,personal-care/lux-soap.jpg
 123,Sufi Classic Soap,Personal Care,Sufi,personal-care/sufi-classic-soap.jpg
-124,Laar Soap,Personal Care,Laar,
-125,Door Soap,Personal Care,Door,
+124,Laar Soap,Personal Care,Laar,personal-care/laar-soap.jpg
+125,Door Soap,Personal Care,Door,personal-care/door-soap.jpg
 126,Dove Soap,Personal Care,Dove,personal-care/dove-soap.jpg
 127,Knorr Family Pack,Noodle and Macaronis,Knorr,noodle-and-macaronis/knor-noodles-chatpata.jfif
 128,Indomie Noodles,Noodle and Macaronis,Indomie,noodle-and-macaronis/indomi-noodles-1.jfif
-129,Aj Macroni,Noodle and Macaronis,AJ Brand,
+129,Aj Macroni,Noodle and Macaronis,AJ Brand,noodle-and-macaronis/aj-macaroni.jpg
 130,Bake Parlor,Noodle and Macaronis,Bake Parlor,noodle-and-macaronis/bake-parlor-spaghetti.jpg
 131,Mario,Noodle and Macaronis,Mario's,noodle-and-macaronis/mario-spaghetti.jpeg
 132,Elfin,Noodle and Macaronis,Elfin,noodle-and-macaronis/elfin-macaroni.jfif
 133,Golden Macroni Box,Noodle and Macaronis,Golden,noodle-and-macaronis/golden-macaroni.jfif
-134,Colourful Vermicelli,Noodle and Macaronis,AJ Brand,
+134,Colourful Vermicelli,Noodle and Macaronis,Golden,noodle-and-macaronis/golden-colourful-vermicelli.jpg
 135,Golden Pearl Healthy White Advance Care Lotion,Cosmetics,Golden Pearl,cosmetics/Golden-Pearl-Healthy-White-Body-Lotion-Deep-Moisture-_-Soft-Smooth-Skin-06.webp
 136,Golden Pearl Cocoa Touch Advance Care Lotion,Cosmetics,Golden Pearl,cosmetics/Golden-Pearl-Cocoa-Touch-Advance-Care-Moisturizing-Lotion-Cocoa-Butter-Shea-Butter-_-Deep-Hydration-Skin-Care.webp
 137,Golden Pearl Aloe Magic Advance Care Lotion,Cosmetics,Golden Pearl,cosmetics/Golden-Pearl-Aloe-Magic-Advance-Care-Moisturizing-Lotion-Aloe_Vera-Vitamins-B3-C-_-E-for-Deep-Hydration-_-Skin-Nourishment-05.webp
@@ -156,3 +156,4 @@ id,product_name,category,brand,image_file_name
 166,Golden Pearl Passion Legacy Edition Body Spray,Cosmetics,Golden Pearl,cosmetics/Passion-Body-Spray-03.webp
 167,Golden Pearl Urge Legacy Edition Body Spray,Cosmetics,Golden Pearl,cosmetics/Urge-Body-Spray-01.webp
 168,Golden Pearl Seduce Legacy Edition Body Spray,Cosmetics,Golden Pearl,cosmetics/Seduce-Body-Spray-01.webp
+169,Dhaniya Powder 200gm,Spices,AJ Brand,spices/khan-dhaniya-powder-200g.jpg
