@@ -6,10 +6,10 @@ import toast from 'react-hot-toast';
 
 const Contact = () => {
   const [settings, setSettings] = useState({
-    store_name: 'AJTraders',
+    store_name: 'AJMart',
     phone: '0335-7727555 / 0312-5637557',
     whatsapp_number: '923357727555',
-    email: 'info@ajtraders.pk',
+    email: 'info@ajmart.pk',
     address: 'Shop # V-488, Namak Mandi Chowk, Raja Bazar, Rawalpindi',
     working_hours: 'Mon - Sat: 9:00 AM - 10:00 PM, Sunday: Closed',
     owner_aqib: '0335-7727555',
@@ -40,13 +40,13 @@ const Contact = () => {
       return;
     }
 
-    const text = `Hello ${settings.store_name || 'AJTraders'}, my name is ${formData.name}${formData.phone ? ` (${formData.phone})` : ''}.\n\nMessage: ${formData.message}`;
+    const text = `Hello ${settings.store_name || 'AJMart'}, my name is ${formData.name}${formData.phone ? ` (${formData.phone})` : ''}.\n\nMessage: ${formData.message}`;
     const url = `https://wa.me/${settings.whatsapp_number}?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
     toast.success('Opening WhatsApp with your message!');
   };
 
-  const directWhatsAppUrl = `https://wa.me/${settings.whatsapp_number}?text=${encodeURIComponent(`Hello ${settings.store_name || 'AJTraders'}, I want to place a grocery order.`)}`;
+  const directWhatsAppUrl = `https://wa.me/${settings.whatsapp_number}?text=${encodeURIComponent(`Hello ${settings.store_name || 'AJMart'}, I want to place a grocery order.`)}`;
 
   return (
     <div className="space-y-12 max-w-6xl mx-auto">
@@ -71,7 +71,7 @@ const Contact = () => {
             <div className="relative group rounded-2xl overflow-hidden shadow-2xl border-4 border-white dark:border-zinc-700 bg-white dark:bg-zinc-900 transition-all duration-300 hover:scale-[1.03] hover:shadow-cyan/30">
               <img
                 src="/images/brand/ajtraders-visiting-card.jpg"
-                alt="AJ Traders Official Shop Card"
+                alt="AJMart Official Shop Card"
                 className="w-full max-w-md md:max-w-lg object-contain"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
@@ -188,7 +188,7 @@ const Contact = () => {
 
         <div className="w-full h-80 md:h-[420px] rounded-2xl overflow-hidden border border-lightBorder dark:border-darkBorder bg-gray-100 dark:bg-[#111] relative flex items-center justify-center shadow-inner">
           <iframe
-            title="AJTraders Location - Namak Mandi Rawalpindi"
+            title="AJMart Location - Namak Mandi Rawalpindi"
             src="https://maps.google.com/maps?q=AJ+Traders+Namak+Mandi+Chowk+Raja+Bazar+Rawalpindi&t=&z=16&ie=UTF8&iwloc=&output=embed"
             className="w-full h-full border-0 filter dark:contrast-125 dark:brightness-90"
             loading="lazy"
@@ -395,7 +395,7 @@ const Contact = () => {
                 Facebook
               </h4>
               <p className="text-xs text-lightTextSecondary dark:text-darkTextSecondary mt-1">
-                AJ Traders • Official page, community updates & deals
+                AJMart • Official page, community updates & deals
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-lightBorder/60 dark:border-darkBorder/60 flex items-center justify-between text-xs font-bold text-[#1877F2]">
@@ -443,7 +443,7 @@ const Contact = () => {
                 WhatsApp Channel
               </h4>
               <p className="text-xs text-lightTextSecondary dark:text-darkTextSecondary mt-1">
-                AJ Traders Broadcast • Live wholesale rates & bulk alerts
+                AJMart Broadcast • Live wholesale rates & bulk alerts
               </p>
             </div>
             <div className="mt-4 pt-3 border-t border-lightBorder/60 dark:border-darkBorder/60 flex items-center justify-between text-xs font-bold text-[#25D366]">

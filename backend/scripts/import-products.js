@@ -87,7 +87,7 @@ async function main() {
     });
 
     console.log(`\n==================================================`);
-    console.log(`📦 AJTraders Generic Product Importer`);
+    console.log(`📦 AJMart Generic Product Importer`);
     console.log(`📄 File: ${path.basename(resolvedCsvPath)} (${rows.length} rows read)`);
     console.log(`==================================================\n`);
 

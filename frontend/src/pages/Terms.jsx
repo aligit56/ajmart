@@ -20,7 +20,7 @@ const Terms = () => {
         <section className="space-y-2">
           <h2 className="text-xl font-bold text-lightText dark:text-darkText">1. Introduction</h2>
           <p>
-            Welcome to AJTraders. These Terms and Conditions govern your use of our website, services, and online grocery orders within Pakistan. By accessing our platform or placing an order, you agree to be bound by these terms.
+            Welcome to AJMart. These Terms and Conditions govern your use of our website, services, and online grocery orders within Pakistan. By accessing our platform or placing an order, you agree to be bound by these terms.
           </p>
         </section>
 
@@ -34,14 +34,14 @@ const Terms = () => {
         <section className="space-y-2">
           <h2 className="text-xl font-bold text-lightText dark:text-darkText">3. Pricing and Payments</h2>
           <p>
-            All prices listed on AJTraders are in Pakistani Rupees (PKR) and include applicable product costs. We reserve the right to modify prices based on wholesale market fluctuations. The price charged will be the confirmed price at the time of your order confirmation. Payments can be settled via Cash on Delivery (COD) or verified electronic bank transfer.
+            All prices listed on AJMart are in Pakistani Rupees (PKR) and include applicable product costs. We reserve the right to modify prices based on wholesale market fluctuations. The price charged will be the confirmed price at the time of your order confirmation. Payments can be settled via Cash on Delivery (COD) or verified electronic bank transfer.
           </p>
         </section>
 
         <section className="space-y-2">
           <h2 className="text-xl font-bold text-lightText dark:text-darkText">4. Delivery Policy</h2>
           <p>
-            Deliveries are conducted within Karachi and designated service areas. Delivery timeframes (standard next-day) are estimates. Delays caused by severe weather, traffic disruptions, or unforeseen events will be communicated to the customer at the earliest.
+            Deliveries are conducted within Rawalpindi & Islamabad and designated service areas. Delivery timeframes (standard next-day) are estimates. Delays caused by severe weather, traffic disruptions, or unforeseen events will be communicated to the customer at the earliest. Minimum order requirement is PKR 5,000.
           </p>
         </section>
 
@@ -62,7 +62,7 @@ const Terms = () => {
         <section className="space-y-2">
           <h2 className="text-xl font-bold text-lightText dark:text-darkText">7. Contact Information</h2>
           <p>
-            For questions regarding these Terms & Conditions, please contact us via WhatsApp at +92 300 1234567 or email at info@ajtraders.pk.
+            For questions regarding these Terms & Conditions, please contact us via WhatsApp at 0335-7727555 (Aqib) / 0312-5637557 (Junaid) or email at info@ajmart.pk.
           </p>
         </section>
       </div>

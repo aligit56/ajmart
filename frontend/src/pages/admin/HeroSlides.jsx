@@ -299,7 +299,7 @@ const HeroSlides = () => {
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Welcome to AJTraders"
+                  placeholder="e.g. Welcome to AJMart"
                   value={currentSlide.title}
                   onChange={(e) => setCurrentSlide({ ...currentSlide, title: e.target.value })}
                   className="input-field text-sm"

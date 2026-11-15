@@ -20,7 +20,7 @@ const Footer = () => {
 
   const whatsappNum = settings.whatsapp_number || '923357727555';
   const phone = settings.phone || '0335-7727555 / 0312-5637557';
-  const email = settings.email || 'info@ajtraders.pk';
+  const email = settings.email || 'info@ajmart.pk';
   const address = settings.address || 'Shop # V-488, Namak Mandi Chowk, Raja Bazar, Rawalpindi';
   const hours = settings.opening_hours || settings.working_hours || 'Mon-Sat: 9 AM - 10 PM, Sun: Closed';
   const googleMapsUrl = settings.google_maps_url || 'https://maps.google.com/maps?q=AJ+Traders+Namak+Mandi+Chowk+Raja+Bazar+Rawalpindi';
@@ -46,7 +46,7 @@ const Footer = () => {
                   maskPosition: 'center'
                 }}
               ></div>
-              <span className="font-extrabold tracking-tight">AJ<span className="text-lightBlue dark:text-aqua">Traders</span></span>
+              <span className="font-extrabold tracking-tight">AJ<span className="text-lightBlue dark:text-aqua">Mart</span></span>
             </Link>
             <p className="text-sm text-lightTextSecondary dark:text-darkTextSecondary leading-relaxed">
               Your trusted partner for fresh grocery staples, daily household essentials, and authentic branded goods with fast next-day delivery across Rawalpindi & Islamabad.
@@ -59,7 +59,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-full bg-lightBg dark:bg-[#1f1f1f] border border-lightBorder dark:border-[#333] flex items-center justify-center text-lightTextSecondary dark:text-darkTextSecondary hover:text-[#1877F2] hover:border-[#1877F2]/40 dark:hover:text-[#1877F2] transition-all hover:scale-110 shadow-sm"
                 aria-label="Facebook"
-                title="Follow AJTraders on Facebook"
+                title="Follow AJMart on Facebook"
               >
                 <FacebookIcon size={18} />
               </a>
@@ -70,7 +70,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-full bg-lightBg dark:bg-[#1f1f1f] border border-lightBorder dark:border-[#333] flex items-center justify-center text-lightTextSecondary dark:text-darkTextSecondary hover:text-[#E4405F] hover:border-[#E4405F]/40 dark:hover:text-[#E4405F] transition-all hover:scale-110 shadow-sm"
                 aria-label="Instagram"
-                title="Follow AJTraders on Instagram"
+                title="Follow AJMart on Instagram"
               >
                 <InstagramIcon size={18} />
               </a>
@@ -81,7 +81,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-full bg-lightBg dark:bg-[#1f1f1f] border border-lightBorder dark:border-[#333] flex items-center justify-center text-lightTextSecondary dark:text-darkTextSecondary hover:text-[#000000] dark:hover:text-white hover:border-black/40 dark:hover:border-white/40 transition-all hover:scale-110 shadow-sm"
                 aria-label="TikTok"
-                title="Watch AJTraders on TikTok"
+                title="Watch AJMart on TikTok"
               >
                 <TikTokIcon size={18} />
               </a>
@@ -99,7 +99,7 @@ const Footer = () => {
               </a>
 
               <a 
-                href={`https://wa.me/${whatsappNum}?text=Hello%20AJTraders,%20I%20want%20to%20order`}
+                href={`https://wa.me/${whatsappNum}?text=Hello%20AJMart,%20I%20want%20to%20order`}
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:bg-[#20ba5a] transition-all hover:scale-110 shadow-sm"
@@ -212,7 +212,7 @@ const Footer = () => {
           <div className="flex items-center gap-6">
             <Link to="/terms" className="hover:text-darkBlue dark:hover:text-cyan transition-colors">Terms of Service</Link>
             <Link to="/privacy" className="hover:text-darkBlue dark:hover:text-cyan transition-colors">Privacy Policy</Link>
-            <span>&copy; 2026 AJTraders. All rights reserved.</span>
+            <span>&copy; 2026 AJMart. All rights reserved.</span>
           </div>
         </div>
       </div>

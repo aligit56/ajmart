@@ -228,7 +228,7 @@ const Register = () => {
 
           {/* Privacy Note */}
           <p className="text-[11px] text-lightTextSecondary dark:text-darkTextSecondary leading-relaxed pt-1">
-            By creating an account, you agree to AJTraders{' '}
+            By creating an account, you agree to AJMart{' '}
             <Link to="/terms" className="text-darkBlue dark:text-cyan underline">Terms</Link> and{' '}
             <Link to="/privacy" className="text-darkBlue dark:text-cyan underline">Privacy Policy</Link>.
           </p>

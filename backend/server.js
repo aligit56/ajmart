@@ -33,7 +33,7 @@ const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_string_123';
 
 app.get('/', (req, res) => {
-    res.send('AJTraders Backend API is running!');
+    res.send('AJMart Backend API is running!');
 });
 
 // --- MIDDLEWARE ---
@@ -57,6 +57,23 @@ const isAdmin = (req, res, next) => {
     }
 };
 
+const optionalAuth = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) {
+        req.user = null;
+        return next();
+    }
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+        if (!err && decoded) {
+            req.user = decoded;
+        } else {
+            req.user = null;
+        }
+        next();
+    });
+};
+
 // --- AUTH ENDPOINTS ---
 app.post('/api/auth/register', (req, res) => {
     const { name, email, phone, address, password } = req.body;
@@ -74,7 +91,7 @@ app.post('/api/auth/register', (req, res) => {
                 return res.status(400).json({ error: err.message });
             }
             const userId = this.lastID;
-            const newUser = { id: userId, name: name.trim(), email: cleanEmail, phone: phone.trim(), address: address ? address.trim() : '', role: 'customer' };
+            const newUser = { id: userId, name: name.trim(), email: cleanEmail, phone: phone.trim(), address: address ? address.trim() : '', role: 'customer', points: 0 };
             const token = jwt.sign({ id: userId, role: 'customer' }, JWT_SECRET, { expiresIn: '24h' });
             res.status(201).json({ message: "Registration successful", token, user: newUser });
         });
@@ -102,7 +119,7 @@ app.post('/api/auth/login', (req, res) => {
 });
 
 app.get('/api/auth/profile', verifyToken, (req, res) => {
-    db.get(`SELECT id, name, email, phone, address, role, created_at FROM Users WHERE id = ?`, [req.user.id], (err, user) => {
+    db.get(`SELECT id, name, email, phone, address, role, points, created_at FROM Users WHERE id = ?`, [req.user.id], (err, user) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json(user);
     });
@@ -183,7 +200,12 @@ app.get('/api/products/search', (req, res) => {
     const query = req.query.q?.toLowerCase() || '';
     if (!query) return res.status(400).json({ error: 'Query required' });
     
-    db.all(`SELECT * FROM Products WHERE LOWER(name) LIKE ? AND is_active = 1`, [`%${query}%`], async (err, rows) => {
+    db.all(`
+        SELECT p.* FROM Products p
+        LEFT JOIN Categories c ON p.category_id = c.id
+        WHERE (LOWER(p.name) LIKE ? OR LOWER(c.name) LIKE ? OR LOWER(p.brand) LIKE ?)
+        AND p.is_active = 1
+    `, [`%${query}%`, `%${query}%`, `%${query}%`], async (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
         try {
             await attachGalleryImages(rows);
@@ -543,16 +565,22 @@ app.put('/api/settings', verifyToken, isAdmin, (req, res) => {
 });
 
 // --- ORDERS ENDPOINTS ---
-app.post('/api/orders', verifyToken, (req, res) => {
-    const { items, total_price, delivery_address, notes } = req.body;
-    const user_id = req.user.id;
+app.post('/api/orders', optionalAuth, (req, res) => {
+    const { items, total_price, delivery_address, notes, customer_name, customer_phone } = req.body;
+    const user_id = req.user ? req.user.id : null;
 
     if (!items || items.length === 0) return res.status(400).json({ error: "No items in order" });
 
+    // Points program: 50 points on every 2000 PKR for logged-in customers
+    let pointsEarned = 0;
+    if (user_id && total_price >= 2000) {
+        pointsEarned = Math.floor(total_price / 2000) * 50;
+    }
+
     db.serialize(() => {
         db.run('BEGIN TRANSACTION');
-        db.run(`INSERT INTO Orders (user_id, total_price, delivery_address, notes) VALUES (?, ?, ?, ?)`,
-            [user_id, total_price, delivery_address, notes], function(err) {
+        db.run(`INSERT INTO Orders (user_id, total_price, delivery_address, notes, customer_name, customer_phone) VALUES (?, ?, ?, ?, ?, ?)`,
+            [user_id, total_price, delivery_address, notes, customer_name || (req.user ? req.user.name : null), customer_phone || (req.user ? req.user.phone : null)], function(err) {
                 if (err) {
                     db.run('ROLLBACK');
                     return res.status(400).json({ error: err.message });
@@ -563,31 +591,106 @@ app.post('/api/orders', verifyToken, (req, res) => {
                     stmt.run([order_id, item.product_id, item.quantity, item.price, item.variant_name || null]);
                 });
                 stmt.finalize();
+
+                // Award points to authenticated user
+                if (user_id && pointsEarned > 0) {
+                    db.run(`UPDATE Users SET points = COALESCE(points, 0) + ? WHERE id = ?`, [pointsEarned, user_id]);
+                }
+
                 db.run('COMMIT');
-                res.status(201).json({ message: "Order placed successfully", order_id });
+                res.status(201).json({ 
+                    message: "Order placed successfully", 
+                    order_id, 
+                    pointsEarned,
+                    guest: !user_id 
+                });
             });
     });
 });
 
+// Helper: attach items to orders
+const attachOrderItems = (orders) => {
+    return new Promise((resolve, reject) => {
+        if (!orders || orders.length === 0) return resolve(orders);
+        const orderIds = orders.map(o => o.id);
+        const placeholders = orderIds.map(() => '?').join(',');
+        db.all(
+            `SELECT OrderItems.*, Products.name as product_name, Products.image_url, Products.brand
+             FROM OrderItems 
+             LEFT JOIN Products ON OrderItems.product_id = Products.id 
+             WHERE OrderItems.order_id IN (${placeholders})`,
+            orderIds,
+            (err, items) => {
+                if (err) return reject(err);
+                const itemsByOrder = {};
+                (items || []).forEach(item => {
+                    if (!itemsByOrder[item.order_id]) itemsByOrder[item.order_id] = [];
+                    itemsByOrder[item.order_id].push(item);
+                });
+                orders.forEach(o => {
+                    o.items = itemsByOrder[o.id] || [];
+                });
+                resolve(orders);
+            }
+        );
+    });
+};
+
 app.get('/api/orders', verifyToken, isAdmin, (req, res) => {
-    db.all(`SELECT Orders.*, Users.name as user_name, Users.phone FROM Orders LEFT JOIN Users ON Orders.user_id = Users.id ORDER BY Orders.created_at DESC`, [], (err, rows) => {
+    db.all(`
+        SELECT Orders.*, 
+               COALESCE(Users.name, Orders.customer_name, 'Guest Customer') as customer_name,
+               COALESCE(Users.name, Orders.customer_name, 'Guest Customer') as user_name,
+               COALESCE(Users.phone, Orders.customer_phone, 'N/A') as customer_phone,
+               COALESCE(Users.phone, Orders.customer_phone, 'N/A') as phone,
+               Users.email as customer_email,
+               CASE WHEN Orders.user_id IS NOT NULL THEN 1 ELSE 0 END as is_registered
+        FROM Orders 
+        LEFT JOIN Users ON Orders.user_id = Users.id 
+        ORDER BY Orders.created_at DESC
+    `, [], async (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.json(rows);
+        try {
+            await attachOrderItems(rows);
+            res.json(rows);
+        } catch (e) {
+            res.status(500).json({ error: e.message });
+        }
     });
 });
 
 app.get('/api/orders/me', verifyToken, (req, res) => {
-    db.all(`SELECT * FROM Orders WHERE user_id = ? ORDER BY created_at DESC`, [req.user.id], (err, rows) => {
+    db.all(`SELECT * FROM Orders WHERE user_id = ? ORDER BY created_at DESC`, [req.user.id], async (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.json(rows);
+        try {
+            await attachOrderItems(rows);
+            res.json(rows);
+        } catch (e) {
+            res.status(500).json({ error: e.message });
+        }
     });
 });
 
 app.put('/api/orders/:id/status', verifyToken, isAdmin, (req, res) => {
     const { status } = req.body;
+    if (!status) return res.status(400).json({ error: "Status is required" });
     db.run(`UPDATE Orders SET status = ? WHERE id = ?`, [status, req.params.id], function(err) {
         if (err) return res.status(400).json({ error: err.message });
-        res.json({ message: "Order status updated" });
+        res.json({ message: "Order status updated successfully", status });
+    });
+});
+
+app.put('/api/orders/:id/cancel', verifyToken, (req, res) => {
+    db.get(`SELECT * FROM Orders WHERE id = ? AND user_id = ?`, [req.params.id, req.user.id], (err, order) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!order) return res.status(404).json({ error: "Order not found" });
+        if (order.status !== 'Pending') {
+            return res.status(400).json({ error: "Only Pending orders can be cancelled directly. Please contact Aqib on WhatsApp." });
+        }
+        db.run(`UPDATE Orders SET status = 'Cancelled' WHERE id = ?`, [req.params.id], function(updateErr) {
+            if (updateErr) return res.status(500).json({ error: updateErr.message });
+            res.json({ message: "Order cancelled successfully" });
+        });
     });
 });
 

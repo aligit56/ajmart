@@ -109,7 +109,7 @@ const Login = () => {
                 Password
               </label>
               <a
-                href="https://wa.me/923357727555?text=Hello%20AJTraders,%20I%20need%20help%20recovering%20my%20account%20password."
+                href="https://wa.me/923357727555?text=Hello%20AJMart,%20I%20need%20help%20recovering%20my%20account%20password."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs font-semibold text-darkBlue dark:text-cyan hover:underline"
@@ -179,7 +179,7 @@ const Login = () => {
           <div className="grid grid-cols-2 gap-2 text-xs">
             <button
               type="button"
-              onClick={() => fillDemoCredentials('admin@ajtraders.pk', 'admin123')}
+              onClick={() => fillDemoCredentials('admin@ajmart.pk', 'admin123')}
               className="py-2 px-3 rounded-xl border border-lightBorder dark:border-[#333] hover:border-darkBlue dark:hover:border-cyan text-lightText dark:text-darkText flex items-center justify-center gap-1.5 transition-colors font-medium bg-lightBg/50 dark:bg-[#1f1f1f]"
             >
               <ShieldCheck size={14} className="text-darkBlue dark:text-cyan" />
@@ -187,7 +187,7 @@ const Login = () => {
             </button>
             <button
               type="button"
-              onClick={() => fillDemoCredentials('customer@ajtraders.pk', 'customer123')}
+              onClick={() => fillDemoCredentials('customer@ajmart.pk', 'customer123')}
               className="py-2 px-3 rounded-xl border border-lightBorder dark:border-[#333] hover:border-darkBlue dark:hover:border-cyan text-lightText dark:text-darkText flex items-center justify-center gap-1.5 transition-colors font-medium bg-lightBg/50 dark:bg-[#1f1f1f]"
             >
               <UserCheck size={14} className="text-green-600 dark:text-green-400" />

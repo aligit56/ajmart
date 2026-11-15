@@ -20,7 +20,7 @@ const FloatingWhatsApp = () => {
   // Hide on checkout page to avoid blocking Place Order button
   if (location.pathname === '/checkout') return null;
 
-  const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hello AJTraders, I want to order')}`;
+  const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hello AJMart, I want to order')}`;
 
   return (
     <a

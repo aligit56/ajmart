@@ -31,7 +31,7 @@ const TrustStrip = () => {
         {/* Section Header */}
         <div className="text-center max-w-xl mx-auto space-y-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-darkBlue/10 dark:bg-cyan/15 text-darkBlue dark:text-cyan text-xs font-bold uppercase tracking-wider">
-            <Sparkles size={13} /> Why Choose AJTraders
+            <Sparkles size={13} /> Why Choose AJMart
           </div>
           <h2 className="text-2xl md:text-3xl font-black text-lightText dark:text-darkText tracking-tight">
             Our Service & Quality Guarantees

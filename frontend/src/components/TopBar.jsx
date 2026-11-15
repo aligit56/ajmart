@@ -7,21 +7,21 @@ import api from '../api/axios';
 const PROMOTIONS = [
   {
     icon: Truck,
-    badge: 'FREE DELIVERY',
-    text: 'Free delivery on grocery orders over PKR 5,000 across Rawalpindi & Islamabad!',
-    link: '/offers'
-  },
-  {
-    icon: Sparkles,
-    badge: 'WHOLESALE RATES',
-    text: 'Special wholesale sack rates on Dalen, Premium Rice & Spices — Direct from Namak Mandi!',
+    badge: 'MIN ORDER PKR 5,000',
+    text: 'Minimum order of PKR 5,000 required for doorstep delivery across Rawalpindi & Islamabad',
     link: '/products'
   },
   {
+    icon: Sparkles,
+    badge: '50 REWARD POINTS',
+    text: 'Sign in & earn 50 reward points on every PKR 2,000 spent on grocery & wholesale!',
+    link: '/login'
+  },
+  {
     icon: Tag,
-    badge: 'SPECIAL OFFERS',
-    text: 'Save up to 15% on family ration bundles & daily household essentials!',
-    link: '/offers'
+    badge: 'WHOLESALE RATES',
+    text: 'Special wholesale sack rates on Dalen, Premium Rice & Spices — Direct from Namak Mandi!',
+    link: '/products'
   }
 ];
 
@@ -114,7 +114,7 @@ const TopBar = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-6 h-6 rounded-full flex items-center justify-center text-lightTextSecondary dark:text-darkTextSecondary hover:text-[#1877F2] hover:bg-[#1877F2]/10 transition-all"
-                title="Follow AJTraders on Facebook"
+                title="Follow AJMart on Facebook"
                 aria-label="Facebook"
               >
                 <FacebookIcon size={14} />
@@ -125,7 +125,7 @@ const TopBar = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-6 h-6 rounded-full flex items-center justify-center text-lightTextSecondary dark:text-darkTextSecondary hover:text-[#E4405F] hover:bg-[#E4405F]/10 transition-all"
-                title="Follow AJTraders on Instagram"
+                title="Follow AJMart on Instagram"
                 aria-label="Instagram"
               >
                 <InstagramIcon size={14} />
@@ -136,7 +136,7 @@ const TopBar = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-6 h-6 rounded-full flex items-center justify-center text-lightTextSecondary dark:text-darkTextSecondary hover:text-black dark:hover:text-white transition-all"
-                title="Watch AJTraders on TikTok"
+                title="Watch AJMart on TikTok"
                 aria-label="TikTok"
               >
                 <TikTokIcon size={14} />
@@ -147,7 +147,7 @@ const TopBar = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="h-6 px-2 rounded-full flex items-center gap-1 font-bold text-[11px] text-[#25D366] hover:bg-[#25D366]/10 transition-all"
-                title="Join AJTraders WhatsApp Channel"
+                title="Join AJMart WhatsApp Channel"
                 aria-label="WhatsApp Channel"
               >
                 <WhatsAppIcon size={13} />

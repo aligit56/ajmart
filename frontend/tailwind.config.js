@@ -1,3 +1,5 @@
+import colors from 'tailwindcss/colors';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
@@ -13,14 +15,17 @@ export default {
         darkBorder: '#333333',
         
         // Light mode colors
-        lightBg: '#ffffff',
-        lightCard: '#f5f5f5',
-        lightText: '#1a1a1a',
-        lightTextSecondary: '#666666',
-        lightBorder: '#e0e0e0',
+        lightBg: '#f8fafc',
+        lightCard: '#ffffff',
+        lightText: '#0f172a',
+        lightTextSecondary: '#64748b',
+        lightBorder: '#e2e8f0',
         
         // Accents (both modes)
-        cyan: '#00d9ff',
+        cyan: {
+          DEFAULT: '#00d9ff',
+          ...colors.cyan,
+        },
         aqua: '#64ffda',
         darkBlue: '#0066cc',
         lightBlue: '#0099ff',

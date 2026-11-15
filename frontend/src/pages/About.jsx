@@ -5,7 +5,7 @@ import { ShieldCheck, Truck, Clock, HeartHandshake, Users, Package, MapPin, Spar
 
 const About = () => {
   const [settings, setSettings] = useState({
-    store_name: 'AJTraders',
+    store_name: 'AJMart',
     happy_customers: '1000+',
     products_count: '150+',
     delivery_areas: 'Rawalpindi & Islamabad'
@@ -29,7 +29,7 @@ const About = () => {
           <Sparkles size={13} /> Our Journey & Promise
         </div>
         <h1 className="text-3xl md:text-5xl font-black text-lightText dark:text-darkText tracking-tight">
-          About {settings.store_name || 'AJTraders'}
+          About {settings.store_name || 'AJMart'}
         </h1>
         <p className="text-base md:text-lg text-lightTextSecondary dark:text-darkTextSecondary max-w-2xl mx-auto leading-relaxed">
           Delivering premium unadulterated groceries, staple grains, household essentials, and authentic personal care products right to your home across {settings.delivery_areas || 'Rawalpindi & Islamabad'}.
@@ -43,7 +43,7 @@ const About = () => {
             Our Story & Heritage
           </h2>
           <p className="text-sm md:text-base text-lightTextSecondary dark:text-darkTextSecondary leading-relaxed">
-            Headquartered in the historic wholesale heart of Rawalpindi at <strong>Namak Mandi Chowk, Raja Bazar</strong>, AJTraders was founded to make pure, authentic grocery staples accessible at genuine wholesale pricing.
+            Headquartered in the historic wholesale heart of Rawalpindi at <strong>Namak Mandi Chowk, Raja Bazar</strong>, AJMart was founded to make pure, authentic grocery staples accessible at genuine wholesale pricing.
           </p>
           <p className="text-sm md:text-base text-lightTextSecondary dark:text-darkTextSecondary leading-relaxed">
             We source straight from certified mills and premier agricultural distributors. Every single batch of pulses, aged basmati rice, gram flour (baison), and spices is meticulously sifted, cleaned, and packed to ensure 100% purity and unmatched freshness.
@@ -66,7 +66,7 @@ const About = () => {
         <div className="rounded-2xl overflow-hidden border border-lightBorder dark:border-darkBorder shadow-md relative aspect-video md:aspect-square bg-gray-100 dark:bg-[#111] flex items-center justify-center p-2 bg-gradient-to-br from-zinc-50 to-zinc-200 dark:from-zinc-900 dark:to-zinc-950">
           <img
             src="/images/brand/ajtraders-visiting-card.jpg"
-            alt="AJTraders Official Store Card"
+            alt="AJMart Official Store Card"
             className="w-full h-full object-contain rounded-xl shadow-lg hover:scale-105 transition-transform duration-300"
             onError={(e) => {
               e.target.onerror = null;
@@ -75,7 +75,7 @@ const About = () => {
           />
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end p-4 rounded-b-2xl">
             <span className="text-white text-xs md:text-sm font-bold tracking-wide">
-              {settings.store_name || 'AJTraders'} • Namak Mandi, Raja Bazar, Rawalpindi Hub
+              {settings.store_name || 'AJMart'} • Namak Mandi, Raja Bazar, Rawalpindi Hub
             </span>
           </div>
         </div>

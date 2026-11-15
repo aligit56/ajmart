@@ -5,13 +5,13 @@ import toast from 'react-hot-toast';
 
 const SettingsAdmin = () => {
   const [settings, setSettings] = useState({
-    store_name: 'AJTraders',
+    store_name: 'AJMart',
     phone: '0335-7727555 / 0312-5637557',
     whatsapp_number: '923357727555',
-    email: 'info@ajtraders.pk',
+    email: 'info@ajmart.pk',
     address: 'Shop # V-488, Namak Mandi Chowk, Raja Bazar, Rawalpindi',
     working_hours: 'Mon - Sat: 9:00 AM - 10:00 PM, Sunday: Closed',
-    announcement_bar_text: 'Free delivery on wholesale & retail grocery orders over PKR 3,000 across Rawalpindi & Islamabad!',
+    announcement_bar_text: 'Minimum order of PKR 5,000 required for doorstep delivery across Rawalpindi & Islamabad',
     happy_customers: '1000+',
     products_count: '150+',
     delivery_areas: 'Rawalpindi & Islamabad',
@@ -260,7 +260,7 @@ const SettingsAdmin = () => {
               </label>
               <input
                 type="text"
-                placeholder="Free delivery on orders over PKR 3,000 across Karachi!"
+                placeholder="Minimum order of PKR 5,000 required for doorstep delivery across Rawalpindi & Islamabad"
                 value={settings.announcement_bar_text}
                 onChange={(e) => handleChange('announcement_bar_text', e.target.value)}
                 className="input-field text-sm"

@@ -68,10 +68,17 @@ const Cart = () => {
               <span className="text-lightTextSecondary dark:text-darkTextSecondary">Delivery</span>
               <span>Calculated on WhatsApp</span>
             </div>
-            <div className="flex justify-between items-center border-t border-lightBorder dark:border-darkBorder pt-4 mb-6">
+            <div className="flex justify-between items-center border-t border-lightBorder dark:border-darkBorder pt-4 mb-4">
               <span className="font-bold">Total</span>
               <span className="text-2xl font-bold text-lightBlue dark:text-aqua">Rs {cartTotal}</span>
             </div>
+
+            {cartTotal < 5000 && (
+              <div className="text-xs font-semibold text-amber-700 dark:text-amber-300 bg-amber-500/10 rounded-xl p-3 mb-4 border border-amber-500/25">
+                ⚠️ <strong>Minimum Order:</strong> PKR 5,000 required for doorstep delivery across Rawalpindi & Islamabad. Add <strong>PKR {(5000 - cartTotal).toLocaleString()}</strong> more.
+              </div>
+            )}
+
             <button 
               onClick={() => navigate('/checkout')}
               className="btn-primary w-full text-center"

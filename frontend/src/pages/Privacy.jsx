@@ -20,7 +20,7 @@ const Privacy = () => {
         <section className="space-y-2">
           <h2 className="text-xl font-bold text-lightText dark:text-darkText">1. Information We Collect</h2>
           <p>
-            When you register, place an order, or reach out to AJTraders, we collect necessary contact information including your full name, phone number, delivery address, and order preferences.
+            When you register, place an order, or reach out to AJMart, we collect necessary contact information including your full name, phone number, delivery address, and order preferences.
           </p>
         </section>
 
@@ -40,7 +40,7 @@ const Privacy = () => {
         <section className="space-y-2">
           <h2 className="text-xl font-bold text-lightText dark:text-darkText">3. Information Sharing and Disclosure</h2>
           <p>
-            We respect your privacy. AJTraders does NOT sell, rent, or trade your personal information to third parties or marketing brokers. We only share necessary delivery information (name, address, contact number) with our trusted delivery riders for the sole purpose of delivering your order.
+            We respect your privacy. AJMart does NOT sell, rent, or trade your personal information to third parties or marketing brokers. We only share necessary delivery information (name, address, contact number) with our trusted delivery riders for the sole purpose of delivering your order.
           </p>
         </section>
 
@@ -61,7 +61,7 @@ const Privacy = () => {
         <section className="space-y-2">
           <h2 className="text-xl font-bold text-lightText dark:text-darkText">6. Contacting Us</h2>
           <p>
-            If you have questions about your privacy or wish to delete your account data, please contact our support desk at info@ajtraders.pk or message us on WhatsApp.
+            If you have questions about your privacy or wish to delete your account data, please contact our support desk at info@ajmart.pk or message us on WhatsApp.
           </p>
         </section>
       </div>

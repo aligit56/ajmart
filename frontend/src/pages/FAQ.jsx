@@ -9,8 +9,8 @@ const FAQS = [
     a: 'You can easily place an order in two ways:\n1. Online: Browse our website, add products to your cart, proceed to checkout, and fill in your delivery details.\n2. WhatsApp: Click the WhatsApp button anywhere on the website or message us directly with your list of grocery items. Our team will promptly confirm availability and schedule delivery.'
   },
   {
-    q: 'What are the delivery charges and times?',
-    a: 'We offer standard next-day delivery across Rawalpindi & Islamabad. Orders placed before 6:00 PM are delivered the following day. Delivery fees vary from PKR 150 - 250 depending on your area, and orders above PKR 3,000 qualify for free standard delivery.'
+    q: 'What are the delivery charges and minimum order requirement?',
+    a: 'We require a minimum order of PKR 5,000 for doorstep grocery and wholesale deliveries across Rawalpindi & Islamabad. Orders placed before 6:00 PM are dispatched for next-day delivery. Standard delivery charges apply based on your sector/location and will be confirmed on WhatsApp.'
   },
   {
     q: 'Can I pay with Cash on Delivery?',
@@ -22,7 +22,7 @@ const FAQS = [
   },
   {
     q: 'Are the prices the same as in-store?',
-    a: 'Yes, all our prices online match our wholesale in-store rates. We believe in complete pricing transparency with no hidden markups, giving you the best possible grocery prices in Karachi.'
+    a: 'Yes, all our prices online match our wholesale in-store rates in Namak Mandi, Raja Bazar. We believe in complete pricing transparency with no hidden markups, giving you the best possible grocery prices across Rawalpindi & Islamabad.'
   }
 ];
 
@@ -44,7 +44,7 @@ const FAQ = () => {
           Frequently Asked Questions
         </h1>
         <p className="text-sm md:text-base text-lightTextSecondary dark:text-darkTextSecondary max-w-lg mx-auto">
-          Everything you need to know about ordering, delivery, payments, and product guarantees at AJTraders.
+          Everything you need to know about ordering, delivery, payments, and product guarantees at AJMart.
         </p>
       </div>
 

@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-do
 import { 
   ShoppingCart, Search, Menu, X, User, Sun, Moon, 
   ChevronDown, Phone, Tag, Info, Grid, Home as HomeIcon,
-  Package, ShieldCheck, LogOut, LogIn, UserPlus
+  Package, ShieldCheck, LogOut, LogIn, UserPlus, Sparkles
 } from 'lucide-react';
 import TopBar from './TopBar';
 import { WhatsAppIcon, TikTokIcon, FacebookIcon, InstagramIcon } from './SocialIcons';
@@ -115,7 +115,7 @@ const Header = () => {
     return false;
   };
 
-  const whatsappNum = settings.whatsapp_number || '923001234567';
+  const whatsappNum = settings.whatsapp_number || settings.owner_aqib?.replace(/\D/g, '') || '923357727555';
 
   return (
     <>
@@ -154,7 +154,7 @@ const Header = () => {
                   maskPosition: 'center'
                 }}
               ></div>
-              <span className="font-extrabold tracking-tight">AJ<span className="text-lightBlue dark:text-aqua">Traders</span></span>
+              <span className="font-extrabold tracking-tight">AJ<span className="text-lightBlue dark:text-aqua">Mart</span></span>
             </Link>
 
             {/* Desktop Navigation Links */}
@@ -354,18 +354,26 @@ const Header = () => {
                         <div className="px-4 py-2 border-b border-lightBorder dark:border-[#2a2a2a]">
                           <div className="font-bold text-sm text-lightText dark:text-darkText truncate">{user.name}</div>
                           <div className="text-xs text-lightTextSecondary dark:text-darkTextSecondary truncate">{user.email}</div>
-                          <div className="mt-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-darkBlue/10 dark:bg-cyan/15 text-darkBlue dark:text-cyan">
-                            {user.role === 'admin' ? (
-                              <>
-                                <ShieldCheck size={11} />
-                                <span>Administrator</span>
-                              </>
-                            ) : (
-                              <>
-                                <User size={11} />
-                                <span>Verified Customer</span>
-                              </>
-                            )}
+                          <div className="mt-1.5 flex items-center justify-between gap-2">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-darkBlue/10 dark:bg-cyan/15 text-darkBlue dark:text-cyan">
+                              {user.role === 'admin' ? (
+                                <>
+                                  <ShieldCheck size={11} />
+                                  <span>Administrator</span>
+                                </>
+                              ) : (
+                                <>
+                                  <User size={11} />
+                                  <span>Verified Customer</span>
+                                </>
+                              )}
+                            </span>
+
+                            {/* Customer Reward Points Display */}
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-black bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20" title="AJMart Customer Points">
+                              <Sparkles size={11} />
+                              <span>{user.points || 0} pts</span>
+                            </span>
                           </div>
                         </div>
 
@@ -485,7 +493,7 @@ const Header = () => {
             {/* Drawer Header */}
             <div className="p-4 border-b border-lightBorder dark:border-[#2a2a2a] flex items-center justify-between">
               <Link to="/" onClick={() => setIsMobileDrawerOpen(false)} className="text-xl font-bold text-darkBlue dark:text-cyan flex items-center gap-2">
-                <span>AJ<span className="text-lightBlue dark:text-aqua">Traders</span></span>
+                <span>AJ<span className="text-lightBlue dark:text-aqua">Mart</span></span>
               </Link>
               <button 
                 onClick={() => setIsMobileDrawerOpen(false)}
@@ -594,7 +602,7 @@ const Header = () => {
 
               {/* Direct WhatsApp Action Link */}
               <a 
-                href={`https://wa.me/${whatsappNum}?text=Hello%20AJTraders,%20I%20want%20to%20order`}
+                href={`https://wa.me/${whatsappNum}?text=Hello%20AJMart,%20I%20want%20to%20order`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#25D366] hover:bg-green-50 dark:hover:bg-green-950/20 font-semibold transition-colors"
@@ -623,7 +631,7 @@ const Header = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-8 h-8 rounded-full bg-lightBg dark:bg-[#222] border border-lightBorder dark:border-[#333] flex items-center justify-center text-lightTextSecondary hover:text-[#1877F2]"
-                    title="Facebook"
+                    title="Follow AJMart on Facebook"
                   >
                     <FacebookIcon size={15} />
                   </a>
@@ -632,7 +640,7 @@ const Header = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-8 h-8 rounded-full bg-lightBg dark:bg-[#222] border border-lightBorder dark:border-[#333] flex items-center justify-center text-lightTextSecondary hover:text-[#E4405F]"
-                    title="Instagram"
+                    title="Follow AJMart on Instagram"
                   >
                     <InstagramIcon size={15} />
                   </a>
@@ -641,7 +649,7 @@ const Header = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-8 h-8 rounded-full bg-lightBg dark:bg-[#222] border border-lightBorder dark:border-[#333] flex items-center justify-center text-lightTextSecondary hover:text-black dark:hover:text-white"
-                    title="TikTok"
+                    title="Watch AJMart on TikTok"
                   >
                     <TikTokIcon size={15} />
                   </a>
@@ -650,7 +658,7 @@ const Header = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="h-8 px-2.5 rounded-full bg-lightBg dark:bg-[#222] border border-lightBorder dark:border-[#333] flex items-center gap-1 text-[11px] font-bold text-[#25D366]"
-                    title="WhatsApp Channel"
+                    title="Join AJMart WhatsApp Channel"
                   >
                     <WhatsAppIcon size={14} />
                     <span>Channel</span>
@@ -663,7 +671,12 @@ const Header = () => {
             <div className="p-4 border-t border-lightBorder dark:border-[#2a2a2a] bg-lightBg/50 dark:bg-[#111]">
               {user ? (
                 <div className="space-y-2">
-                  <div className="text-xs text-lightTextSecondary dark:text-darkTextSecondary">Signed in as:</div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-lightTextSecondary dark:text-darkTextSecondary">Signed in as:</span>
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                      <Sparkles size={10} /> {user.points || 0} pts
+                    </span>
+                  </div>
                   <div className="font-bold text-darkBlue dark:text-cyan truncate">{user.name}</div>
                   <div className="flex gap-2 pt-2">
                     <Link

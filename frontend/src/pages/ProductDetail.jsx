@@ -241,8 +241,10 @@ const ProductDetail = () => {
           </div>
 
           <div className="text-lightText dark:text-[#e0e0e0] mb-8 flex-grow">
-            <h4 className="bg-darkBlue dark:bg-[#1a1a1a] text-white px-3 py-2 text-sm font-bold uppercase tracking-wider rounded-t-md">Product Description</h4>
-            <div className="whitespace-pre-wrap text-[15px] leading-relaxed border border-lightBorder dark:border-darkBorder p-4 rounded-b-md bg-white dark:bg-[#0a0a0a]">
+            <h4 className="bg-darkBlue dark:bg-[#222] text-white dark:text-cyan px-4 py-2.5 text-xs font-black uppercase tracking-wider rounded-t-xl border-t border-x border-darkBlue dark:border-darkBorder flex items-center justify-between">
+              <span>Product Description</span>
+            </h4>
+            <div className="whitespace-pre-wrap text-sm leading-relaxed border border-lightBorder dark:border-darkBorder p-4 rounded-b-xl bg-white dark:bg-[#111] shadow-2xs">
               {product.description || 'No description available.'}
             </div>
           </div>

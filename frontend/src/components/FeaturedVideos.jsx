@@ -81,7 +81,7 @@ const FeaturedVideos = () => {
 
                 <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-white/95">
                   <span className="bg-black/70 px-2.5 py-0.5 rounded-md backdrop-blur-xs font-medium text-[11px]">
-                    AJTraders Store
+                    AJMart Store
                   </span>
                   <span className="bg-darkBlue dark:bg-cyan text-white dark:text-black font-extrabold px-2 py-0.5 rounded-md text-[10px] shadow-sm">
                     WATCH VIDEO
