@@ -2,8 +2,11 @@ import React, { useContext, useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { 
   ShoppingCart, Search, Menu, X, User, Sun, Moon, 
-  ChevronDown, Phone, Tag, Info, Grid, Home as HomeIcon, MessageCircle
+  ChevronDown, Phone, Tag, Info, Grid, Home as HomeIcon,
+  Package, ShieldCheck, LogOut, LogIn, UserPlus
 } from 'lucide-react';
+import TopBar from './TopBar';
+import { WhatsAppIcon, TikTokIcon, FacebookIcon, InstagramIcon } from './SocialIcons';
 import { CartContext } from '../context/CartContext';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
@@ -23,6 +26,7 @@ const Header = () => {
   // Dropdown states for Desktop
   const [isProductsDropdownOpen, setIsProductsDropdownOpen] = useState(false);
   const [isCategoriesMegaMenuOpen, setIsCategoriesMegaMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   
   // Mobile accordion state
   const [isMobileCategoriesOpen, setIsMobileCategoriesOpen] = useState(false);
@@ -34,6 +38,7 @@ const Header = () => {
 
   const productsRef = useRef(null);
   const categoriesRef = useRef(null);
+  const userMenuRef = useRef(null);
 
   // Fetch categories & settings once
   useEffect(() => {
@@ -61,6 +66,7 @@ const Header = () => {
     setIsMobileSearchOpen(false);
     setIsProductsDropdownOpen(false);
     setIsCategoriesMegaMenuOpen(false);
+    setIsUserMenuOpen(false);
   }, [location.pathname]);
 
   // Click outside listener for dropdowns
@@ -71,6 +77,9 @@ const Header = () => {
       }
       if (categoriesRef.current && !categoriesRef.current.contains(e.target)) {
         setIsCategoriesMegaMenuOpen(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setIsUserMenuOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -113,6 +122,9 @@ const Header = () => {
       <header className={`bg-lightCard dark:bg-[#121212] border-b border-lightBorder dark:border-[#2a2a2a] sticky top-0 z-50 transition-all duration-200 ${
         isScrolled ? 'shadow-md dark:shadow-black/50' : ''
       }`}>
+        {/* Floating Top Announcement Bar with Promotions & Social Links */}
+        <TopBar />
+
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="flex items-center justify-between h-16 md:h-20 gap-2 md:gap-4">
             
@@ -320,19 +332,107 @@ const Header = () => {
                 {isDarkMode ? <Sun size={20} className="text-amber-400" /> : <Moon size={20} />}
               </button>
               
-              {/* Login / User Link */}
-              <div className="hidden sm:flex items-center text-sm">
+              {/* User Account Menu */}
+              <div className="hidden sm:flex items-center text-sm relative" ref={userMenuRef}>
                 {user ? (
-                  <div className="flex items-center gap-2">
-                    <Link to={user.role === 'admin' ? '/admin' : '/orders'} className="font-semibold text-darkBlue dark:text-cyan hover:underline flex items-center gap-1.5 px-2 py-1 rounded">
-                      <User size={16}/> {user.name.split(' ')[0]}
-                    </Link>
-                    <button onClick={handleLogout} className="text-xs text-lightTextSecondary dark:text-darkTextSecondary hover:text-error-light dark:hover:text-error-dark">Logout</button>
+                  <div>
+                    <button
+                      onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                      className="flex items-center gap-2 py-1.5 px-3 rounded-full border border-lightBorder dark:border-[#333] hover:border-darkBlue dark:hover:border-cyan bg-lightBg/60 dark:bg-[#1a1a1a] transition-all font-semibold text-xs text-lightText dark:text-darkText shadow-2xs"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-darkBlue dark:bg-cyan text-white dark:text-black flex items-center justify-center text-xs font-black">
+                        {user.name.charAt(0).toUpperCase()}
+                      </div>
+                      <span className="max-w-[100px] truncate">{user.name.split(' ')[0]}</span>
+                      <ChevronDown size={13} className={`transition-transform duration-200 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    {/* User Dropdown Menu */}
+                    {isUserMenuOpen && (
+                      <div className="absolute right-0 top-full mt-2 w-64 bg-lightCard dark:bg-[#181818] border border-lightBorder dark:border-[#333] rounded-2xl shadow-2xl py-3 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                        {/* Profile Header */}
+                        <div className="px-4 py-2 border-b border-lightBorder dark:border-[#2a2a2a]">
+                          <div className="font-bold text-sm text-lightText dark:text-darkText truncate">{user.name}</div>
+                          <div className="text-xs text-lightTextSecondary dark:text-darkTextSecondary truncate">{user.email}</div>
+                          <div className="mt-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-darkBlue/10 dark:bg-cyan/15 text-darkBlue dark:text-cyan">
+                            {user.role === 'admin' ? (
+                              <>
+                                <ShieldCheck size={11} />
+                                <span>Administrator</span>
+                              </>
+                            ) : (
+                              <>
+                                <User size={11} />
+                                <span>Verified Customer</span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Menu Actions */}
+                        <div className="py-1 text-xs font-semibold">
+                          {user.role === 'admin' && (
+                            <Link
+                              to="/admin"
+                              onClick={() => setIsUserMenuOpen(false)}
+                              className="flex items-center gap-2.5 px-4 py-2.5 text-lightText dark:text-darkText hover:bg-lightBg dark:hover:bg-[#252525] transition-colors"
+                            >
+                              <ShieldCheck size={15} className="text-darkBlue dark:text-cyan" />
+                              <span>Admin Dashboard</span>
+                            </Link>
+                          )}
+
+                          <Link
+                            to="/orders"
+                            onClick={() => setIsUserMenuOpen(false)}
+                            className="flex items-center gap-2.5 px-4 py-2.5 text-lightText dark:text-darkText hover:bg-lightBg dark:hover:bg-[#252525] transition-colors"
+                          >
+                            <Package size={15} className="text-darkBlue dark:text-cyan" />
+                            <span>My Orders & History</span>
+                          </Link>
+
+                          <Link
+                            to="/products"
+                            onClick={() => setIsUserMenuOpen(false)}
+                            className="flex items-center gap-2.5 px-4 py-2.5 text-lightText dark:text-darkText hover:bg-lightBg dark:hover:bg-[#252525] transition-colors"
+                          >
+                            <Grid size={15} className="text-darkBlue dark:text-cyan" />
+                            <span>Browse Wholesale Catalog</span>
+                          </Link>
+                        </div>
+
+                        {/* Sign Out */}
+                        <div className="pt-1 border-t border-lightBorder dark:border-[#2a2a2a]">
+                          <button
+                            onClick={() => {
+                              handleLogout();
+                              setIsUserMenuOpen(false);
+                            }}
+                            className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-error-light dark:text-error-dark hover:bg-error-light/10 dark:hover:bg-error-dark/10 transition-colors text-left"
+                          >
+                            <LogOut size={14} />
+                            <span>Sign Out</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : (
-                  <Link to="/login" className="font-semibold px-3 py-1.5 rounded-lg border border-darkBlue/30 dark:border-cyan/30 text-darkBlue dark:text-cyan hover:bg-darkBlue/10 dark:hover:bg-cyan/10 transition-colors">
-                    Login
-                  </Link>
+                  <div className="flex items-center gap-1.5">
+                    <Link
+                      to="/login"
+                      className="flex items-center gap-1.5 font-bold text-xs py-1.5 px-3 rounded-xl bg-darkBlue/10 dark:bg-cyan/15 text-darkBlue dark:text-cyan hover:bg-darkBlue dark:hover:bg-cyan hover:text-white dark:hover:text-black transition-all"
+                    >
+                      <LogIn size={14} />
+                      <span>Sign In</span>
+                    </Link>
+                    <Link
+                      to="/register"
+                      className="hidden md:flex items-center gap-1 font-semibold text-xs py-1.5 px-2.5 text-lightTextSecondary dark:text-darkTextSecondary hover:text-darkBlue dark:hover:text-cyan transition-colors"
+                    >
+                      <span>Sign Up</span>
+                    </Link>
+                  </div>
                 )}
               </div>
               
@@ -497,10 +597,66 @@ const Header = () => {
                 href={`https://wa.me/${whatsappNum}?text=Hello%20AJTraders,%20I%20want%20to%20order`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-green-600 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-950/20 transition-colors"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#25D366] hover:bg-green-50 dark:hover:bg-green-950/20 font-semibold transition-colors"
               >
-                <MessageCircle size={18} /> WhatsApp Order
+                <WhatsAppIcon size={18} /> WhatsApp Order
               </a>
+
+              {/* WhatsApp Channel */}
+              <a 
+                href={settings.whatsapp_channel_url || 'https://whatsapp.com/channel/0029Vb9yavmE50UlfeAKWo39'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 font-semibold transition-colors"
+              >
+                <WhatsAppIcon size={18} /> WhatsApp Channel
+              </a>
+
+              {/* Social Channels Row in Mobile Drawer */}
+              <div className="pt-2 px-3">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-lightTextSecondary dark:text-darkTextSecondary mb-2">
+                  Follow Us
+                </div>
+                <div className="flex items-center gap-2">
+                  <a
+                    href={settings.facebook_url || 'https://www.facebook.com/share/14uooa52BdR/'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-8 h-8 rounded-full bg-lightBg dark:bg-[#222] border border-lightBorder dark:border-[#333] flex items-center justify-center text-lightTextSecondary hover:text-[#1877F2]"
+                    title="Facebook"
+                  >
+                    <FacebookIcon size={15} />
+                  </a>
+                  <a
+                    href={settings.instagram_url || 'https://www.instagram.com/aj_traders006'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-8 h-8 rounded-full bg-lightBg dark:bg-[#222] border border-lightBorder dark:border-[#333] flex items-center justify-center text-lightTextSecondary hover:text-[#E4405F]"
+                    title="Instagram"
+                  >
+                    <InstagramIcon size={15} />
+                  </a>
+                  <a
+                    href={settings.tiktok_url || 'https://www.tiktok.com/@aj.traders07'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-8 h-8 rounded-full bg-lightBg dark:bg-[#222] border border-lightBorder dark:border-[#333] flex items-center justify-center text-lightTextSecondary hover:text-black dark:hover:text-white"
+                    title="TikTok"
+                  >
+                    <TikTokIcon size={15} />
+                  </a>
+                  <a
+                    href={settings.whatsapp_channel_url || 'https://whatsapp.com/channel/0029Vb9yavmE50UlfeAKWo39'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="h-8 px-2.5 rounded-full bg-lightBg dark:bg-[#222] border border-lightBorder dark:border-[#333] flex items-center gap-1 text-[11px] font-bold text-[#25D366]"
+                    title="WhatsApp Channel"
+                  >
+                    <WhatsAppIcon size={14} />
+                    <span>Channel</span>
+                  </a>
+                </div>
+              </div>
             </div>
 
             {/* Drawer Footer Account Area */}

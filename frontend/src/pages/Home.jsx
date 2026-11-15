@@ -66,45 +66,51 @@ const Home = () => {
   }, [query]);
 
   const clearSearch = () => {
-    searchParams.delete('q');
-    setSearchParams(searchParams);
+    setSearchParams({});
+    setSearchResults([]);
   };
 
   if (loading) {
     return (
-      <div className="flex justify-center py-24">
-        <Loader2 className="animate-spin text-darkBlue dark:text-cyan" size={44} />
+      <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
+        <Loader2 className="animate-spin text-darkBlue dark:text-cyan" size={48} />
+        <p className="text-lightTextSecondary dark:text-darkTextSecondary font-medium text-sm">
+          Loading grocery catalog...
+        </p>
       </div>
     );
   }
 
-  // Search Results View
-  if (query) {
+  // If query is active, render instant search results view
+  if (query.trim()) {
     return (
       <div className="space-y-6">
-        <div className="flex items-center justify-between pb-2 border-b border-lightBorder dark:border-[#2a2a2a]">
-          <h2 className="text-2xl font-bold text-lightBlue dark:text-aqua border-l-4 border-darkBlue dark:border-cyan pl-3">
-            Search Results for "{query}"
-          </h2>
-          <button onClick={clearSearch} className="text-sm text-lightTextSecondary dark:text-darkTextSecondary hover:underline">
+        <div className="flex items-center justify-between pb-4 border-b border-lightBorder dark:border-darkBorder">
+          <div>
+            <h1 className="text-2xl font-bold text-lightText dark:text-darkText">
+              Search Results for <span className="text-darkBlue dark:text-cyan">"{query}"</span>
+            </h1>
+            <p className="text-sm text-lightTextSecondary dark:text-darkTextSecondary mt-1">
+              Found {searchResults.length} {searchResults.length === 1 ? 'item' : 'items'}
+            </p>
+          </div>
+          <button 
+            onClick={clearSearch}
+            className="text-sm font-semibold text-error-light dark:text-error-dark hover:underline"
+          >
             Clear Search
           </button>
         </div>
-        
+
         {searchLoading ? (
-          <div className="flex items-center gap-2 text-lightTextSecondary dark:text-darkTextSecondary py-12 justify-center">
-            <Loader2 className="animate-spin text-darkBlue dark:text-cyan" size={24} /> Searching products...
+          <div className="flex justify-center p-12">
+            <Loader2 className="animate-spin text-darkBlue dark:text-cyan" size={32} />
           </div>
         ) : searchResults.length > 0 ? (
-          <div>
-            <p className="mb-4 text-sm text-lightTextSecondary dark:text-darkTextSecondary">
-              Found {searchResults.length} {searchResults.length === 1 ? 'product' : 'products'}
-            </p>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-              {searchResults.map(product => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {searchResults.map(product => (
+              <ProductCard key={product.id} product={product} />
+            ))}
           </div>
         ) : (
           <div className="mt-8 text-center bg-lightCard dark:bg-darkCard p-12 rounded-2xl border border-lightBorder dark:border-darkBorder">
@@ -120,11 +126,11 @@ const Home = () => {
 
   // Complete Professional Homepage Layout
   return (
-    <div className="space-y-14">
+    <div className="space-y-16 md:space-y-20">
       {/* 1. Hero Slider */}
       <HeroSlider />
 
-      {/* 2. Shop by Category (EXISTING) */}
+      {/* 2. Shop by Category */}
       <section id="categories" className="scroll-mt-24">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl md:text-3xl font-bold text-lightText dark:text-darkText border-l-4 border-darkBlue dark:border-cyan pl-3">
@@ -137,7 +143,7 @@ const Home = () => {
         <CategoryCarousel categories={categories} />
       </section>
 
-      {/* 3. Featured Products */}
+      {/* 3. Featured Products (Positioned ABOVE Deals) */}
       <section id="featured-products" className="scroll-mt-24">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -145,7 +151,7 @@ const Home = () => {
               <Sparkles className="text-amber-500" size={24} /> Featured Products
             </h2>
             <p className="text-xs md:text-sm text-lightTextSecondary dark:text-darkTextSecondary pl-4 mt-1">
-              Hand-picked bestsellers and daily household essentials
+              Hand-picked bestsellers, staple grains, and daily household essentials
             </p>
           </div>
           <Link to="/products" className="text-xs md:text-sm font-semibold text-lightBlue dark:text-aqua hover:underline flex items-center gap-1">
@@ -159,21 +165,16 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 4. Featured Videos */}
-      <div id="featured-videos" className="scroll-mt-24">
-        <FeaturedVideos />
-      </div>
-
-      {/* 5. Today's Deals (Only shown if active discounts exist) */}
+      {/* 4. Today's Deals & Discounts (Positioned BELOW Featured Products) */}
       {dealsProducts.length > 0 && (
-        <section id="todays-deals" className="scroll-mt-24 bg-gradient-to-r from-red-500/10 via-amber-500/10 to-red-500/5 p-6 md:p-8 rounded-2xl border border-red-500/20">
+        <section id="todays-deals" className="scroll-mt-24 bg-gradient-to-r from-red-500/10 via-amber-500/10 to-red-500/5 p-6 md:p-8 rounded-3xl border border-red-500/20 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-error-light/20 dark:bg-error-dark/30 text-error-light dark:text-error-dark text-xs font-bold uppercase tracking-wider mb-2">
                 <Tag size={13} /> Limited Time Offers
               </div>
               <h2 className="text-2xl md:text-3xl font-bold text-lightText dark:text-darkText">
-                Today's Deals
+                Today's Deals & Discounts
               </h2>
             </div>
             <Link to="/offers" className="text-xs md:text-sm font-semibold text-error-light dark:text-error-dark hover:underline flex items-center gap-1">
@@ -188,7 +189,7 @@ const Home = () => {
         </section>
       )}
 
-      {/* 6. New Arrivals */}
+      {/* 5. New Arrivals */}
       <section id="new-arrivals" className="scroll-mt-24">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -209,6 +210,11 @@ const Home = () => {
           ))}
         </div>
       </section>
+
+      {/* 6. Featured Videos (Above Footer) */}
+      <div id="featured-videos" className="scroll-mt-24">
+        <FeaturedVideos />
+      </div>
 
       {/* 7. Trust Strip */}
       <div id="trust-strip" className="scroll-mt-24">

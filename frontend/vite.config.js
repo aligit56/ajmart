@@ -6,7 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/images': 'http://localhost:5000'
+      '/images': 'http://localhost:5000',
+      '/videos': 'http://localhost:5000'
     }
   }
 })

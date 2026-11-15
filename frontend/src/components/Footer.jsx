@@ -1,21 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Phone, Mail, MapPin, Clock, MessageCircle, ShieldCheck } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, ShieldCheck } from 'lucide-react';
+import { WhatsAppIcon, TikTokIcon, FacebookIcon, InstagramIcon } from './SocialIcons';
 import api from '../api/axios';
-
-const FacebookIcon = ({ size = 18 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-  </svg>
-);
-
-const InstagramIcon = ({ size = 18 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
-    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
-  </svg>
-);
 
 const Footer = () => {
   const [categories, setCategories] = useState([]);
@@ -31,11 +18,12 @@ const Footer = () => {
       .catch(err => console.error('Failed to load settings in footer:', err));
   }, []);
 
-  const whatsappNum = settings.whatsapp_number || '923001234567';
-  const phone = settings.phone || '0300-0000000';
+  const whatsappNum = settings.whatsapp_number || '923357727555';
+  const phone = settings.phone || '0335-7727555 / 0312-5637557';
   const email = settings.email || 'info@ajtraders.pk';
-  const address = settings.address || 'Placeholder address, Karachi';
-  const hours = settings.opening_hours || settings.working_hours || 'Mon-Sun, 9 AM - 10 PM';
+  const address = settings.address || 'Shop # V-488, Namak Mandi Chowk, Raja Bazar, Rawalpindi';
+  const hours = settings.opening_hours || settings.working_hours || 'Mon-Sat: 9 AM - 10 PM, Sun: Closed';
+  const googleMapsUrl = settings.google_maps_url || 'https://maps.google.com/maps?q=AJ+Traders+Namak+Mandi+Chowk+Raja+Bazar+Rawalpindi';
 
   return (
     <footer className="bg-lightCard dark:bg-[#0e0e0e] border-t border-lightBorder dark:border-[#222] text-lightText dark:text-darkText transition-colors duration-200 mt-16">
@@ -61,50 +49,64 @@ const Footer = () => {
               <span className="font-extrabold tracking-tight">AJ<span className="text-lightBlue dark:text-aqua">Traders</span></span>
             </Link>
             <p className="text-sm text-lightTextSecondary dark:text-darkTextSecondary leading-relaxed">
-              Your trusted partner for fresh grocery staples, daily household essentials, and authentic branded goods with fast next-day delivery across Karachi.
+              Your trusted partner for fresh grocery staples, daily household essentials, and authentic branded goods with fast next-day delivery across Rawalpindi & Islamabad.
             </p>
             {/* Social Icons */}
-            <div className="flex items-center gap-3 pt-2">
-              {settings.facebook_url ? (
-                <a 
-                  href={settings.facebook_url} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-full bg-lightBg dark:bg-[#1f1f1f] border border-lightBorder dark:border-[#333] flex items-center justify-center text-lightTextSecondary dark:text-darkTextSecondary hover:text-darkBlue dark:hover:text-cyan transition-colors"
-                  aria-label="Facebook"
-                >
-                  <FacebookIcon size={18} />
-                </a>
-              ) : (
-                <span className="w-9 h-9 rounded-full bg-lightBg dark:bg-[#1f1f1f] border border-lightBorder dark:border-[#333] flex items-center justify-center text-lightTextSecondary dark:text-darkTextSecondary opacity-60">
-                  <FacebookIcon size={18} />
-                </span>
-              )}
+            <div className="flex items-center gap-2.5 pt-2 flex-wrap">
+              <a 
+                href={settings.facebook_url || 'https://www.facebook.com/share/14uooa52BdR/'} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-full bg-lightBg dark:bg-[#1f1f1f] border border-lightBorder dark:border-[#333] flex items-center justify-center text-lightTextSecondary dark:text-darkTextSecondary hover:text-[#1877F2] hover:border-[#1877F2]/40 dark:hover:text-[#1877F2] transition-all hover:scale-110 shadow-sm"
+                aria-label="Facebook"
+                title="Follow AJTraders on Facebook"
+              >
+                <FacebookIcon size={18} />
+              </a>
 
-              {settings.instagram_url ? (
-                <a 
-                  href={settings.instagram_url} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-full bg-lightBg dark:bg-[#1f1f1f] border border-lightBorder dark:border-[#333] flex items-center justify-center text-lightTextSecondary dark:text-darkTextSecondary hover:text-darkBlue dark:hover:text-cyan transition-colors"
-                  aria-label="Instagram"
-                >
-                  <InstagramIcon size={18} />
-                </a>
-              ) : (
-                <span className="w-9 h-9 rounded-full bg-lightBg dark:bg-[#1f1f1f] border border-lightBorder dark:border-[#333] flex items-center justify-center text-lightTextSecondary dark:text-darkTextSecondary opacity-60">
-                  <InstagramIcon size={18} />
-                </span>
-              )}
+              <a 
+                href={settings.instagram_url || 'https://www.instagram.com/aj_traders006'} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-full bg-lightBg dark:bg-[#1f1f1f] border border-lightBorder dark:border-[#333] flex items-center justify-center text-lightTextSecondary dark:text-darkTextSecondary hover:text-[#E4405F] hover:border-[#E4405F]/40 dark:hover:text-[#E4405F] transition-all hover:scale-110 shadow-sm"
+                aria-label="Instagram"
+                title="Follow AJTraders on Instagram"
+              >
+                <InstagramIcon size={18} />
+              </a>
+
+              <a 
+                href={settings.tiktok_url || 'https://www.tiktok.com/@aj.traders07'} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-full bg-lightBg dark:bg-[#1f1f1f] border border-lightBorder dark:border-[#333] flex items-center justify-center text-lightTextSecondary dark:text-darkTextSecondary hover:text-[#000000] dark:hover:text-white hover:border-black/40 dark:hover:border-white/40 transition-all hover:scale-110 shadow-sm"
+                aria-label="TikTok"
+                title="Watch AJTraders on TikTok"
+              >
+                <TikTokIcon size={18} />
+              </a>
+
+              <a 
+                href={settings.whatsapp_channel_url || 'https://whatsapp.com/channel/0029Vb9yavmE50UlfeAKWo39'} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="h-9 px-3 rounded-full bg-lightBg dark:bg-[#1f1f1f] border border-lightBorder dark:border-[#333] flex items-center gap-1.5 text-xs font-bold text-[#25D366] hover:bg-[#25D366] hover:text-white hover:border-[#25D366] transition-all hover:scale-105 shadow-sm"
+                aria-label="WhatsApp Channel"
+                title="Join our official WhatsApp Channel"
+              >
+                <WhatsAppIcon size={16} />
+                <span>Channel</span>
+              </a>
 
               <a 
                 href={`https://wa.me/${whatsappNum}?text=Hello%20AJTraders,%20I%20want%20to%20order`}
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-lightBg dark:bg-[#1f1f1f] border border-lightBorder dark:border-[#333] flex items-center justify-center text-green-600 dark:text-green-400 hover:bg-green-500 hover:text-white transition-colors"
-                aria-label="WhatsApp"
+                className="w-9 h-9 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:bg-[#20ba5a] transition-all hover:scale-110 shadow-sm"
+                aria-label="Chat on WhatsApp"
+                title="Chat directly on WhatsApp"
               >
-                <MessageCircle size={18} />
+                <WhatsAppIcon size={18} />
               </a>
             </div>
           </div>
@@ -168,16 +170,24 @@ const Footer = () => {
             <ul className="space-y-3 text-sm text-lightTextSecondary dark:text-darkTextSecondary font-medium">
               <li className="flex items-start gap-2.5">
                 <MapPin size={18} className="text-darkBlue dark:text-cyan flex-shrink-0 mt-0.5" />
-                <span>{address}</span>
+                <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                  {address}
+                </a>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone size={18} className="text-darkBlue dark:text-cyan flex-shrink-0" />
                 <a href={`tel:${phone}`} className="hover:underline">{phone}</a>
               </li>
               <li className="flex items-center gap-2.5">
-                <MessageCircle size={18} className="text-green-500 flex-shrink-0" />
+                <WhatsAppIcon size={18} className="text-[#25D366] flex-shrink-0" />
                 <a href={`https://wa.me/${whatsappNum}`} target="_blank" rel="noopener noreferrer" className="hover:underline font-semibold text-green-600 dark:text-green-400">
                   WhatsApp: +{whatsappNum}
+                </a>
+              </li>
+              <li className="flex items-center gap-2.5">
+                <WhatsAppIcon size={18} className="text-[#25D366] flex-shrink-0" />
+                <a href={settings.whatsapp_channel_url || 'https://whatsapp.com/channel/0029Vb9yavmE50UlfeAKWo39'} target="_blank" rel="noopener noreferrer" className="hover:underline font-semibold text-emerald-600 dark:text-emerald-400">
+                  Official WhatsApp Channel
                 </a>
               </li>
               <li className="flex items-center gap-2.5">

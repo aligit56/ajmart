@@ -61,7 +61,7 @@ const HeroSlider = () => {
 
   if (loading || slides.length === 0) {
     return (
-      <div className="w-full h-[260px] md:h-[420px] rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 animate-pulse flex items-center justify-center mb-8">
+      <div className="w-full h-[340px] sm:h-[420px] md:h-[500px] lg:h-[560px] rounded-3xl bg-gradient-to-r from-slate-900 to-slate-800 animate-pulse flex items-center justify-center mb-10">
         <span className="text-white/40 text-sm font-semibold">Loading promotions...</span>
       </div>
     );
@@ -71,7 +71,7 @@ const HeroSlider = () => {
 
   return (
     <div 
-      className="relative w-full h-[260px] md:h-[420px] rounded-2xl overflow-hidden shadow-lg mb-8 select-none group"
+      className="relative w-full h-[340px] sm:h-[420px] md:h-[500px] lg:h-[560px] rounded-3xl overflow-hidden shadow-2xl mb-10 select-none group border border-lightBorder/50 dark:border-darkBorder/50"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
@@ -97,11 +97,11 @@ const HeroSlider = () => {
                 loop
                 playsInline
                 className="w-full h-full object-cover"
-                poster="/images/hero/placeholder-1.jpg"
+                poster="/images/hero/hero-slide-1.png"
               >
                 {/* Fallback image if video fails to load */}
                 <img 
-                  src="/images/hero/placeholder-1.jpg" 
+                  src="/images/hero/hero-slide-1.png" 
                   alt={slide.title} 
                   className="w-full h-full object-cover" 
                 />
@@ -113,33 +113,33 @@ const HeroSlider = () => {
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = '/images/hero/placeholder-1.jpg';
+                  e.target.src = '/images/hero/hero-slide-1.png';
                 }}
               />
             )}
 
-            {/* Dark gradient overlay for guaranteed text readability */}
-            <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-black/90 via-black/60 to-black/20" />
+            {/* Subtle natural gradient overlay for guaranteed text readability without hiding products */}
+            <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-black/85 via-black/45 to-transparent" />
 
             {/* Slide Content */}
-            <div className="absolute inset-0 flex items-center p-6 md:p-12 lg:p-16">
-              <div className="max-w-xl text-white space-y-2 md:space-y-4">
-                <span className="inline-block px-3 py-1 bg-darkBlue/80 dark:bg-cyan/80 text-white dark:text-black text-xs font-bold uppercase tracking-wider rounded-full backdrop-blur-xs">
+            <div className="absolute inset-0 flex items-center p-6 sm:p-10 md:p-14 lg:p-16">
+              <div className="max-w-xl md:max-w-2xl text-white space-y-3 md:space-y-4">
+                <span className="inline-block px-3.5 py-1.5 bg-darkBlue/80 dark:bg-cyan/80 text-white dark:text-black text-xs font-bold uppercase tracking-wider rounded-full backdrop-blur-xs shadow-sm">
                   Featured Special
                 </span>
-                <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight leading-tight drop-shadow-md text-white">
+                <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight drop-shadow-lg text-white">
                   {slide.title}
                 </h2>
                 {slide.subtitle && (
-                  <p className="text-sm sm:text-base md:text-lg text-slate-200 line-clamp-2 drop-shadow-sm font-medium">
+                  <p className="text-sm sm:text-base md:text-lg text-slate-100 max-w-lg line-clamp-2 drop-shadow font-medium leading-relaxed">
                     {slide.subtitle}
                   </p>
                 )}
                 {slide.button_text && (
-                  <div className="pt-2">
+                  <div className="pt-2 md:pt-4">
                     <Link
                       to={slide.button_link || '/products'}
-                      className="inline-flex items-center gap-2 bg-darkBlue dark:bg-cyan hover:bg-lightBlue dark:hover:bg-aqua text-white dark:text-black font-bold px-5 py-2.5 md:px-7 md:py-3 rounded-xl transition-all shadow-md hover:shadow-xl hover:scale-105 duration-200 text-sm md:text-base"
+                      className="inline-flex items-center gap-2 bg-darkBlue dark:bg-cyan hover:bg-lightBlue dark:hover:bg-aqua text-white dark:text-black font-extrabold px-6 py-3 md:px-8 md:py-3.5 rounded-2xl transition-all shadow-lg hover:shadow-2xl hover:scale-105 duration-200 text-sm md:text-base"
                     >
                       {slide.button_text} <ArrowRight size={18} />
                     </Link>

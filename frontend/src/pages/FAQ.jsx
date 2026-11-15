@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ChevronDown, HelpCircle, MessageCircle } from 'lucide-react';
+import { ChevronDown, HelpCircle } from 'lucide-react';
+import { WhatsAppIcon } from '../components/SocialIcons';
 import { Link } from 'react-router-dom';
 
 const FAQS = [
@@ -9,7 +10,7 @@ const FAQS = [
   },
   {
     q: 'What are the delivery charges and times?',
-    a: 'We offer standard next-day delivery across Karachi. Orders placed before 6:00 PM are delivered the following day. Delivery fees vary from PKR 150 - 250 depending on your area, and orders above PKR 3,000 qualify for free standard delivery.'
+    a: 'We offer standard next-day delivery across Rawalpindi & Islamabad. Orders placed before 6:00 PM are delivered the following day. Delivery fees vary from PKR 150 - 250 depending on your area, and orders above PKR 3,000 qualify for free standard delivery.'
   },
   {
     q: 'Can I pay with Cash on Delivery?',
@@ -89,7 +90,7 @@ const FAQ = () => {
         </p>
         <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
           <Link to="/contact" className="btn-primary inline-flex items-center gap-2">
-            <MessageCircle size={18} /> Contact Customer Care
+            <WhatsAppIcon size={18} /> Contact Customer Care
           </Link>
         </div>
       </div>

@@ -61,21 +61,34 @@ const isAdmin = (req, res, next) => {
 app.post('/api/auth/register', (req, res) => {
     const { name, email, phone, address, password } = req.body;
     if (!name || !email || !password || !phone) {
-        return res.status(400).json({ error: "Missing required fields" });
+        return res.status(400).json({ error: "Please fill in all required fields (Name, Email, Phone, Password)" });
     }
+    const cleanEmail = email.trim().toLowerCase();
     const hash = bcrypt.hashSync(password, 10);
     db.run(`INSERT INTO Users (name, email, phone, address, password) VALUES (?, ?, ?, ?, ?)`,
-        [name, email, phone, address, hash], function(err) {
-            if (err) return res.status(400).json({ error: err.message });
-            res.status(201).json({ message: "User registered", userId: this.lastID });
+        [name.trim(), cleanEmail, phone.trim(), address ? address.trim() : '', hash], function(err) {
+            if (err) {
+                if (err.message && err.message.includes('UNIQUE constraint')) {
+                    return res.status(400).json({ error: "An account with this email already exists. Please login." });
+                }
+                return res.status(400).json({ error: err.message });
+            }
+            const userId = this.lastID;
+            const newUser = { id: userId, name: name.trim(), email: cleanEmail, phone: phone.trim(), address: address ? address.trim() : '', role: 'customer' };
+            const token = jwt.sign({ id: userId, role: 'customer' }, JWT_SECRET, { expiresIn: '24h' });
+            res.status(201).json({ message: "Registration successful", token, user: newUser });
         });
 });
 
 app.post('/api/auth/login', (req, res) => {
     const { email, password } = req.body;
-    db.get(`SELECT * FROM Users WHERE email = ?`, [email], (err, user) => {
+    if (!email || !password) {
+        return res.status(400).json({ error: "Please enter your email and password" });
+    }
+    const cleanEmail = email.trim().toLowerCase();
+    db.get(`SELECT * FROM Users WHERE LOWER(email) = ?`, [cleanEmail], (err, user) => {
         if (err) return res.status(500).json({ error: err.message });
-        if (!user) return res.status(404).json({ error: "User not found" });
+        if (!user) return res.status(404).json({ error: "No account found with this email. Please check or register." });
         
         if (bcrypt.compareSync(password, user.password)) {
             const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
@@ -83,7 +96,7 @@ app.post('/api/auth/login', (req, res) => {
             const { password, ...userWithoutPassword } = user;
             res.json({ token, user: userWithoutPassword });
         } else {
-            res.status(401).json({ error: "Invalid credentials" });
+            res.status(401).json({ error: "Incorrect password. Please try again." });
         }
     });
 });

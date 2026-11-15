@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../api/axios';
-import { Loader2, Save, Store, Phone, MessageCircle, Mail, MapPin, Clock, Megaphone, BarChart3 } from 'lucide-react';
+import { Loader2, Save, Store, Phone, MessageCircle, Mail, MapPin, Clock, Megaphone, BarChart3, Share2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const SettingsAdmin = () => {
   const [settings, setSettings] = useState({
     store_name: 'AJTraders',
-    phone: '+92 300 1234567',
-    whatsapp_number: '923001234567',
+    phone: '0335-7727555 / 0312-5637557',
+    whatsapp_number: '923357727555',
     email: 'info@ajtraders.pk',
-    address: 'Shop # 12, Main Market, Karachi, Pakistan',
+    address: 'Shop # V-488, Namak Mandi Chowk, Raja Bazar, Rawalpindi',
     working_hours: 'Mon - Sat: 9:00 AM - 10:00 PM, Sunday: Closed',
-    announcement_bar_text: 'Free delivery on orders over PKR 3,000 across Karachi!',
+    announcement_bar_text: 'Free delivery on wholesale & retail grocery orders over PKR 3,000 across Rawalpindi & Islamabad!',
     happy_customers: '1000+',
     products_count: '150+',
-    delivery_areas: 'Karachi'
+    delivery_areas: 'Rawalpindi & Islamabad',
+    facebook_url: 'https://www.facebook.com/share/14uooa52BdR/',
+    instagram_url: 'https://www.instagram.com/aj_traders006',
+    tiktok_url: 'https://www.tiktok.com/@aj.traders07',
+    whatsapp_channel_url: 'https://whatsapp.com/channel/0029Vb9yavmE50UlfeAKWo39'
   });
 
   const [loading, setLoading] = useState(true);
@@ -112,7 +116,7 @@ const SettingsAdmin = () => {
         {/* Contact Numbers & WhatsApp */}
         <div className="bg-lightCard dark:bg-darkCard p-6 rounded-2xl border border-lightBorder dark:border-darkBorder shadow-sm space-y-4">
           <h3 className="text-base font-bold text-lightText dark:text-darkText flex items-center gap-2 border-b border-lightBorder dark:border-darkBorder pb-3">
-            <Phone size={18} className="text-darkBlue dark:text-cyan" /> Contact & WhatsApp Channels
+            <Phone size={18} className="text-darkBlue dark:text-cyan" /> Contact Numbers
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -122,7 +126,7 @@ const SettingsAdmin = () => {
               </label>
               <input
                 type="text"
-                placeholder="+92 300 1234567"
+                placeholder="0335-7727555 / 0312-5637557"
                 value={settings.phone}
                 onChange={(e) => handleChange('phone', e.target.value)}
                 className="input-field text-sm"
@@ -132,15 +136,76 @@ const SettingsAdmin = () => {
 
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-lightTextSecondary dark:text-darkTextSecondary mb-1.5">
-                WhatsApp Number (without + or spaces, e.g. 923001234567)
+                WhatsApp Order Number (digits only, e.g. 923357727555)
               </label>
               <input
                 type="text"
-                placeholder="923001234567"
+                placeholder="923357727555"
                 value={settings.whatsapp_number}
                 onChange={(e) => handleChange('whatsapp_number', e.target.value)}
                 className="input-field text-sm"
                 required
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Social Media & Community Channels */}
+        <div className="bg-lightCard dark:bg-darkCard p-6 rounded-2xl border border-lightBorder dark:border-darkBorder shadow-sm space-y-4">
+          <h3 className="text-base font-bold text-lightText dark:text-darkText flex items-center gap-2 border-b border-lightBorder dark:border-darkBorder pb-3">
+            <Share2 size={18} className="text-darkBlue dark:text-cyan" /> Social Media & Community Channels
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-lightTextSecondary dark:text-darkTextSecondary mb-1.5">
+                TikTok Profile URL
+              </label>
+              <input
+                type="url"
+                placeholder="https://www.tiktok.com/@aj.traders07"
+                value={settings.tiktok_url || ''}
+                onChange={(e) => handleChange('tiktok_url', e.target.value)}
+                className="input-field text-sm"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-lightTextSecondary dark:text-darkTextSecondary mb-1.5">
+                Facebook Page URL
+              </label>
+              <input
+                type="url"
+                placeholder="https://www.facebook.com/share/14uooa52BdR/"
+                value={settings.facebook_url || ''}
+                onChange={(e) => handleChange('facebook_url', e.target.value)}
+                className="input-field text-sm"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-lightTextSecondary dark:text-darkTextSecondary mb-1.5">
+                Instagram Profile URL
+              </label>
+              <input
+                type="url"
+                placeholder="https://www.instagram.com/aj_traders006"
+                value={settings.instagram_url || ''}
+                onChange={(e) => handleChange('instagram_url', e.target.value)}
+                className="input-field text-sm"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-lightTextSecondary dark:text-darkTextSecondary mb-1.5">
+                WhatsApp Official Channel URL
+              </label>
+              <input
+                type="url"
+                placeholder="https://whatsapp.com/channel/0029Vb9yavmE50UlfeAKWo39"
+                value={settings.whatsapp_channel_url || ''}
+                onChange={(e) => handleChange('whatsapp_channel_url', e.target.value)}
+                className="input-field text-sm"
               />
             </div>
           </div>

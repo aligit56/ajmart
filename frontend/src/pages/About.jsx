@@ -8,7 +8,7 @@ const About = () => {
     store_name: 'AJTraders',
     happy_customers: '1000+',
     products_count: '150+',
-    delivery_areas: 'Karachi'
+    delivery_areas: 'Rawalpindi & Islamabad'
   });
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const About = () => {
           About {settings.store_name || 'AJTraders'}
         </h1>
         <p className="text-base md:text-lg text-lightTextSecondary dark:text-darkTextSecondary max-w-2xl mx-auto leading-relaxed">
-          Delivering premium unadulterated groceries, staple grains, household essentials, and authentic personal care products right to your home in {settings.delivery_areas || 'Karachi'}.
+          Delivering premium unadulterated groceries, staple grains, household essentials, and authentic personal care products right to your home across {settings.delivery_areas || 'Rawalpindi & Islamabad'}.
         </p>
       </div>
 
@@ -40,17 +40,21 @@ const About = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-lightCard dark:bg-darkCard p-6 md:p-10 rounded-3xl border border-lightBorder dark:border-darkBorder shadow-sm">
         <div className="space-y-4">
           <h2 className="text-2xl md:text-3xl font-extrabold text-lightText dark:text-darkText border-l-4 border-darkBlue dark:border-cyan pl-3">
-            Our Story
+            Our Story & Heritage
           </h2>
           <p className="text-sm md:text-base text-lightTextSecondary dark:text-darkTextSecondary leading-relaxed">
-            Founded with a singular mission: to make everyday grocery shopping hassle-free, honest, and affordable for families. We noticed that getting pure pulses, unpolished rice, clean spices, and genuine cosmetics often required visiting multiple crowded markets.
+            Headquartered in the historic wholesale heart of Rawalpindi at <strong>Namak Mandi Chowk, Raja Bazar</strong>, AJTraders was founded to make pure, authentic grocery staples accessible at genuine wholesale pricing.
           </p>
           <p className="text-sm md:text-base text-lightTextSecondary dark:text-darkTextSecondary leading-relaxed">
-            At {settings.store_name || 'AJTraders'}, we source directly from reputable mills and certified distributors. Every batch is inspected for cleanliness, aroma, and freshness before it is packaged and delivered to your doorstep.
+            We source straight from certified mills and premier agricultural distributors. Every single batch of pulses, aged basmati rice, gram flour (baison), and spices is meticulously sifted, cleaned, and packed to ensure 100% purity and unmatched freshness.
           </p>
 
           <div className="pt-2 space-y-2">
-            {['100% Guaranteed Purity & Freshness', 'Next-Day Delivery Across Karachi', 'Cash on Delivery & Easy WhatsApp Ordering'].map((point, idx) => (
+            {[
+              '100% Guaranteed Purity & Unadulterated Grains',
+              'Next-Day Doorstep Delivery Across Rawalpindi & Islamabad',
+              'Genuine Wholesale Rates & Easy WhatsApp Ordering'
+            ].map((point, idx) => (
               <div key={idx} className="flex items-center gap-2.5 text-sm font-semibold text-lightText dark:text-darkText">
                 <CheckCircle2 size={18} className="text-emerald-500 flex-shrink-0" />
                 <span>{point}</span>
@@ -59,19 +63,19 @@ const About = () => {
           </div>
         </div>
 
-        <div className="rounded-2xl overflow-hidden border border-lightBorder dark:border-darkBorder shadow-md relative aspect-video md:aspect-square bg-gray-100 dark:bg-[#111]">
+        <div className="rounded-2xl overflow-hidden border border-lightBorder dark:border-darkBorder shadow-md relative aspect-video md:aspect-square bg-gray-100 dark:bg-[#111] flex items-center justify-center p-2 bg-gradient-to-br from-zinc-50 to-zinc-200 dark:from-zinc-900 dark:to-zinc-950">
           <img
-            src="/images/about/store-placeholder.jpg"
-            alt="AJTraders Store"
-            className="w-full h-full object-cover"
+            src="/images/brand/ajtraders-visiting-card.jpg"
+            alt="AJTraders Official Store Card"
+            className="w-full h-full object-contain rounded-xl shadow-lg hover:scale-105 transition-transform duration-300"
             onError={(e) => {
               e.target.onerror = null;
-              e.target.src = '/images/placeholder.jpg';
+              e.target.src = '/images/brand/ajtraders-logo.png';
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-6">
-            <span className="text-white text-sm font-semibold tracking-wide">
-              {settings.store_name || 'AJTraders'} Karachi Fulfillment Hub
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end p-4 rounded-b-2xl">
+            <span className="text-white text-xs md:text-sm font-bold tracking-wide">
+              {settings.store_name || 'AJTraders'} • Namak Mandi, Raja Bazar, Rawalpindi Hub
             </span>
           </div>
         </div>
@@ -87,7 +91,7 @@ const About = () => {
             {settings.happy_customers || '1000+'}
           </div>
           <div className="text-xs uppercase font-bold tracking-wider text-lightTextSecondary dark:text-darkTextSecondary">
-            Happy Customers
+            Happy Customers & Retailers
           </div>
         </div>
 
@@ -99,7 +103,7 @@ const About = () => {
             {settings.products_count || '150+'}
           </div>
           <div className="text-xs uppercase font-bold tracking-wider text-lightTextSecondary dark:text-darkTextSecondary">
-            Products In Stock
+            Wholesale Products In Stock
           </div>
         </div>
 
@@ -107,11 +111,11 @@ const About = () => {
           <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center">
             <MapPin size={24} />
           </div>
-          <div className="text-3xl md:text-4xl font-extrabold text-lightText dark:text-darkText mb-1">
-            {settings.delivery_areas || 'Karachi'}
+          <div className="text-2xl md:text-3xl font-extrabold text-lightText dark:text-darkText mb-1">
+            {settings.delivery_areas || 'Rawalpindi & Islamabad'}
           </div>
           <div className="text-xs uppercase font-bold tracking-wider text-lightTextSecondary dark:text-darkTextSecondary">
-            Fast Delivery Areas
+            Fast Delivery Hubs
           </div>
         </div>
       </div>
@@ -123,7 +127,7 @@ const About = () => {
             Why Shop With Us?
           </h2>
           <p className="text-sm text-lightTextSecondary dark:text-darkTextSecondary mt-1">
-            We put customer trust and food safety above all else
+            We put customer trust, food safety, and fair wholesale pricing above all else
           </p>
         </div>
 
@@ -138,25 +142,25 @@ const About = () => {
 
           <div className="bg-lightCard dark:bg-darkCard p-5 rounded-2xl border border-lightBorder dark:border-darkBorder">
             <Truck size={28} className="text-darkBlue dark:text-cyan mb-3" />
-            <h3 className="font-bold text-base mb-1">Next-Day Delivery</h3>
+            <h3 className="font-bold text-base mb-1">Fast Delivery</h3>
             <p className="text-xs text-lightTextSecondary dark:text-darkTextSecondary leading-relaxed">
-              Fast, careful doorstep delivery throughout Karachi with flexible morning or evening delivery slots.
+              Careful doorstep delivery throughout Rawalpindi & Islamabad with flexible morning or evening delivery slots.
             </p>
           </div>
 
           <div className="bg-lightCard dark:bg-darkCard p-5 rounded-2xl border border-lightBorder dark:border-darkBorder">
             <HeartHandshake size={28} className="text-amber-500 mb-3" />
-            <h3 className="font-bold text-base mb-1">Fair Wholesale Rates</h3>
+            <h3 className="font-bold text-base mb-1">Direct Wholesale Rates</h3>
             <p className="text-xs text-lightTextSecondary dark:text-darkTextSecondary leading-relaxed">
-              Direct producer partnerships allow us to pass significant grocery savings directly on to you.
+              Direct grain-mill partnerships allow us to pass authentic Namak Mandi wholesale savings directly to you.
             </p>
           </div>
 
           <div className="bg-lightCard dark:bg-darkCard p-5 rounded-2xl border border-lightBorder dark:border-darkBorder">
             <Clock size={28} className="text-indigo-500 mb-3" />
-            <h3 className="font-bold text-base mb-1">WhatsApp Support</h3>
+            <h3 className="font-bold text-base mb-1">Direct WhatsApp Desk</h3>
             <p className="text-xs text-lightTextSecondary dark:text-darkTextSecondary leading-relaxed">
-              Need to add an extra item or ask a question? Our friendly support team is always one tap away.
+              Need to add an extra item or ask a question? Aqib & Junaid are always one tap away on WhatsApp.
             </p>
           </div>
         </div>
