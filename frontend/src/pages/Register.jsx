@@ -90,7 +90,7 @@ const Register = () => {
               }}
             ></div>
             <span className="text-2xl font-black text-lightText dark:text-darkText tracking-tight">
-              AJ<span className="text-lightBlue dark:text-aqua">Traders</span>
+              AJ<span className="text-lightBlue dark:text-aqua">Mart</span>
             </span>
           </Link>
           <h1 className="text-2xl font-black text-lightText dark:text-darkText">

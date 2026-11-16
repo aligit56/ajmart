@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../api/axios';
 import { AuthContext } from '../context/AuthContext';
-import { Mail, Lock, Eye, EyeOff, LogIn, Loader2, ShieldCheck, UserCheck } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, LogIn, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const Login = () => {
@@ -43,12 +43,6 @@ const Login = () => {
     }
   };
 
-  const fillDemoCredentials = (demoEmail, demoPass) => {
-    setEmail(demoEmail);
-    setPassword(demoPass);
-    toast.success(`Filled demo credentials for ${demoEmail}`);
-  };
-
   return (
     <div className="max-w-md mx-auto my-6 sm:my-10 px-4">
       <div className="bg-lightCard dark:bg-darkCard rounded-3xl p-6 sm:p-8 border border-lightBorder dark:border-darkBorder shadow-xl space-y-6">
@@ -70,7 +64,7 @@ const Login = () => {
               }}
             ></div>
             <span className="text-2xl font-black text-lightText dark:text-darkText tracking-tight">
-              AJ<span className="text-lightBlue dark:text-aqua">Traders</span>
+              AJ<span className="text-lightBlue dark:text-aqua">Mart</span>
             </span>
           </Link>
           <h1 className="text-2xl font-black text-lightText dark:text-darkText">
@@ -170,31 +164,6 @@ const Login = () => {
             )}
           </button>
         </form>
-
-        {/* Demo Fast-Login Pills */}
-        <div className="pt-2 border-t border-lightBorder dark:border-darkBorder space-y-2">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-lightTextSecondary dark:text-darkTextSecondary block text-center">
-            Quick Test Logins
-          </span>
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            <button
-              type="button"
-              onClick={() => fillDemoCredentials('admin@ajmart.pk', 'admin123')}
-              className="py-2 px-3 rounded-xl border border-lightBorder dark:border-[#333] hover:border-darkBlue dark:hover:border-cyan text-lightText dark:text-darkText flex items-center justify-center gap-1.5 transition-colors font-medium bg-lightBg/50 dark:bg-[#1f1f1f]"
-            >
-              <ShieldCheck size={14} className="text-darkBlue dark:text-cyan" />
-              <span>Admin Demo</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => fillDemoCredentials('customer@ajmart.pk', 'customer123')}
-              className="py-2 px-3 rounded-xl border border-lightBorder dark:border-[#333] hover:border-darkBlue dark:hover:border-cyan text-lightText dark:text-darkText flex items-center justify-center gap-1.5 transition-colors font-medium bg-lightBg/50 dark:bg-[#1f1f1f]"
-            >
-              <UserCheck size={14} className="text-green-600 dark:text-green-400" />
-              <span>Customer Demo</span>
-            </button>
-          </div>
-        </div>
 
         {/* Link to Register */}
         <div className="text-center pt-2">
