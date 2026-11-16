@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const sqlite3 = require('sqlite3').verbose();
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
@@ -10,9 +11,62 @@ const path = require('path');
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
+
+// Server Hardening & Security Headers
+app.disable('x-powered-by');
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    contentSecurityPolicy: false
+}));
+
+const allowedOrigins = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'http://localhost:5000',
+    'http://127.0.0.1:5000',
+    'https://ajmart-backend.onrender.com'
+];
+if (process.env.FRONTEND_URL) {
+    const cleanFrontendUrl = process.env.FRONTEND_URL.trim().replace(/\/+$/, '');
+    if (cleanFrontendUrl && !allowedOrigins.includes(cleanFrontendUrl)) {
+        allowedOrigins.push(cleanFrontendUrl);
+    }
+}
+
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+        const isAllowed = allowedOrigins.includes(origin) ||
+            origin.endsWith('.onrender.com') ||
+            origin.endsWith('.vercel.app') ||
+            origin.endsWith('.netlify.app');
+        if (isAllowed) {
+            return callback(null, true);
+        }
+        return callback(new Error('CORS policy: Origin not allowed'));
+    },
+    credentials: true
+}));
+
 app.use(express.json());
 app.use(express.static('public')); // Serve static images
+
+// Rate Limiters
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: process.env.NODE_ENV === 'test' ? 1000 : 20, // 20 attempts per IP
+    message: { error: "Too many login attempts. Please try again after 15 minutes." },
+    standardHeaders: true,
+    legacyHeaders: false
+});
+
+const registerLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: process.env.NODE_ENV === 'test' ? 1000 : 50, // 50 accounts per IP per hour
+    message: { error: "Too many accounts created from this IP. Please try again later." },
+    standardHeaders: true,
+    legacyHeaders: false
+});
 
 const upload = multer({
     storage: multer.memoryStorage(),
@@ -25,12 +79,27 @@ const upload = multer({
     }
 });
 
-const db = new sqlite3.Database('./database.sqlite', (err) => {
-    if (err) console.error("Database connection error: " + err.message);
-});
+const createDatabase = require('./utils/db');
+const db = createDatabase();
 
 const PORT = process.env.PORT || 5000;
-const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_string_123';
+
+// Production JWT_SECRET Enforcement & Development Fallback
+const DEV_FALLBACK_JWT_SECRET = 'dev_jwt_secret_ajmart_local_fallback';
+let JWT_SECRET = process.env.JWT_SECRET;
+
+if (process.env.NODE_ENV === 'production') {
+    if (!JWT_SECRET || !JWT_SECRET.trim() || JWT_SECRET === 'super_secret_string_123' || JWT_SECRET === DEV_FALLBACK_JWT_SECRET) {
+        console.error('\n[FATAL SECURITY ERROR] JWT_SECRET is missing, empty, or set to a known development fallback in production!');
+        console.error('AJMart requires a strong, unique, cryptographically random JWT_SECRET environment variable in production.');
+        console.error('Please configure JWT_SECRET in your Render dashboard environment variables.\n');
+        process.exit(1);
+    }
+} else {
+    if (!JWT_SECRET || !JWT_SECRET.trim()) {
+        JWT_SECRET = DEV_FALLBACK_JWT_SECRET;
+    }
+}
 
 app.get('/', (req, res) => {
     res.send('AJMart Backend API is running!');
@@ -75,7 +144,7 @@ const optionalAuth = (req, res, next) => {
 };
 
 // --- AUTH ENDPOINTS ---
-app.post('/api/auth/register', (req, res) => {
+app.post('/api/auth/register', registerLimiter, (req, res) => {
     const { name, email, phone, address, password } = req.body;
     if (!name || !email || !password || !phone) {
         return res.status(400).json({ error: "Please fill in all required fields (Name, Email, Phone, Password)" });
@@ -97,7 +166,7 @@ app.post('/api/auth/register', (req, res) => {
         });
 });
 
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', loginLimiter, (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
         return res.status(400).json({ error: "Please enter your email and password" });
@@ -158,9 +227,27 @@ app.delete('/api/categories/:id', verifyToken, isAdmin, (req, res) => {
 });
 
 // --- PRODUCTS ENDPOINTS ---
+const enrichProductInventory = (products) => {
+    if (!products) return products;
+    const isArray = Array.isArray(products);
+    const list = isArray ? products : [products];
+    for (const prod of list) {
+        const physical = Number(prod.stock) || 0;
+        const reserved = Number(prod.reserved_stock) || 0;
+        const available = Math.max(0, physical - reserved);
+        prod.physical_stock = physical;
+        prod.reserved_stock = reserved;
+        prod.available_stock = available;
+        // stock field reflects available stock for customer views
+        prod.stock = available;
+    }
+    return products;
+};
+
 const attachGalleryImages = (products) => {
     return new Promise((resolve, reject) => {
         if (!products || products.length === 0) return resolve(products);
+        enrichProductInventory(products);
         const productIds = products.map(p => p.id);
         const placeholders = productIds.map(() => '?').join(',');
         const sql = `SELECT product_id, image_url, image_type, sort_order FROM product_images WHERE product_id IN (${placeholders}) ORDER BY sort_order ASC, id ASC`;
@@ -313,9 +400,10 @@ app.post('/api/products', verifyToken, isAdmin, (req, res) => {
 });
 
 app.put('/api/products/:id', verifyToken, isAdmin, (req, res) => {
-    const { name, category_id, brand, price, stock, image_url, description, is_active, variants, is_featured } = req.body;
+    const { name, category_id, brand, price, stock, physical_stock, image_url, description, is_active, variants, is_featured } = req.body;
+    const targetStock = physical_stock !== undefined ? physical_stock : stock;
     db.run(`UPDATE Products SET name = COALESCE(?, name), category_id = COALESCE(?, category_id), brand = COALESCE(?, brand), price = COALESCE(?, price), stock = COALESCE(?, stock), image_url = COALESCE(?, image_url), description = COALESCE(?, description), is_active = COALESCE(?, is_active), variants = COALESCE(?, variants), is_featured = COALESCE(?, is_featured) WHERE id = ?`,
-        [name, category_id, brand, price, stock, image_url, description, is_active, variants !== undefined ? (typeof variants === 'string' ? variants : JSON.stringify(variants)) : null, is_featured !== undefined ? (is_featured ? 1 : 0) : null, req.params.id], function(err) {
+        [name, category_id, brand, price, targetStock, image_url, description, is_active, variants !== undefined ? (typeof variants === 'string' ? variants : JSON.stringify(variants)) : null, is_featured !== undefined ? (is_featured ? 1 : 0) : null, req.params.id], function(err) {
             if (err) return res.status(400).json({ error: err.message });
             res.json({ message: "Product updated", changes: this.changes });
         });
@@ -565,47 +653,211 @@ app.put('/api/settings', verifyToken, isAdmin, (req, res) => {
 });
 
 // --- ORDERS ENDPOINTS ---
-app.post('/api/orders', optionalAuth, (req, res) => {
-    const { items, total_price, delivery_address, notes, customer_name, customer_phone } = req.body;
-    const user_id = req.user ? req.user.id : null;
+app.post('/api/orders', optionalAuth, async (req, res) => {
+    try {
+        const { items, delivery_address, notes, customer_name, customer_phone } = req.body;
+        const user_id = req.user ? req.user.id : null;
 
-    if (!items || items.length === 0) return res.status(400).json({ error: "No items in order" });
+        // 1. Validate items array
+        if (!items || !Array.isArray(items) || items.length === 0) {
+            return res.status(400).json({ error: "Order must contain at least one item." });
+        }
 
-    // Points program: 50 points on every 2000 PKR for logged-in customers
-    let pointsEarned = 0;
-    if (user_id && total_price >= 2000) {
-        pointsEarned = Math.floor(total_price / 2000) * 50;
-    }
+        if (!delivery_address || typeof delivery_address !== 'string' || !delivery_address.trim()) {
+            return res.status(400).json({ error: "Delivery address is required." });
+        }
 
-    db.serialize(() => {
-        db.run('BEGIN TRANSACTION');
-        db.run(`INSERT INTO Orders (user_id, total_price, delivery_address, notes, customer_name, customer_phone) VALUES (?, ?, ?, ?, ?, ?)`,
-            [user_id, total_price, delivery_address, notes, customer_name || (req.user ? req.user.name : null), customer_phone || (req.user ? req.user.phone : null)], function(err) {
-                if (err) {
-                    db.run('ROLLBACK');
-                    return res.status(400).json({ error: err.message });
-                }
-                const order_id = this.lastID;
-                const stmt = db.prepare(`INSERT INTO OrderItems (order_id, product_id, quantity, price, variant_name) VALUES (?, ?, ?, ?, ?)`);
-                items.forEach(item => {
-                    stmt.run([order_id, item.product_id, item.quantity, item.price, item.variant_name || null]);
+        // 2. Validate individual item fields and aggregate quantities per product_id
+        const totalQtyByProduct = {};
+        for (const item of items) {
+            const pid = Number(item.product_id);
+            const qty = Number(item.quantity);
+
+            if (!Number.isInteger(pid) || pid <= 0) {
+                return res.status(400).json({ error: `Invalid product ID: ${item.product_id}` });
+            }
+            if (!Number.isInteger(qty) || qty <= 0) {
+                return res.status(400).json({ error: `Quantity must be a positive integer for product ID ${pid}` });
+            }
+
+            totalQtyByProduct[pid] = (totalQtyByProduct[pid] || 0) + qty;
+        }
+
+        const uniqueProductIds = Object.keys(totalQtyByProduct).map(Number);
+        const placeholders = uniqueProductIds.map(() => '?').join(',');
+
+        // 3. Query authoritative products, active discounts, and minimum order setting
+        const [products, discounts, settingsRows] = await Promise.all([
+            new Promise((resolve, reject) => {
+                db.all(`SELECT id, name, price, stock, reserved_stock, is_active, variants FROM Products WHERE id IN (${placeholders})`, uniqueProductIds, (err, rows) => {
+                    if (err) return reject(err);
+                    resolve(rows || []);
                 });
-                stmt.finalize();
-
-                // Award points to authenticated user
-                if (user_id && pointsEarned > 0) {
-                    db.run(`UPDATE Users SET points = COALESCE(points, 0) + ? WHERE id = ?`, [pointsEarned, user_id]);
-                }
-
-                db.run('COMMIT');
-                res.status(201).json({ 
-                    message: "Order placed successfully", 
-                    order_id, 
-                    pointsEarned,
-                    guest: !user_id 
+            }),
+            new Promise((resolve, reject) => {
+                db.all(`SELECT product_id, discount_percent, valid_until FROM Discounts WHERE product_id IN (${placeholders}) AND valid_until >= datetime('now')`, uniqueProductIds, (err, rows) => {
+                    if (err) return reject(err);
+                    resolve(rows || []);
                 });
+            }),
+            new Promise((resolve, reject) => {
+                db.all(`SELECT key, value FROM settings WHERE key = 'minimum_order_amount'`, [], (err, rows) => {
+                    if (err) return reject(err);
+                    resolve(rows || []);
+                });
+            })
+        ]);
+
+        const minOrderSetting = (settingsRows || []).find(s => s.key === 'minimum_order_amount');
+        const minOrderAmount = minOrderSetting && Number(minOrderSetting.value) ? Number(minOrderSetting.value) : 5000;
+
+        const productMap = {};
+        for (const p of products) {
+            productMap[p.id] = p;
+        }
+
+        const discountMap = {};
+        for (const d of discounts) {
+            discountMap[d.product_id] = d;
+        }
+
+        // 4. Validate product existence, active status, and available stock
+        for (const pid of uniqueProductIds) {
+            const product = productMap[pid];
+            if (!product) {
+                return res.status(400).json({ error: `Product with ID ${pid} does not exist.` });
+            }
+            if (product.is_active !== 1) {
+                return res.status(400).json({ error: `Product "${product.name}" is currently unavailable.` });
+            }
+            const physicalStock = Number(product.stock) || 0;
+            const reservedStock = Number(product.reserved_stock) || 0;
+            const availableStock = Math.max(0, physicalStock - reservedStock);
+            const requestedQty = totalQtyByProduct[pid];
+
+            if (availableStock < requestedQty) {
+                return res.status(400).json({
+                    error: `Insufficient available stock for "${product.name}". Requested ${requestedQty}, but only ${availableStock} available.`
+                });
+            }
+        }
+
+        // 5. Authoritatively calculate line prices and order total
+        let authoritativeTotal = 0;
+        const verifiedItems = [];
+
+        for (const item of items) {
+            const pid = Number(item.product_id);
+            const qty = Number(item.quantity);
+            const product = productMap[pid];
+
+            let authoritativePrice = Number(product.price);
+
+            // Handle product variants if present
+            if (item.variant_name && product.variants) {
+                try {
+                    const parsedVariants = typeof product.variants === 'string' ? JSON.parse(product.variants) : product.variants;
+                    if (Array.isArray(parsedVariants)) {
+                        const matchedVariant = parsedVariants.find(v => v.name && v.name.trim() === item.variant_name.trim());
+                        if (matchedVariant && Number(matchedVariant.price) > 0) {
+                            authoritativePrice = Number(matchedVariant.price);
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error parsing variants for product', pid, e);
+                }
+            }
+
+            // Apply active promotional discount if applicable
+            const activeDiscount = discountMap[pid];
+            if (activeDiscount && Number(activeDiscount.discount_percent) > 0) {
+                const discountPct = Number(activeDiscount.discount_percent);
+                authoritativePrice = Math.round(authoritativePrice * (100.0 - discountPct) / 100.0);
+            }
+
+            const lineTotal = authoritativePrice * qty;
+            authoritativeTotal += lineTotal;
+
+            verifiedItems.push({
+                product_id: pid,
+                name: product.name,
+                price: authoritativePrice,
+                quantity: qty,
+                variant_name: item.variant_name || null
             });
-    });
+        }
+
+        // 6. Enforce minimum order threshold
+        if (authoritativeTotal < minOrderAmount) {
+            return res.status(400).json({
+                error: `Minimum order amount is PKR ${minOrderAmount.toLocaleString()}. Your verified order total is PKR ${authoritativeTotal.toLocaleString()}.`
+            });
+        }
+
+        // 7. Calculate loyalty points (only for authenticated customers)
+        let pointsEarned = 0;
+        if (user_id && authoritativeTotal >= 2000) {
+            pointsEarned = Math.floor(authoritativeTotal / 2000) * 50;
+        }
+
+        // 8. Atomic Reservation Transaction (Pending status, physical stock untouched, stock reserved)
+        const orderResult = await db.transaction(async (tx) => {
+            const finalCustomerName = customer_name ? customer_name.trim() : (req.user ? req.user.name : 'Guest Customer');
+            const finalCustomerPhone = customer_phone ? customer_phone.trim() : (req.user ? req.user.phone : 'N/A');
+
+            // A. Insert Order with status 'Pending'
+            const orderInsert = await tx.execute(
+                `INSERT INTO Orders (user_id, total_price, delivery_address, notes, customer_name, customer_phone, status) VALUES (?, ?, ?, ?, ?, ?, 'Pending')`,
+                [user_id, authoritativeTotal, delivery_address.trim(), notes ? notes.trim() : '', finalCustomerName, finalCustomerPhone]
+            );
+            const order_id = orderInsert.lastID;
+
+            // B. Insert Verified Order Items
+            for (const vItem of verifiedItems) {
+                await tx.execute(
+                    `INSERT INTO OrderItems (order_id, product_id, quantity, price, variant_name) VALUES (?, ?, ?, ?, ?)`,
+                    [order_id, vItem.product_id, vItem.quantity, vItem.price, vItem.variant_name]
+                );
+            }
+
+            // C. Concurrency-Safe Stock Reservation: Increment reserved_stock
+            // Guard: available stock (stock - reserved_stock) must be >= requested quantity
+            for (const pid of uniqueProductIds) {
+                const qtyToReserve = totalQtyByProduct[pid];
+                const reserveUpdate = await tx.execute(
+                    `UPDATE Products 
+                     SET reserved_stock = COALESCE(reserved_stock, 0) + ? 
+                     WHERE id = ? AND (stock - COALESCE(reserved_stock, 0)) >= ?`,
+                    [qtyToReserve, pid, qtyToReserve]
+                );
+                if (reserveUpdate.changes === 0) {
+                    throw new Error(`Concurrency conflict: Insufficient available stock for product ID ${pid}`);
+                }
+            }
+
+            // D. Note: Loyalty points are recorded with the order, awarded on active status
+            if (user_id && pointsEarned > 0) {
+                await tx.execute(
+                    `UPDATE Users SET points = COALESCE(points, 0) + ? WHERE id = ?`,
+                    [pointsEarned, user_id]
+                );
+            }
+
+            return { order_id };
+        });
+
+        res.status(201).json({
+            message: "Order placed successfully",
+            order_id: orderResult.order_id,
+            total_price: authoritativeTotal,
+            pointsEarned,
+            guest: !user_id
+        });
+
+    } catch (err) {
+        console.error('Order creation error:', err);
+        return res.status(500).json({ error: err.message || "Failed to process order" });
+    }
 });
 
 // Helper: attach items to orders
@@ -671,29 +923,199 @@ app.get('/api/orders/me', verifyToken, (req, res) => {
     });
 });
 
-app.put('/api/orders/:id/status', verifyToken, isAdmin, (req, res) => {
-    const { status } = req.body;
-    if (!status) return res.status(400).json({ error: "Status is required" });
-    db.run(`UPDATE Orders SET status = ? WHERE id = ?`, [status, req.params.id], function(err) {
-        if (err) return res.status(400).json({ error: err.message });
-        res.json({ message: "Order status updated successfully", status });
-    });
+// Admin status update: handles deduction on confirmation and restoration on cancellation
+app.put('/api/orders/:id/status', verifyToken, isAdmin, async (req, res) => {
+    try {
+        const orderId = Number(req.params.id);
+        const { status: newStatus } = req.body;
+
+        if (!Number.isInteger(orderId) || orderId <= 0) {
+            return res.status(400).json({ error: "Invalid order ID" });
+        }
+        if (!newStatus) {
+            return res.status(400).json({ error: "Status is required" });
+        }
+
+        const validStatuses = ['Pending', 'Confirmed', 'Processing', 'Out for Delivery', 'Delivered', 'Cancelled'];
+        if (!validStatuses.includes(newStatus)) {
+            return res.status(400).json({ error: `Invalid status "${newStatus}". Must be one of: ${validStatuses.join(', ')}` });
+        }
+
+        const order = await new Promise((resolve, reject) => {
+            db.get(`SELECT * FROM Orders WHERE id = ?`, [orderId], (err, row) => {
+                if (err) return reject(err);
+                resolve(row);
+            });
+        });
+
+        if (!order) return res.status(404).json({ error: "Order not found" });
+        const prevStatus = order.status;
+
+        if (prevStatus === newStatus) {
+            return res.json({ message: "Order status unchanged", status: newStatus });
+        }
+
+        // Enforce valid status transition rules
+        if (prevStatus === 'Cancelled') {
+            return res.status(400).json({ error: "Cancelled orders cannot be reopened or transitioned." });
+        }
+        if (prevStatus === 'Delivered') {
+            if (newStatus === 'Cancelled') {
+                return res.status(400).json({ error: "Delivered orders cannot be cancelled directly without an explicit return workflow." });
+            }
+            if (newStatus === 'Pending') {
+                return res.status(400).json({ error: "Delivered orders cannot be moved back to Pending." });
+            }
+        }
+
+        // Fetch order items for inventory adjustment
+        const items = await new Promise((resolve, reject) => {
+            db.all(`SELECT product_id, quantity FROM OrderItems WHERE order_id = ?`, [orderId], (err, rows) => {
+                if (err) return reject(err);
+                resolve(rows || []);
+            });
+        });
+
+        // Execute atomic state transition
+        await db.transaction(async (tx) => {
+            // Update order status
+            await tx.execute(`UPDATE Orders SET status = ? WHERE id = ?`, [newStatus, orderId]);
+
+            // CASE 1: Pending -> Confirmed (Physical stock deducted, reservation released)
+            if (prevStatus === 'Pending' && newStatus === 'Confirmed') {
+                for (const item of items) {
+                    if (item.product_id && item.quantity > 0) {
+                        const stockDeduct = await tx.execute(
+                            `UPDATE Products 
+                             SET stock = stock - ?, 
+                                 reserved_stock = MAX(0, COALESCE(reserved_stock, 0) - ?) 
+                             WHERE id = ? AND stock >= ?`,
+                            [item.quantity, item.quantity, item.product_id, item.quantity]
+                        );
+                        if (stockDeduct.changes === 0) {
+                            throw new Error(`Insufficient physical stock for product ID ${item.product_id} to confirm order.`);
+                        }
+                    }
+                }
+            }
+
+            // CASE 2: Pending -> Cancelled (Release reservation only; physical stock untouched)
+            else if (prevStatus === 'Pending' && newStatus === 'Cancelled') {
+                for (const item of items) {
+                    if (item.product_id && item.quantity > 0) {
+                        await tx.execute(
+                            `UPDATE Products 
+                             SET reserved_stock = MAX(0, COALESCE(reserved_stock, 0) - ?) 
+                             WHERE id = ?`,
+                            [item.quantity, item.product_id]
+                        );
+                    }
+                }
+                const points = order.total_price >= 2000 ? Math.floor(order.total_price / 2000) * 50 : 0;
+                if (order.user_id && points > 0) {
+                    await tx.execute(
+                        `UPDATE Users SET points = MAX(0, COALESCE(points, 0) - ?) WHERE id = ?`,
+                        [points, order.user_id]
+                    );
+                }
+            }
+
+            // CASE 3: Active confirmed order cancelled (Confirmed/Processing/Out for Delivery -> Cancelled)
+            // Physical stock was already deducted on confirmation, so restore physical stock!
+            else if (['Confirmed', 'Processing', 'Out for Delivery'].includes(prevStatus) && newStatus === 'Cancelled') {
+                for (const item of items) {
+                    if (item.product_id && item.quantity > 0) {
+                        await tx.execute(
+                            `UPDATE Products SET stock = stock + ? WHERE id = ?`,
+                            [item.quantity, item.product_id]
+                        );
+                    }
+                }
+                const points = order.total_price >= 2000 ? Math.floor(order.total_price / 2000) * 50 : 0;
+                if (order.user_id && points > 0) {
+                    await tx.execute(
+                        `UPDATE Users SET points = MAX(0, COALESCE(points, 0) - ?) WHERE id = ?`,
+                        [points, order.user_id]
+                    );
+                }
+            }
+            // For other valid transitions (e.g. Confirmed -> Out for Delivery -> Delivered):
+            // Physical stock was already deducted at confirmation, so no stock changes needed.
+        });
+
+        res.json({ message: "Order status updated successfully", status: newStatus });
+    } catch (err) {
+        console.error('Admin status update error:', err);
+        res.status(500).json({ error: err.message || "Failed to update order status" });
+    }
 });
 
-app.put('/api/orders/:id/cancel', verifyToken, (req, res) => {
-    db.get(`SELECT * FROM Orders WHERE id = ? AND user_id = ?`, [req.params.id, req.user.id], (err, order) => {
-        if (err) return res.status(500).json({ error: err.message });
+// Customer cancel pending order
+app.put('/api/orders/:id/cancel', verifyToken, async (req, res) => {
+    try {
+        const orderId = Number(req.params.id);
+        if (!Number.isInteger(orderId) || orderId <= 0) {
+            return res.status(400).json({ error: "Invalid order ID" });
+        }
+
+        const order = await new Promise((resolve, reject) => {
+            db.get(`SELECT * FROM Orders WHERE id = ? AND user_id = ?`, [orderId, req.user.id], (err, row) => {
+                if (err) return reject(err);
+                resolve(row);
+            });
+        });
+
         if (!order) return res.status(404).json({ error: "Order not found" });
         if (order.status !== 'Pending') {
             return res.status(400).json({ error: "Only Pending orders can be cancelled directly. Please contact Aqib on WhatsApp." });
         }
-        db.run(`UPDATE Orders SET status = 'Cancelled' WHERE id = ?`, [req.params.id], function(updateErr) {
-            if (updateErr) return res.status(500).json({ error: updateErr.message });
-            res.json({ message: "Order cancelled successfully" });
+
+        const items = await new Promise((resolve, reject) => {
+            db.all(`SELECT product_id, quantity FROM OrderItems WHERE order_id = ?`, [orderId], (err, rows) => {
+                if (err) return reject(err);
+                resolve(rows || []);
+            });
         });
-    });
+
+        // Atomic transaction: status Pending -> Cancelled, release reservation
+        await db.transaction(async (tx) => {
+            const updateRes = await tx.execute(
+                `UPDATE Orders SET status = 'Cancelled' WHERE id = ? AND status = 'Pending'`,
+                [orderId]
+            );
+            if (updateRes.changes === 0) {
+                throw new Error("Order was already cancelled or updated.");
+            }
+
+            // Release reserved stock
+            for (const item of items) {
+                if (item.product_id && item.quantity > 0) {
+                    await tx.execute(
+                        `UPDATE Products 
+                         SET reserved_stock = MAX(0, COALESCE(reserved_stock, 0) - ?) 
+                         WHERE id = ?`,
+                        [item.quantity, item.product_id]
+                    );
+                }
+            }
+
+            // Revert loyalty points if awarded
+            const pointsAwarded = order.total_price >= 2000 ? Math.floor(order.total_price / 2000) * 50 : 0;
+            if (order.user_id && pointsAwarded > 0) {
+                await tx.execute(
+                    `UPDATE Users SET points = MAX(0, COALESCE(points, 0) - ?) WHERE id = ?`,
+                    [pointsAwarded, order.user_id]
+                );
+            }
+        });
+
+        res.json({ message: "Order cancelled successfully, stock reservation released" });
+    } catch (err) {
+        console.error('Customer order cancellation error:', err);
+        res.status(500).json({ error: err.message || "Failed to cancel order" });
+    }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT} (0.0.0.0)`);
 });

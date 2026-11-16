@@ -100,7 +100,10 @@ const Products = () => {
   };
 
   const openModal = (product = { name: '', brand: 'AJ Brand', category_id: 1, price: '', stock: '', description: '', image_url: '', is_featured: 0 }) => {
-    setCurrentProduct(product);
+    setCurrentProduct({
+      ...product,
+      stock: product.physical_stock !== undefined ? product.physical_stock : product.stock
+    });
     setUploadFile(null);
     setPreviewUrl(product.image_url || null);
     setIsModalOpen(true);
@@ -134,7 +137,14 @@ const Products = () => {
                 <td className="p-4 text-sm font-semibold text-darkBlue dark:text-cyan">{p.brand || 'AJ Brand'}</td>
                 <td className="p-4 font-bold text-lightBlue dark:text-aqua">{p.price}</td>
                 <td className="p-4">
-                  <span className={p.stock < 5 ? "text-error-light dark:text-error-dark font-bold" : "text-success-light dark:text-success-dark"}>{p.stock}</span>
+                  <span className={(p.physical_stock !== undefined ? p.physical_stock : p.stock) < 5 ? "text-error-light dark:text-error-dark font-bold" : "text-success-light dark:text-success-dark"}>
+                    {p.physical_stock !== undefined ? p.physical_stock : p.stock}
+                  </span>
+                  {p.reserved_stock > 0 && (
+                    <span className="block text-[11px] text-amber-600 dark:text-amber-400 font-semibold">
+                      ({p.reserved_stock} reserved)
+                    </span>
+                  )}
                 </td>
                 <td className="p-4">
                   {p.is_featured ? (
