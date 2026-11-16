@@ -35,15 +35,12 @@ if (process.env.FRONTEND_URL) {
 
 app.use(cors({
     origin: function (origin, callback) {
+        // Allow requests with no origin (e.g. mobile apps, curl, server-to-server health checks)
         if (!origin) return callback(null, true);
-        const isAllowed = allowedOrigins.includes(origin) ||
-            origin.endsWith('.onrender.com') ||
-            origin.endsWith('.vercel.app') ||
-            origin.endsWith('.netlify.app');
-        if (isAllowed) {
+        if (allowedOrigins.includes(origin)) {
             return callback(null, true);
         }
-        return callback(new Error('CORS policy: Origin not allowed'));
+        return callback(new Error('CORS policy: Specific origin not allowed'));
     },
     credentials: true
 }));
