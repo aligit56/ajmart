@@ -81,3 +81,4 @@
 - 2026-11-15: Appended 'Rice' to all Rice category products via migration 022 (updating 8 DB rows, CSV templates, and manifest), enabling search for 'rice' to return all 9 Rice products.
 - 2026-11-15: Rebranded store name to 'AJMart' across database settings, user accounts, frontend components, and WhatsApp dispatch, and cleaned baked-in 'AJTraders' watermark from hero slide 1 via migration 023.
 - 2026-11-15: Fixed light/dark mode contrast across the store, upgraded order tracking stepper with connected progress bar and high-contrast status nodes, fixed vanishing 'Out for Delivery' step via solid amber palette, and refined Tailwind light/dark palette and card separation.
+- 2026-11-16: Prepared production deployment configurations: created vercel.json rewrite rules and Netlify _redirects for seamless SPA routing, verified dist build assets and environment variables.
