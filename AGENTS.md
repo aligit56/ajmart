@@ -90,3 +90,4 @@
 - 2026-11-16: Created and migrated production database (ajmart-prod): seeded 158 products, 11 categories, 211 images, 25 settings, 4 discounts, initialized reserved_stock to 0, preserved customer data isolation (0 users, 0 orders), and verified 11/11 read-only checks.
 - 2026-11-16: Deployed hardened backend to Render production, verified all 7 public API endpoints return HTTP 200, and initialized verified primary administrator account in ajmart-prod with bcrypt hashing.
 - 2026-11-17: Phase 11 production launch hardening: removed demo login buttons and embedded credentials from production bundle, updated brand lockup on auth pages to AJMart, validated 100% of static media assets (375 files), and verified build integrity.
+- 2026-11-17: Standardized category image URLs from http://localhost:5000 to relative /images/categories/ across SQLite and Turso production via migration 025, and copied 11 category assets to frontend/public/images/categories/.
