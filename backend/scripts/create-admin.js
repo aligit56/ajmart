@@ -14,12 +14,19 @@ const readline = require('readline');
 const bcrypt = require('bcryptjs');
 const createDatabase = require('../utils/db');
 
-// Prefer production credentials, fall back to default Turso credentials
-const targetUrl = process.env.TURSO_PROD_DATABASE_URL || process.env.TURSO_DATABASE_URL;
-const targetToken = process.env.TURSO_PROD_AUTH_TOKEN || process.env.TURSO_AUTH_TOKEN;
+// Strictly require production credentials and verify ajmart-prod target
+const targetUrl = process.env.TURSO_PROD_DATABASE_URL;
+const targetToken = process.env.TURSO_PROD_AUTH_TOKEN;
 
 if (!targetUrl || !targetToken) {
-  console.error('[ERROR] Missing Turso credentials in backend/.env.');
+  console.error('[SAFETY BLOCK] Missing TURSO_PROD_DATABASE_URL or TURSO_PROD_AUTH_TOKEN in backend/.env.');
+  console.error('This script is strictly intended for production (ajmart-prod).');
+  process.exit(1);
+}
+
+if (!targetUrl.includes('ajmart-prod')) {
+  console.error('[SAFETY BLOCK] Target URL does not specifically contain "ajmart-prod"!');
+  console.error('To protect your environments, this script will only execute against ajmart-prod.');
   process.exit(1);
 }
 
