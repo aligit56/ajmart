@@ -18,7 +18,7 @@ const Cart = () => {
       .catch(err => console.error('Failed to load settings in Cart:', err));
   }, []);
 
-  const minOrderAmount = Number(settings.minimum_order_amount) || 2000;
+  const minOrderAmount = Number(settings.minimum_order_amount) || 3500;
   const isUnderMinOrder = cartTotal < minOrderAmount;
   const isAdmin = user && user.role === 'admin';
 

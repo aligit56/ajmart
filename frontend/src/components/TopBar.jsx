@@ -7,8 +7,8 @@ import api from '../api/axios';
 const PROMOTIONS = [
   {
     icon: Truck,
-    badge: 'MIN ORDER PKR 2,000',
-    text: 'Minimum order of PKR 2,000 required for doorstep delivery across Rawalpindi & Islamabad',
+    badge: 'MIN ORDER PKR 3,500',
+    text: 'Minimum order of PKR 3,500 required for doorstep delivery across Rawalpindi & Islamabad',
     link: '/products'
   },
   {

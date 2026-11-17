@@ -47,7 +47,7 @@ const Checkout = () => {
   const aqibNumber = settings.owner_aqib || settings.whatsapp_number || '0335-7727555';
   const cleanAqibPhone = aqibNumber.replace(/\D/g, '').replace(/^0/, '92') || '923357727555';
 
-  const minOrderAmount = Number(settings.minimum_order_amount) || 2000;
+  const minOrderAmount = Number(settings.minimum_order_amount) || 3500;
   const isUnderMinOrder = cartTotal < minOrderAmount;
   const earnedPoints = Math.floor(cartTotal / 2000) * 50;
   const isAdmin = user && user.role === 'admin';

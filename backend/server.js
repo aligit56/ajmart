@@ -713,7 +713,7 @@ app.post('/api/orders', optionalAuth, async (req, res) => {
         ]);
 
         const minOrderSetting = (settingsRows || []).find(s => s.key === 'minimum_order_amount');
-        const minOrderAmount = minOrderSetting && Number(minOrderSetting.value) ? Number(minOrderSetting.value) : 2000;
+        const minOrderAmount = minOrderSetting && Number(minOrderSetting.value) ? Number(minOrderSetting.value) : 3500;
 
         const productMap = {};
         for (const p of products) {
