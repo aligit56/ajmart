@@ -2,6 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const CategoryCard = ({ category }) => {
+  const imageUrl = category.image_url 
+    ? category.image_url.replace(/^https?:\/\/[^\/]+:5000/, '') 
+    : '';
+
   return (
     <Link 
       to={`/category/${category.id}`} 
@@ -11,11 +15,20 @@ const CategoryCard = ({ category }) => {
         
         {/* Image Container - Rectangular Aspect Ratio */}
         <div className="w-full aspect-video bg-gray-100 dark:bg-black/50 flex items-center justify-center overflow-hidden">
-          {category.image_url ? (
+          {imageUrl ? (
             <img 
-              src={category.image_url} 
+              src={imageUrl} 
               alt={category.name} 
+              loading="lazy"
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              onError={(e) => {
+                e.target.onerror = null;
+                if (e.target.src.endsWith('.webp') || e.target.src.endsWith('.WEBP')) {
+                  e.target.src = e.target.src.replace(/\.webp$/i, '.jpg');
+                } else {
+                  e.target.src = '/images/placeholder.jpg';
+                }
+              }}
             />
           ) : (
             <div className="w-full h-full bg-gray-200 dark:bg-gray-800 flex items-center justify-center">

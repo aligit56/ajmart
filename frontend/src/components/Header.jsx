@@ -248,7 +248,20 @@ const Header = () => {
                         >
                           <div className="w-16 h-16 rounded-lg bg-lightBg dark:bg-[#0a0a0a] flex items-center justify-center p-1.5 mb-2 overflow-hidden shadow-xs group-hover:scale-105 transition-transform">
                             {cat.image_url ? (
-                              <img src={cat.image_url} alt={cat.name} className="w-full h-full object-contain" />
+                              <img 
+                                src={cat.image_url.replace(/^https?:\/\/[^\/]+:5000/, '')} 
+                                alt={cat.name} 
+                                loading="lazy"
+                                className="w-full h-full object-contain"
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  if (e.target.src.endsWith('.webp') || e.target.src.endsWith('.WEBP')) {
+                                    e.target.src = e.target.src.replace(/\.webp$/i, '.jpg');
+                                  } else {
+                                    e.target.src = '/images/placeholder.jpg';
+                                  }
+                                }}
+                              />
                             ) : (
                               <Grid size={24} className="text-lightTextSecondary dark:text-darkTextSecondary" />
                             )}

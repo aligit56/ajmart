@@ -54,12 +54,12 @@ const TopBar = () => {
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="flex items-center justify-between h-9 gap-3">
           
-          {/* Left / Center: Rotating Promotional Announcements */}
-          <div className="flex items-center gap-2 flex-1 min-w-0">
+          {/* Desktop Announcement Rotator (Unchanged) */}
+          <div className="hidden sm:flex items-center gap-2 flex-1 min-w-0">
             <button 
               onClick={prevPromo} 
               aria-label="Previous Offer" 
-              className="text-lightTextSecondary hover:text-darkBlue dark:hover:text-cyan transition-colors hidden sm:block"
+              className="text-lightTextSecondary hover:text-darkBlue dark:hover:text-cyan transition-colors"
             >
               <ChevronLeft size={14} />
             </button>
@@ -81,10 +81,57 @@ const TopBar = () => {
             <button 
               onClick={nextPromo} 
               aria-label="Next Offer" 
-              className="text-lightTextSecondary hover:text-darkBlue dark:hover:text-cyan transition-colors hidden sm:block"
+              className="text-lightTextSecondary hover:text-darkBlue dark:hover:text-cyan transition-colors"
             >
               <ChevronRight size={14} />
             </button>
+          </div>
+
+          {/* Mobile Continuous Marquee Ticker (Smooth, No Truncation) */}
+          <div className="flex sm:hidden items-center flex-1 min-w-0 overflow-hidden relative py-1 [mask-image:linear-gradient(to_right,transparent,black_8px,black_calc(100%-8px),transparent)]">
+            <div className="animate-marquee flex items-center">
+              {/* First Track Copy */}
+              <div className="flex items-center gap-6 pr-6 flex-shrink-0">
+                {PROMOTIONS.map((item, idx) => {
+                  const ItemIcon = item.icon;
+                  return (
+                    <Link
+                      key={`ticker-1-${idx}`}
+                      to={item.link}
+                      className="inline-flex items-center gap-2 text-xs font-medium hover:text-darkBlue dark:hover:text-cyan transition-colors whitespace-nowrap"
+                    >
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-black text-[10px] uppercase tracking-wider bg-darkBlue/10 dark:bg-cyan/15 text-darkBlue dark:text-cyan flex-shrink-0">
+                        <ItemIcon size={11} />
+                        <span>{item.badge}</span>
+                      </span>
+                      <span>{item.text}</span>
+                      <span className="text-[#a8a29e] dark:text-[#555] mx-1">•</span>
+                    </Link>
+                  );
+                })}
+              </div>
+              {/* Second Track Copy for Seamless Infinite Loop */}
+              <div className="flex items-center gap-6 pr-6 flex-shrink-0" aria-hidden="true">
+                {PROMOTIONS.map((item, idx) => {
+                  const ItemIcon = item.icon;
+                  return (
+                    <Link
+                      key={`ticker-2-${idx}`}
+                      to={item.link}
+                      tabIndex={-1}
+                      className="inline-flex items-center gap-2 text-xs font-medium hover:text-darkBlue dark:hover:text-cyan transition-colors whitespace-nowrap"
+                    >
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-black text-[10px] uppercase tracking-wider bg-darkBlue/10 dark:bg-cyan/15 text-darkBlue dark:text-cyan flex-shrink-0">
+                        <ItemIcon size={11} />
+                        <span>{item.badge}</span>
+                      </span>
+                      <span>{item.text}</span>
+                      <span className="text-[#a8a29e] dark:text-[#555] mx-1">•</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
           {/* Right Side: Quick Links + Social Media Icons */}

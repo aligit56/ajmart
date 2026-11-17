@@ -83,9 +83,17 @@ const Category = () => {
               
               {/* Actual Image (Fully Visible) */}
               <img 
-                src={category.image_url} 
+                src={category.image_url ? category.image_url.replace(/^https?:\/\/[^\/]+:5000/, '') : ''} 
                 alt={category.name} 
                 className="relative z-10 w-full h-full object-contain max-h-[250px] md:max-h-[300px] drop-shadow-md" 
+                onError={(e) => {
+                  e.target.onerror = null;
+                  if (e.target.src.endsWith('.webp') || e.target.src.endsWith('.WEBP')) {
+                    e.target.src = e.target.src.replace(/\.webp$/i, '.jpg');
+                  } else {
+                    e.target.src = '/images/placeholder.jpg';
+                  }
+                }}
               />
             </div>
           )}

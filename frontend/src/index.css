@@ -6,9 +6,12 @@
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 5.5rem;
+    overflow-x: hidden;
   }
   body {
     @apply bg-lightBg dark:bg-darkBg text-lightText dark:text-darkText font-sans antialiased;
+    overflow-x: hidden;
+    width: 100%;
   }
   section[id], div[id] {
     scroll-margin-top: 5.5rem;
@@ -24,5 +27,38 @@
   }
   .input-field {
     @apply w-full bg-lightCard dark:bg-darkCard border border-lightBorder dark:border-darkBorder rounded px-3 py-2 text-lightText dark:text-darkText focus:outline-none focus:border-darkBlue dark:focus:border-cyan focus:shadow-md dark:focus:shadow-none transition-all;
+  }
+}
+
+/* Mobile Announcement Marquee Ticker */
+@keyframes marquee-seamless {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: marquee-seamless 20s linear infinite;
+}
+
+.animate-marquee:hover,
+.animate-marquee:active {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+    transform: none;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
