@@ -17,6 +17,28 @@ const normalizeImageUrl = (url) => {
   return url;
 };
 
+const matchesSearch = (text, query) => {
+  if (!text || !query) return false;
+  const t = text.toLowerCase();
+  const q = query.toLowerCase().trim();
+  if (t.includes(q)) return true;
+  
+  // Transliteration normalizations (e.g. dall <-> daal, ghee <-> ghi)
+  const normT = t.replace(/daal/g, 'dall').replace(/ghi/g, 'ghee');
+  const normQ = q.replace(/daal/g, 'dall').replace(/ghi/g, 'ghee');
+  if (normT.includes(normQ)) return true;
+
+  // Multi-word matching
+  const words = q.split(/\s+/).filter(Boolean);
+  if (words.length > 1) {
+    return words.every(w => {
+      const nw = w.replace(/daal/g, 'dall').replace(/ghi/g, 'ghee');
+      return normT.includes(nw) || t.includes(w);
+    });
+  }
+  return false;
+};
+
 const OffersAdmin = () => {
   const [discounts, setDiscounts] = useState([]);
   const [products, setProducts] = useState([]);
@@ -38,19 +60,34 @@ const OffersAdmin = () => {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Fetch Discounts & Products
+  // Fetch Discounts & Products (Resilient independent loading)
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [discRes, prodRes] = await Promise.all([
-        api.get('/admin/discounts'),
-        api.get('/products')
-      ]);
-      setDiscounts(discRes.data || []);
-      setProducts(prodRes.data || []);
-    } catch (err) {
-      console.error('Failed to load offers:', err);
-      toast.error('Failed to load discounts.');
+      
+      // 1. Fetch products catalog independently
+      try {
+        const prodRes = await api.get('/products');
+        const loadedProducts = Array.isArray(prodRes.data) ? prodRes.data : (prodRes.data?.products || []);
+        setProducts(loadedProducts);
+      } catch (pErr) {
+        console.error('Failed to load products:', pErr);
+        toast.error('Could not load products catalog.');
+      }
+
+      // 2. Fetch discounts independently with fallback
+      try {
+        const discRes = await api.get('/admin/discounts');
+        setDiscounts(Array.isArray(discRes.data) ? discRes.data : []);
+      } catch (dErr) {
+        console.warn('Failed to load /admin/discounts, attempting fallback to /products/deals:', dErr);
+        try {
+          const dealsRes = await api.get('/products/deals');
+          setDiscounts(Array.isArray(dealsRes.data) ? dealsRes.data : []);
+        } catch (fErr) {
+          console.error('Fallback deals load error:', fErr);
+        }
+      }
     } finally {
       setLoading(false);
     }
@@ -65,17 +102,21 @@ const OffersAdmin = () => {
     if (!searchTerm.trim()) return discounts;
     const q = searchTerm.toLowerCase();
     return discounts.filter(d => 
-      (d.product_name && d.product_name.toLowerCase().includes(q)) ||
-      (d.category_name && d.category_name.toLowerCase().includes(q)) ||
+      (d.product_name && matchesSearch(d.product_name, q)) ||
+      (d.category_name && matchesSearch(d.category_name, q)) ||
       d.discount_percent.toString().includes(q)
     );
   }, [discounts, searchTerm]);
 
   // Products available for new offers (filtered by search in modal)
   const availableProducts = useMemo(() => {
-    if (!productSearch.trim()) return products.slice(0, 15);
-    const q = productSearch.toLowerCase();
-    return products.filter(p => p.name.toLowerCase().includes(q) || (p.brand && p.brand.toLowerCase().includes(q))).slice(0, 20);
+    if (!productSearch.trim()) return products.slice(0, 30);
+    const q = productSearch.trim().toLowerCase();
+    return products.filter(p => 
+      matchesSearch(p.name, q) || 
+      matchesSearch(p.brand, q) ||
+      matchesSearch(p.category_name, q)
+    ).slice(0, 35);
   }, [products, productSearch]);
 
   // Check if selected product already has an active discount
@@ -479,9 +520,16 @@ const OffersAdmin = () => {
                     />
                   </div>
 
-                  <div className="max-h-40 overflow-y-auto rounded-xl border border-lightBorder dark:border-darkBorder divide-y divide-lightBorder/40 dark:divide-darkBorder/40 bg-lightBg/50 dark:bg-darkBg/50 p-1">
-                    {availableProducts.length === 0 ? (
-                      <div className="text-center py-4 text-xs text-lightTextSecondary">No products found.</div>
+                  <div className="max-h-52 overflow-y-auto rounded-xl border border-lightBorder dark:border-darkBorder divide-y divide-lightBorder/40 dark:divide-darkBorder/40 bg-lightBg/50 dark:bg-darkBg/50 p-1">
+                    {loading && products.length === 0 ? (
+                      <div className="flex items-center justify-center gap-2 py-6 text-xs text-lightTextSecondary">
+                        <Loader2 className="animate-spin text-brandGreen" size={16} /> Loading product catalog...
+                      </div>
+                    ) : availableProducts.length === 0 ? (
+                      <div className="text-center py-5 px-3 text-xs text-lightTextSecondary">
+                        No products found matching "<span className="font-semibold text-lightText dark:text-darkText">{productSearch}</span>".
+                        <div className="text-[11px] text-lightTextSecondary/70 mt-1">Try searching by generic name (e.g. Dall, Rice, Oil, Tea, Soap).</div>
+                      </div>
                     ) : (
                       availableProducts.map(p => {
                         const isSelected = selectedProduct?.id === p.id;
@@ -491,7 +539,7 @@ const OffersAdmin = () => {
                             onClick={() => setSelectedProduct(p)}
                             className={`flex items-center justify-between p-2 rounded-lg cursor-pointer text-xs transition-colors ${
                               isSelected 
-                                ? 'bg-brandGreen text-white font-bold' 
+                                ? 'bg-brandGreen text-white font-bold shadow-sm' 
                                 : 'hover:bg-white dark:hover:bg-darkBg text-lightText dark:text-darkText'
                             }`}
                           >
@@ -499,12 +547,17 @@ const OffersAdmin = () => {
                               <img
                                 src={normalizeImageUrl(p.image_url)}
                                 alt={p.name}
-                                className="w-6 h-6 object-contain rounded bg-white p-0.5 flex-shrink-0"
+                                className="w-7 h-7 object-contain rounded bg-white p-0.5 flex-shrink-0 border border-lightBorder/40"
                                 onError={(e) => { e.currentTarget.src = '/images/placeholder-product.jpg'; }}
                               />
-                              <span className="truncate">{p.name}</span>
+                              <div className="truncate">
+                                <span className="font-semibold block truncate">{p.name}</span>
+                                <span className={isSelected ? 'text-white/80 text-[10px]' : 'text-lightTextSecondary text-[10px]'}>
+                                  {p.brand || 'AJ Brand'}
+                                </span>
+                              </div>
                             </div>
-                            <span className={isSelected ? 'text-white/90 whitespace-nowrap ml-2' : 'text-brandGreen dark:text-brandGreen-light font-bold whitespace-nowrap ml-2'}>
+                            <span className={isSelected ? 'text-white font-bold whitespace-nowrap ml-2' : 'text-brandGreen dark:text-brandGreen-light font-bold whitespace-nowrap ml-2'}>
                               Rs {p.price}
                             </span>
                           </div>
