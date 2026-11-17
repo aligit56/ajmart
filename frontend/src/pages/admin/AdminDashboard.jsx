@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
-import { Package, ListOrdered, LayoutDashboard, FolderTree, Sliders, Video, Settings as SettingsIcon } from 'lucide-react';
+import { Package, ListOrdered, LayoutDashboard, FolderTree, Sliders, Video, Settings as SettingsIcon, Tag } from 'lucide-react';
 import Products from './Products';
 import Orders from './Orders';
 import Stats from './Stats';
@@ -9,6 +9,7 @@ import Categories from './Categories';
 import HeroSlides from './HeroSlides';
 import FeaturedVideosAdmin from './FeaturedVideosAdmin';
 import SettingsAdmin from './SettingsAdmin';
+import OffersAdmin from './OffersAdmin';
 
 const AdminDashboard = () => {
   const { user } = useContext(AuthContext);
@@ -23,6 +24,7 @@ const AdminDashboard = () => {
     { name: 'Products', path: '/admin/products', icon: <Package size={20} /> },
     { name: 'Categories', path: '/admin/categories', icon: <FolderTree size={20} /> },
     { name: 'Orders', path: '/admin/orders', icon: <ListOrdered size={20} /> },
+    { name: 'Offers & Discounts', path: '/admin/offers', icon: <Tag size={20} /> },
     { name: 'Hero Slides', path: '/admin/hero-slides', icon: <Sliders size={20} /> },
     { name: 'Featured Videos', path: '/admin/featured-videos', icon: <Video size={20} /> },
     { name: 'Store Settings', path: '/admin/settings', icon: <SettingsIcon size={20} /> },
@@ -61,7 +63,7 @@ const AdminDashboard = () => {
                 end={item.path === '/admin'}
                 className={`flex items-center gap-3 px-4 py-2.5 rounded-xl font-medium text-sm transition-colors ${
                   isActive 
-                    ? 'bg-darkBlue dark:bg-cyan/20 text-darkBlue dark:text-cyan font-bold shadow-sm' 
+                    ? 'bg-brandGreen text-white font-bold shadow-sm' 
                     : 'text-lightTextSecondary dark:text-darkTextSecondary hover:bg-lightBorder/60 dark:hover:bg-darkBorder/60 hover:text-lightText dark:hover:text-darkText'
                 }`}
               >
@@ -79,6 +81,7 @@ const AdminDashboard = () => {
           <Route path="/products" element={<Products />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/orders" element={<Orders />} />
+          <Route path="/offers" element={<OffersAdmin />} />
           <Route path="/hero-slides" element={<HeroSlides />} />
           <Route path="/featured-videos" element={<FeaturedVideosAdmin />} />
           <Route path="/settings" element={<SettingsAdmin />} />

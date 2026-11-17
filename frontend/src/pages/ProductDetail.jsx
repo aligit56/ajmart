@@ -116,7 +116,11 @@ const ProductDetail = () => {
     setSelectedImage(allImages[nextIdx]);
   };
 
-  const currentPrice = selectedVariant ? selectedVariant.price : (product.discounted_price || product.price);
+  const basePrice = selectedVariant?.price ? Number(selectedVariant.price) : Number(product.price);
+  const hasDiscount = Boolean(product.discount_percent && Number(product.discount_percent) > 0);
+  const currentPrice = hasDiscount
+    ? Math.round(basePrice * (100.0 - Number(product.discount_percent)) / 100.0)
+    : (selectedVariant?.price ? Number(selectedVariant.price) : (Number(product.discounted_price) || Number(product.price)));
   const displayImage = selectedImage || allImages[0] || product.image_url;
 
   const handleAdd = () => {
@@ -197,7 +201,17 @@ const ProductDetail = () => {
           <p className="text-sm md:text-base font-semibold text-lightTextSecondary dark:text-darkTextSecondary mb-4">
             Brand: <span className="text-darkBlue dark:text-cyan font-bold">{product.brand || 'AJ Brand'}</span>
           </p>
-          <p className="text-brandGreen dark:text-brandGreen-light text-3xl font-black mb-5">Rs. {currentPrice}</p>
+          {hasDiscount ? (
+            <div className="flex items-baseline gap-3 mb-5 flex-wrap">
+              <span className="text-brandGreen dark:text-brandGreen-light text-3xl font-black">Rs. {currentPrice}</span>
+              <span className="text-lightTextSecondary dark:text-darkTextSecondary text-xl line-through">Rs. {basePrice}</span>
+              <span className="bg-brandGold text-white text-xs font-black px-2.5 py-1 rounded-md shadow-xs uppercase tracking-wider">
+                {product.discount_percent}% OFF
+              </span>
+            </div>
+          ) : (
+            <p className="text-brandGreen dark:text-brandGreen-light text-3xl font-black mb-5">Rs. {currentPrice}</p>
+          )}
           
           {variants.length > 0 && (
             <div className="mb-6">

@@ -106,7 +106,7 @@ app.get('/', (req, res) => {
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    if (!token) return res.status(403).json({ error: "No token provided" });
+    if (!token) return res.status(401).json({ error: "No token provided" });
     
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
         if (err) return res.status(401).json({ error: "Unauthorized" });
@@ -285,8 +285,20 @@ app.get('/api/products/search', (req, res) => {
     if (!query) return res.status(400).json({ error: 'Query required' });
     
     db.all(`
-        SELECT p.* FROM Products p
+        SELECT p.*, 
+               d.discount_percent, 
+               d.valid_until,
+               CASE 
+                   WHEN d.discount_percent IS NOT NULL 
+                   THEN ROUND(p.price * (100.0 - d.discount_percent) / 100.0, 2)
+                   ELSE NULL 
+               END AS discounted_price
+        FROM Products p
         LEFT JOIN Categories c ON p.category_id = c.id
+        LEFT JOIN Discounts d ON p.id = d.product_id 
+          AND (d.is_active = 1 OR d.is_active IS NULL)
+          AND (d.valid_until IS NULL OR d.valid_until >= datetime('now'))
+          AND (d.start_date IS NULL OR d.start_date <= datetime('now'))
         WHERE (LOWER(p.name) LIKE ? OR LOWER(c.name) LIKE ? OR LOWER(p.brand) LIKE ?)
         AND p.is_active = 1
     `, [`%${query}%`, `%${query}%`, `%${query}%`], async (err, rows) => {
@@ -301,7 +313,24 @@ app.get('/api/products/search', (req, res) => {
 });
 
 app.get('/api/products/featured', (req, res) => {
-    db.all(`SELECT * FROM Products WHERE is_active = 1 AND is_featured = 1 LIMIT 8`, [], async (err, rows) => {
+    const query = `
+        SELECT p.*, 
+               d.discount_percent, 
+               d.valid_until,
+               CASE 
+                   WHEN d.discount_percent IS NOT NULL 
+                   THEN ROUND(p.price * (100.0 - d.discount_percent) / 100.0, 2)
+                   ELSE NULL 
+               END AS discounted_price
+        FROM Products p
+        LEFT JOIN Discounts d ON p.id = d.product_id 
+          AND (d.is_active = 1 OR d.is_active IS NULL)
+          AND (d.valid_until IS NULL OR d.valid_until >= datetime('now'))
+          AND (d.start_date IS NULL OR d.start_date <= datetime('now'))
+        WHERE p.is_active = 1 AND p.is_featured = 1 
+        LIMIT 8
+    `;
+    db.all(query, [], async (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
         if (rows && rows.length > 0) {
             try {
@@ -311,7 +340,25 @@ app.get('/api/products/featured', (req, res) => {
                 return res.status(500).json({ error: e.message });
             }
         }
-        db.all(`SELECT * FROM Products WHERE is_active = 1 ORDER BY created_at DESC LIMIT 8`, [], async (e2, newest) => {
+        const fallbackQuery = `
+            SELECT p.*, 
+                   d.discount_percent, 
+                   d.valid_until,
+                   CASE 
+                       WHEN d.discount_percent IS NOT NULL 
+                       THEN ROUND(p.price * (100.0 - d.discount_percent) / 100.0, 2)
+                       ELSE NULL 
+                   END AS discounted_price
+            FROM Products p
+            LEFT JOIN Discounts d ON p.id = d.product_id 
+              AND (d.is_active = 1 OR d.is_active IS NULL)
+              AND (d.valid_until IS NULL OR d.valid_until >= datetime('now'))
+              AND (d.start_date IS NULL OR d.start_date <= datetime('now'))
+            WHERE p.is_active = 1 
+            ORDER BY p.created_at DESC 
+            LIMIT 8
+        `;
+        db.all(fallbackQuery, [], async (e2, newest) => {
             if (e2) return res.status(500).json({ error: e2.message });
             try {
                 await attachGalleryImages(newest);
@@ -324,7 +371,25 @@ app.get('/api/products/featured', (req, res) => {
 });
 
 app.get('/api/products/new-arrivals', (req, res) => {
-    db.all(`SELECT * FROM Products WHERE is_active = 1 ORDER BY created_at DESC LIMIT 8`, [], async (err, rows) => {
+    const query = `
+        SELECT p.*, 
+               d.discount_percent, 
+               d.valid_until,
+               CASE 
+                   WHEN d.discount_percent IS NOT NULL 
+                   THEN ROUND(p.price * (100.0 - d.discount_percent) / 100.0, 2)
+                   ELSE NULL 
+               END AS discounted_price
+        FROM Products p
+        LEFT JOIN Discounts d ON p.id = d.product_id 
+          AND (d.is_active = 1 OR d.is_active IS NULL)
+          AND (d.valid_until IS NULL OR d.valid_until >= datetime('now'))
+          AND (d.start_date IS NULL OR d.start_date <= datetime('now'))
+        WHERE p.is_active = 1 
+        ORDER BY p.created_at DESC 
+        LIMIT 8
+    `;
+    db.all(query, [], async (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
         try {
             await attachGalleryImages(rows);
@@ -337,12 +402,19 @@ app.get('/api/products/new-arrivals', (req, res) => {
 
 app.get('/api/products/deals', (req, res) => {
     const query = `
-        SELECT p.*, d.discount_percent, d.valid_until,
+        SELECT p.*, 
+               d.id AS discount_id,
+               d.discount_percent, 
+               d.valid_until,
+               d.start_date,
                ROUND(p.price * (100.0 - d.discount_percent) / 100.0, 2) AS discounted_price
         FROM Products p
         JOIN Discounts d ON p.id = d.product_id
-        WHERE p.is_active = 1 AND d.valid_until >= datetime('now')
-        ORDER BY d.discount_percent DESC
+        WHERE p.is_active = 1 
+          AND (d.is_active = 1 OR d.is_active IS NULL)
+          AND (d.valid_until IS NULL OR d.valid_until >= datetime('now'))
+          AND (d.start_date IS NULL OR d.start_date <= datetime('now'))
+        ORDER BY d.discount_percent DESC, p.id ASC
     `;
     db.all(query, [], async (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -357,12 +429,29 @@ app.get('/api/products/deals', (req, res) => {
 
 app.get('/api/products', (req, res) => {
     const category_id = req.query.category;
-    let query = `SELECT * FROM Products WHERE is_active = 1`;
+    let query = `
+        SELECT p.*, 
+               d.discount_percent, 
+               d.valid_until,
+               CASE 
+                   WHEN d.discount_percent IS NOT NULL 
+                   THEN ROUND(p.price * (100.0 - d.discount_percent) / 100.0, 2)
+                   ELSE NULL 
+               END AS discounted_price
+        FROM Products p
+        LEFT JOIN Discounts d ON p.id = d.product_id 
+          AND (d.is_active = 1 OR d.is_active IS NULL)
+          AND (d.valid_until IS NULL OR d.valid_until >= datetime('now'))
+          AND (d.start_date IS NULL OR d.start_date <= datetime('now'))
+        WHERE p.is_active = 1
+    `;
     let params = [];
     if (category_id) {
-        query += ` AND category_id = ?`;
+        query += ` AND p.category_id = ?`;
         params.push(category_id);
     }
+    query += ` ORDER BY p.id ASC`;
+
     db.all(query, params, async (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
         try {
@@ -375,7 +464,23 @@ app.get('/api/products', (req, res) => {
 });
 
 app.get('/api/products/:id', (req, res) => {
-    db.get(`SELECT * FROM Products WHERE id = ?`, [req.params.id], async (err, row) => {
+    const query = `
+        SELECT p.*, 
+               d.discount_percent, 
+               d.valid_until,
+               CASE 
+                   WHEN d.discount_percent IS NOT NULL 
+                   THEN ROUND(p.price * (100.0 - d.discount_percent) / 100.0, 2)
+                   ELSE NULL 
+               END AS discounted_price
+        FROM Products p
+        LEFT JOIN Discounts d ON p.id = d.product_id 
+          AND (d.is_active = 1 OR d.is_active IS NULL)
+          AND (d.valid_until IS NULL OR d.valid_until >= datetime('now'))
+          AND (d.start_date IS NULL OR d.start_date <= datetime('now'))
+        WHERE p.id = ?
+    `;
+    db.get(query, [req.params.id], async (err, row) => {
         if (err) return res.status(500).json({ error: err.message });
         if (!row) return res.status(404).json({ error: "Product not found" });
         try {
@@ -621,6 +726,214 @@ app.delete('/api/featured-videos/:id', verifyToken, isAdmin, (req, res) => {
     });
 });
 
+// --- OFFERS & DISCOUNTS ENDPOINTS ---
+
+// Admin: Get all discounts with joined product metadata
+app.get('/api/admin/discounts', verifyToken, isAdmin, (req, res) => {
+    const sql = `
+        SELECT d.id, d.product_id, d.discount_percent, d.start_date, d.valid_until, d.is_active,
+               p.name AS product_name, p.price AS original_price, p.image_url, p.variants, p.stock, p.reserved_stock,
+               c.name AS category_name,
+               ROUND(p.price * (100.0 - d.discount_percent) / 100.0, 2) AS discounted_price,
+               ROUND(p.price * (d.discount_percent) / 100.0, 2) AS savings_amount,
+               CASE 
+                   WHEN d.is_active = 0 THEN 'inactive'
+                   WHEN d.valid_until IS NOT NULL AND d.valid_until < datetime('now') THEN 'expired'
+                   WHEN d.start_date IS NOT NULL AND d.start_date > datetime('now') THEN 'scheduled'
+                   ELSE 'active'
+               END AS status
+        FROM Discounts d
+        JOIN Products p ON d.product_id = p.id
+        LEFT JOIN Categories c ON p.category_id = c.id
+        ORDER BY d.id DESC
+    `;
+    db.all(sql, [], async (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        try {
+            await attachGalleryImages(rows || []);
+            res.json(rows || []);
+        } catch (e) {
+            res.status(500).json({ error: e.message });
+        }
+    });
+});
+
+// Admin: Create new discount / offer
+app.post('/api/discounts', verifyToken, isAdmin, (req, res) => {
+    const { product_id, discount_percent, valid_until, start_date, is_active } = req.body;
+
+    const pid = Number(product_id);
+    const discPct = Number(discount_percent);
+
+    if (!Number.isInteger(pid) || pid <= 0) {
+        return res.status(400).json({ error: "Invalid product ID." });
+    }
+
+    if (isNaN(discPct) || !isFinite(discPct) || discPct <= 0 || discPct >= 100) {
+        return res.status(400).json({ error: "Discount percentage must be greater than 0% and less than 100%." });
+    }
+
+    // Verify product exists and is active
+    db.get(`SELECT id, name, price, is_active FROM Products WHERE id = ?`, [pid], (err, product) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!product) return res.status(404).json({ error: `Product with ID ${pid} does not exist.` });
+
+        // Check for existing active conflicting discount for this product
+        const checkSql = `
+            SELECT id, discount_percent FROM Discounts 
+            WHERE product_id = ? 
+              AND (is_active = 1 OR is_active IS NULL)
+              AND (valid_until IS NULL OR valid_until >= datetime('now'))
+        `;
+        db.get(checkSql, [pid], (cErr, existing) => {
+            if (cErr) return res.status(500).json({ error: cErr.message });
+            if (existing) {
+                return res.status(409).json({
+                    error: `Product "${product.name}" already has an active discount (${existing.discount_percent}%). Please edit or deactivate the existing offer instead.`
+                });
+            }
+
+            // Defaults: 1 year validity if not provided, current timestamp for start_date
+            const defaultEndDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().slice(0, 19).replace('T', ' ');
+            const finalEndDate = valid_until && valid_until.trim() ? valid_until.trim() : defaultEndDate;
+            const finalStartDate = start_date && start_date.trim() ? start_date.trim() : new Date().toISOString().slice(0, 19).replace('T', ' ');
+            const activeStatus = is_active !== undefined ? (is_active ? 1 : 0) : 1;
+
+            const insertSql = `
+                INSERT INTO Discounts (product_id, discount_percent, valid_until, start_date, is_active)
+                VALUES (?, ?, ?, ?, ?)
+            `;
+            db.run(insertSql, [pid, discPct, finalEndDate, finalStartDate, activeStatus], function (iErr) {
+                if (iErr) {
+                    if (iErr.message && (iErr.message.includes('UNIQUE') || iErr.message.includes('constraint'))) {
+                        return res.status(409).json({
+                            error: `Product "${product.name}" already has an active discount. Duplicate active discount prevented.`
+                        });
+                    }
+                    return res.status(500).json({ error: iErr.message });
+                }
+
+                const discountedPrice = Math.round(product.price * (100.0 - discPct) / 100.0);
+                const savings = Math.round(product.price * (discPct) / 100.0);
+
+                res.status(201).json({
+                    id: this.lastID,
+                    product_id: pid,
+                    product_name: product.name,
+                    discount_percent: discPct,
+                    original_price: product.price,
+                    discounted_price: discountedPrice,
+                    savings_amount: savings,
+                    start_date: finalStartDate,
+                    valid_until: finalEndDate,
+                    is_active: activeStatus,
+                    message: `Offer of ${discPct}% created successfully for ${product.name}`
+                });
+            });
+        });
+    });
+});
+
+// Admin: Edit existing discount / offer
+app.put('/api/discounts/:id', verifyToken, isAdmin, (req, res) => {
+    const discountId = Number(req.params.id);
+    if (!Number.isInteger(discountId) || discountId <= 0) {
+        return res.status(400).json({ error: "Invalid discount ID." });
+    }
+
+    const { discount_percent, valid_until, start_date, is_active } = req.body;
+
+    db.get(`SELECT * FROM Discounts WHERE id = ?`, [discountId], (err, current) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!current) return res.status(404).json({ error: "Discount offer not found." });
+
+        let newDiscPct = current.discount_percent;
+        if (discount_percent !== undefined) {
+            newDiscPct = Number(discount_percent);
+            if (isNaN(newDiscPct) || !isFinite(newDiscPct) || newDiscPct <= 0 || newDiscPct >= 100) {
+                return res.status(400).json({ error: "Discount percentage must be greater than 0% and less than 100%." });
+            }
+        }
+
+        const newActive = is_active !== undefined ? (is_active ? 1 : 0) : current.is_active;
+
+        // If reactivating, verify no other active discount exists for this product
+        const checkConflict = (callback) => {
+            if (newActive === 1 && current.is_active === 0) {
+                const conflictSql = `
+                    SELECT id, discount_percent FROM Discounts 
+                    WHERE product_id = ? 
+                      AND id != ?
+                      AND (is_active = 1 OR is_active IS NULL)
+                      AND (valid_until IS NULL OR valid_until >= datetime('now'))
+                `;
+                db.get(conflictSql, [current.product_id, discountId], (confErr, other) => {
+                    if (confErr) return callback(confErr);
+                    if (other) {
+                        return callback(new Error(`Another active discount (${other.discount_percent}%) already exists for this product. Deactivate it first before activating this offer.`));
+                    }
+                    callback(null);
+                });
+            } else {
+                callback(null);
+            }
+        };
+
+        checkConflict((confErr) => {
+            if (confErr) return res.status(409).json({ error: confErr.message });
+
+            const finalEndDate = valid_until !== undefined ? (valid_until ? valid_until.trim() : null) : current.valid_until;
+            const finalStartDate = start_date !== undefined ? (start_date ? start_date.trim() : null) : current.start_date;
+
+            const updateSql = `
+                UPDATE Discounts 
+                SET discount_percent = ?,
+                    valid_until = ?,
+                    start_date = ?,
+                    is_active = ?
+                WHERE id = ?
+            `;
+            db.run(updateSql, [newDiscPct, finalEndDate, finalStartDate, newActive, discountId], function (uErr) {
+                if (uErr) {
+                    if (uErr.message && (uErr.message.includes('UNIQUE') || uErr.message.includes('constraint'))) {
+                        return res.status(409).json({ error: "Another active discount already exists for this product." });
+                    }
+                    return res.status(500).json({ error: uErr.message });
+                }
+                res.json({
+                    id: discountId,
+                    discount_percent: newDiscPct,
+                    valid_until: finalEndDate,
+                    start_date: finalStartDate,
+                    is_active: newActive,
+                    message: "Discount offer updated successfully"
+                });
+            });
+        });
+    });
+});
+
+// Admin: Remove discount / offer (safe deletion; product and inventory untouched)
+app.delete('/api/discounts/:id', verifyToken, isAdmin, (req, res) => {
+    const discountId = Number(req.params.id);
+    if (!Number.isInteger(discountId) || discountId <= 0) {
+        return res.status(400).json({ error: "Invalid discount ID." });
+    }
+
+    db.get(`SELECT d.id, d.product_id, p.name FROM Discounts d JOIN Products p ON d.product_id = p.id WHERE d.id = ?`, [discountId], (err, row) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!row) return res.status(404).json({ error: "Discount offer not found." });
+
+        db.run(`DELETE FROM Discounts WHERE id = ?`, [discountId], function (delErr) {
+            if (delErr) return res.status(500).json({ error: delErr.message });
+            res.json({
+                message: `Promotion for "${row.name}" removed successfully. Normal catalog pricing restored.`,
+                productId: row.product_id
+            });
+        });
+    });
+});
+
 // --- SETTINGS ENDPOINTS ---
 app.get('/api/settings', (req, res) => {
     db.all(`SELECT key, value FROM settings`, [], (err, rows) => {
@@ -699,10 +1012,19 @@ app.post('/api/orders', optionalAuth, async (req, res) => {
                 });
             }),
             new Promise((resolve, reject) => {
-                db.all(`SELECT product_id, discount_percent, valid_until FROM Discounts WHERE product_id IN (${placeholders}) AND valid_until >= datetime('now')`, uniqueProductIds, (err, rows) => {
-                    if (err) return reject(err);
-                    resolve(rows || []);
-                });
+                db.all(
+                    `SELECT product_id, discount_percent, valid_until, start_date, is_active 
+                     FROM Discounts 
+                     WHERE product_id IN (${placeholders}) 
+                       AND (is_active = 1 OR is_active IS NULL) 
+                       AND (valid_until IS NULL OR valid_until >= datetime('now'))
+                       AND (start_date IS NULL OR start_date <= datetime('now'))`, 
+                    uniqueProductIds, 
+                    (err, rows) => {
+                        if (err) return reject(err);
+                        resolve(rows || []);
+                    }
+                );
             }),
             new Promise((resolve, reject) => {
                 db.all(`SELECT key, value FROM settings WHERE key = 'minimum_order_amount'`, [], (err, rows) => {
@@ -732,7 +1054,7 @@ app.post('/api/orders', optionalAuth, async (req, res) => {
                 return res.status(400).json({ error: `Product with ID ${pid} does not exist.` });
             }
             if (product.is_active !== 1) {
-                return res.status(400).json({ error: `Product "${product.name}" is currently unavailable.` });
+                return res.status(400).json({ error: `Product "${product.name}" is no longer available.` });
             }
             const physicalStock = Number(product.stock) || 0;
             const reservedStock = Number(product.reserved_stock) || 0;
@@ -835,7 +1157,9 @@ app.post('/api/orders', optionalAuth, async (req, res) => {
                     [qtyToReserve, pid, qtyToReserve]
                 );
                 if (reserveUpdate.changes === 0) {
-                    throw new Error(`Concurrency conflict: Insufficient available stock for product ID ${pid}`);
+                    const conflictErr = new Error(`Insufficient available stock for product ID ${pid}`);
+                    conflictErr.code = 'STOCK_CONFLICT';
+                    throw conflictErr;
                 }
             }
 
@@ -860,6 +1184,18 @@ app.post('/api/orders', optionalAuth, async (req, res) => {
 
     } catch (err) {
         console.error('Order creation error:', err);
+        const isConflict = err.code === 'STOCK_CONFLICT' ||
+                           err.code === 'SQLITE_BUSY' ||
+                           err.message?.includes('Insufficient available stock') ||
+                           err.message?.includes('Concurrency conflict') ||
+                           err.message?.includes('database is locked') ||
+                           err.message?.includes('conflict');
+        if (isConflict) {
+            return res.status(409).json({
+                error: "Stock availability conflict: Another customer recently purchased or reserved this item. Please review your cart.",
+                details: err.message
+            });
+        }
         return res.status(500).json({ error: err.message || "Failed to process order" });
     }
 });

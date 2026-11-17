@@ -75,9 +75,11 @@ const ProductCard = ({ product }) => {
 
   const hasDualGallery = !selectedVariant?.image_url && images.length > 1;
 
-  const effectivePrice = (selectedVariant && selectedVariant.price)
-    ? selectedVariant.price
-    : (product.discounted_price || product.price);
+  const basePrice = selectedVariant?.price ? Number(selectedVariant.price) : Number(product.price);
+  const hasDiscount = Boolean(product.discount_percent && Number(product.discount_percent) > 0);
+  const effectivePrice = hasDiscount
+    ? Math.round(basePrice * (100.0 - Number(product.discount_percent)) / 100.0)
+    : (selectedVariant?.price ? Number(selectedVariant.price) : (Number(product.discounted_price) || Number(product.price)));
 
   const handlePrevImage = (e) => {
     e.preventDefault();
@@ -112,7 +114,7 @@ const ProductCard = ({ product }) => {
     <div className="bg-white dark:bg-[#1a1a1a] border border-lightBorder dark:border-[#333] rounded-xl sm:rounded-2xl shadow-xs hover:shadow-md dark:hover:shadow-[0_8px_16px_rgba(0,0,0,0.4)] transition-all duration-300 flex flex-col h-full overflow-hidden relative group">
       
       {/* Discount Badge */}
-      {product.discount_percent && !selectedVariant && (
+      {hasDiscount && (
         <span className="absolute top-2 left-2 z-20 bg-brandGold text-white text-[10px] sm:text-xs font-black px-2 py-0.5 rounded-md shadow-xs uppercase tracking-wider">
           {product.discount_percent}% OFF
         </span>
@@ -248,10 +250,10 @@ const ProductCard = ({ product }) => {
 
         {/* Price & Add to Cart Row */}
         <div className="flex justify-between items-center pt-1 border-t border-lightBorder/40 dark:border-darkBorder/40 mt-auto">
-          {product.discounted_price && !selectedVariant ? (
+          {hasDiscount ? (
             <div className="flex flex-col">
-              <span className="text-sm sm:text-base font-black text-brandGreen dark:text-brandGreen-light">Rs {product.discounted_price}</span>
-              <span className="text-[10px] sm:text-xs text-lightTextSecondary dark:text-darkTextSecondary line-through -mt-0.5">Rs {product.price}</span>
+              <span className="text-sm sm:text-base font-black text-brandGreen dark:text-brandGreen-light">Rs {effectivePrice}</span>
+              <span className="text-[10px] sm:text-xs text-lightTextSecondary dark:text-darkTextSecondary line-through -mt-0.5">Rs {basePrice}</span>
             </div>
           ) : (
             <span className="text-sm sm:text-base font-bold text-brandGreen dark:text-brandGreen-light">Rs {effectivePrice}</span>
