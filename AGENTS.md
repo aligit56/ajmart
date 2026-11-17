@@ -101,3 +101,4 @@
 - 2026-11-17: Repository hygiene: added scratch/ to .gitignore, untracked temporary diagnostic/test scripts from git index, and synchronized origin/main.
 - 2026-11-17: Completed comprehensive project cleanup audit (PROJECT_CLEANUP_AUDIT.md), implemented PKR 3,500 minimum delivery order across frontend/backend, verified 14/14 automated staging tests while preserving PKR 2,000 loyalty rewards, awaiting owner approval for production write and deletion.
 - 2026-11-17: Production Rollout: updated ajmart-prod settings (minimum_order_amount = 3500), deployed synchronized backend & frontend to Render and Netlify, verified 10/10 live checks.
+- 2026-11-17: Controlled Project Cleanup: safely removed 8 verified obsolete files (old logos, unused template assets, obsolete scripts) with 100% recoverable backup in .cleanup_backup_20261117, verified clean Vite build and 14/14 regression tests.

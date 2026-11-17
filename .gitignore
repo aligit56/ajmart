@@ -31,3 +31,7 @@ out/
 
 # Temporary / Scratch scripts
 scratch/
+
+# Local cleanup backups
+.cleanup_backup_*/
+
