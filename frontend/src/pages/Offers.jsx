@@ -33,7 +33,7 @@ const Offers = () => {
   return (
     <div className="space-y-8">
       {/* Banner */}
-      <div className="bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 text-white p-8 md:p-10 rounded-3xl shadow-xl relative overflow-hidden">
+      <div className="bg-gradient-to-r from-brandGreen via-brandGreen-dark to-brandGold-dark text-white p-8 md:p-10 rounded-3xl shadow-xl relative overflow-hidden">
         <div className="absolute -right-10 -bottom-10 opacity-15 pointer-events-none">
           <Percent size={280} />
         </div>

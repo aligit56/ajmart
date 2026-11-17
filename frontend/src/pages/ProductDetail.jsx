@@ -197,7 +197,7 @@ const ProductDetail = () => {
           <p className="text-sm md:text-base font-semibold text-lightTextSecondary dark:text-darkTextSecondary mb-4">
             Brand: <span className="text-darkBlue dark:text-cyan font-bold">{product.brand || 'AJ Brand'}</span>
           </p>
-          <p className="text-lightBlue dark:text-aqua text-3xl font-bold mb-5">Rs. {currentPrice}</p>
+          <p className="text-brandGreen dark:text-brandGreen-light text-3xl font-black mb-5">Rs. {currentPrice}</p>
           
           {variants.length > 0 && (
             <div className="mb-6">

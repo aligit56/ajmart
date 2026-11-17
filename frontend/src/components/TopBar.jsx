@@ -50,7 +50,7 @@ const TopBar = () => {
   const prevPromo = () => setCurrentIdx(prev => (prev - 1 + PROMOTIONS.length) % PROMOTIONS.length);
 
   return (
-    <div className="bg-[#f8f5ee] dark:bg-[#0c0c0c] border-b border-[#e7e0d3] dark:border-[#222] text-[#2c2621] dark:text-[#d1d5db] text-xs transition-colors duration-200">
+    <div className="bg-[#F7F5EF] dark:bg-[#121614] border-b border-[#E0DED6] dark:border-[#28332C] text-[#263238] dark:text-[#F7F5EF] text-xs transition-colors duration-200">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="flex items-center justify-between h-9 gap-3">
           

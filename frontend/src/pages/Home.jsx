@@ -167,17 +167,17 @@ const Home = () => {
 
       {/* 4. Today's Deals & Discounts */}
       {dealsProducts.length > 0 && (
-        <section id="todays-deals" className="scroll-mt-24 bg-gradient-to-r from-red-500/10 via-amber-500/10 to-red-500/5 p-4 sm:p-6 md:p-8 rounded-2xl md:rounded-3xl border border-red-500/20 shadow-xs">
+        <section id="todays-deals" className="scroll-mt-24 bg-gradient-to-r from-brandGold/15 via-brandGold/5 to-transparent p-4 sm:p-6 md:p-8 rounded-2xl md:rounded-3xl border border-brandGold/30 shadow-xs">
           <div className="flex items-center justify-between mb-4 sm:mb-6">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-error-light/20 dark:bg-error-dark/30 text-error-light dark:text-error-dark text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-1.5">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brandGold text-white text-[11px] sm:text-xs font-black uppercase tracking-wider mb-1.5 shadow-xs">
                 <BadgePercent size={13} /> Limited Time Offers
               </div>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-lightText dark:text-darkText">
                 Today's Deals &amp; Discounts
               </h2>
             </div>
-            <Link to="/offers" className="text-xs sm:text-sm font-semibold text-error-light dark:text-error-dark hover:underline flex items-center gap-1">
+            <Link to="/offers" className="text-xs sm:text-sm font-bold text-brandGold-dark dark:text-brandGold-light hover:underline flex items-center gap-1">
               See All Deals <ArrowRight size={14} />
             </Link>
           </div>

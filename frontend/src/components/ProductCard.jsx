@@ -113,7 +113,7 @@ const ProductCard = ({ product }) => {
       
       {/* Discount Badge */}
       {product.discount_percent && !selectedVariant && (
-        <span className="absolute top-2 left-2 z-20 bg-error-light dark:bg-error-dark text-white text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded shadow-xs uppercase tracking-wider">
+        <span className="absolute top-2 left-2 z-20 bg-brandGold text-white text-[10px] sm:text-xs font-black px-2 py-0.5 rounded-md shadow-xs uppercase tracking-wider">
           {product.discount_percent}% OFF
         </span>
       )}
@@ -250,16 +250,16 @@ const ProductCard = ({ product }) => {
         <div className="flex justify-between items-center pt-1 border-t border-lightBorder/40 dark:border-darkBorder/40 mt-auto">
           {product.discounted_price && !selectedVariant ? (
             <div className="flex flex-col">
-              <span className="text-sm sm:text-base font-black text-error-light dark:text-error-dark">Rs {product.discounted_price}</span>
+              <span className="text-sm sm:text-base font-black text-brandGreen dark:text-brandGreen-light">Rs {product.discounted_price}</span>
               <span className="text-[10px] sm:text-xs text-lightTextSecondary dark:text-darkTextSecondary line-through -mt-0.5">Rs {product.price}</span>
             </div>
           ) : (
-            <span className="text-sm sm:text-base font-bold text-darkBlue dark:text-cyan">Rs {effectivePrice}</span>
+            <span className="text-sm sm:text-base font-bold text-brandGreen dark:text-brandGreen-light">Rs {effectivePrice}</span>
           )}
           <button 
             onClick={handleAdd}
             disabled={product.stock <= 0}
-            className="w-8 h-8 sm:w-9 sm:h-9 bg-darkBlue dark:bg-cyan text-white dark:text-black flex items-center justify-center rounded-lg hover:bg-opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-xs"
+            className="w-8 h-8 sm:w-9 sm:h-9 bg-brandGreen text-white flex items-center justify-center rounded-lg hover:bg-brandGreen-dark disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-xs"
             title="Add to Cart"
             aria-label={`Add ${product.name} to Cart`}
           >

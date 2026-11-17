@@ -39,21 +39,19 @@ const Footer = () => {
           
           {/* Column 1: Brand & About */}
           <div className="space-y-4">
-            <Link to="/" className="text-2xl font-bold text-darkBlue dark:text-cyan flex items-center gap-2 group">
-              <div 
-                className="w-9 h-11 bg-darkBlue dark:bg-cyan transition-colors"
-                style={{ 
-                  WebkitMaskImage: 'url(/logo-alpha.png)', 
-                  WebkitMaskSize: 'contain', 
-                  WebkitMaskRepeat: 'no-repeat', 
-                  WebkitMaskPosition: 'center',
-                  maskImage: 'url(/logo-alpha.png)',
-                  maskSize: 'contain',
-                  maskRepeat: 'no-repeat',
-                  maskPosition: 'center'
-                }}
-              ></div>
-              <span className="font-extrabold tracking-tight">AJ<span className="text-lightBlue dark:text-aqua">Mart</span></span>
+            <Link to="/" className="flex items-center" aria-label="AJMart Home">
+              <img 
+                src="/images/brand/ajmart-logo-primary.webp" 
+                alt="AJMart" 
+                className="h-10 w-auto object-contain dark:hidden block" 
+                onError={(e) => { e.currentTarget.src = '/images/brand/ajmart-logo-primary.png'; }}
+              />
+              <img 
+                src="/images/brand/ajmart-logo-dark.webp" 
+                alt="AJMart" 
+                className="h-10 w-auto object-contain hidden dark:block" 
+                onError={(e) => { e.currentTarget.src = '/images/brand/ajmart-logo-dark.png'; }}
+              />
             </Link>
             <p className="text-sm text-lightTextSecondary dark:text-darkTextSecondary leading-relaxed">
               Your trusted partner for fresh grocery staples, daily household essentials, and authentic branded goods with fast next-day delivery across Rawalpindi &amp; Islamabad.
@@ -195,21 +193,19 @@ const Footer = () => {
           
           {/* Brand & Social Header */}
           <div className="text-center pb-2">
-            <Link to="/" className="inline-flex items-center justify-center gap-2 mb-2">
-              <div 
-                className="w-8 h-10 bg-darkBlue dark:bg-cyan"
-                style={{ 
-                  WebkitMaskImage: 'url(/logo-alpha.png)', 
-                  WebkitMaskSize: 'contain', 
-                  WebkitMaskRepeat: 'no-repeat', 
-                  WebkitMaskPosition: 'center',
-                  maskImage: 'url(/logo-alpha.png)',
-                  maskSize: 'contain',
-                  maskRepeat: 'no-repeat',
-                  maskPosition: 'center'
-                }}
-              ></div>
-              <span className="text-xl font-extrabold tracking-tight">AJ<span className="text-lightBlue dark:text-aqua">Mart</span></span>
+            <Link to="/" className="inline-flex items-center justify-center mb-2" aria-label="AJMart Home">
+              <img 
+                src="/images/brand/ajmart-logo-primary.webp" 
+                alt="AJMart" 
+                className="h-8 w-auto object-contain dark:hidden block mx-auto" 
+                onError={(e) => { e.currentTarget.src = '/images/brand/ajmart-logo-primary.png'; }}
+              />
+              <img 
+                src="/images/brand/ajmart-logo-dark.webp" 
+                alt="AJMart" 
+                className="h-8 w-auto object-contain hidden dark:block mx-auto" 
+                onError={(e) => { e.currentTarget.src = '/images/brand/ajmart-logo-dark.png'; }}
+              />
             </Link>
             <p className="text-xs text-lightTextSecondary dark:text-darkTextSecondary max-w-sm mx-auto">
               Fresh grocery staples &amp; household essentials across Rawalpindi &amp; Islamabad.

@@ -32,9 +32,25 @@ const AdminDashboard = () => {
     <div className="flex flex-col md:flex-row gap-6">
       {/* Sidebar */}
       <div className="w-full md:w-64 bg-lightCard dark:bg-darkCard border border-lightBorder dark:border-darkBorder rounded-2xl p-4 h-fit shadow-sm">
-        <h2 className="text-xl font-bold mb-6 text-lightBlue dark:text-aqua border-b border-lightBorder dark:border-darkBorder pb-4">
-          Admin Panel
-        </h2>
+        <div className="mb-6 border-b border-lightBorder dark:border-darkBorder pb-4">
+          <NavLink to="/" className="inline-block mb-2" aria-label="AJMart Home">
+            <img 
+              src="/images/brand/ajmart-logo-primary.webp" 
+              alt="AJMart" 
+              className="h-8 w-auto object-contain dark:hidden block" 
+              onError={(e) => { e.currentTarget.src = '/images/brand/ajmart-logo-primary.png'; }}
+            />
+            <img 
+              src="/images/brand/ajmart-logo-dark.webp" 
+              alt="AJMart" 
+              className="h-8 w-auto object-contain hidden dark:block" 
+              onError={(e) => { e.currentTarget.src = '/images/brand/ajmart-logo-dark.png'; }}
+            />
+          </NavLink>
+          <div className="text-xs font-black uppercase tracking-wider text-brandGreen dark:text-brandGreen-light">
+            Admin Management
+          </div>
+        </div>
         <nav className="space-y-1.5">
           {navItems.map(item => {
             const isActive = location.pathname === item.path || (item.path !== '/admin' && location.pathname.startsWith(item.path));

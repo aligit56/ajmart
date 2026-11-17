@@ -70,7 +70,7 @@ const About = () => {
             className="w-full h-full object-contain rounded-xl shadow-lg hover:scale-105 transition-transform duration-300"
             onError={(e) => {
               e.target.onerror = null;
-              e.target.src = '/images/brand/ajtraders-logo.png';
+              e.target.src = '/images/brand/ajmart-logo-primary.png';
             }}
           />
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end p-4 rounded-b-2xl">

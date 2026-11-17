@@ -141,21 +141,19 @@ const Header = () => {
             </div>
 
             {/* Logo */}
-            <Link to="/" className="text-xl md:text-2xl font-bold text-darkBlue dark:text-cyan flex items-center gap-2 group flex-shrink-0">
-              <div 
-                className="w-8 h-10 md:w-10 md:h-12 bg-darkBlue dark:bg-cyan transition-colors"
-                style={{ 
-                  WebkitMaskImage: 'url(/logo-alpha.png)', 
-                  WebkitMaskSize: 'contain', 
-                  WebkitMaskRepeat: 'no-repeat', 
-                  WebkitMaskPosition: 'center',
-                  maskImage: 'url(/logo-alpha.png)',
-                  maskSize: 'contain',
-                  maskRepeat: 'no-repeat',
-                  maskPosition: 'center'
-                }}
-              ></div>
-              <span className="font-extrabold tracking-tight">AJ<span className="text-lightBlue dark:text-aqua">Mart</span></span>
+            <Link to="/" className="flex items-center group flex-shrink-0" aria-label="AJMart Home">
+              <img 
+                src="/images/brand/ajmart-logo-primary.webp" 
+                alt="AJMart" 
+                className="h-9 md:h-11 w-auto object-contain dark:hidden block transition-opacity duration-200" 
+                onError={(e) => { e.currentTarget.src = '/images/brand/ajmart-logo-primary.png'; }}
+              />
+              <img 
+                src="/images/brand/ajmart-logo-dark.webp" 
+                alt="AJMart" 
+                className="h-9 md:h-11 w-auto object-contain hidden dark:block transition-opacity duration-200" 
+                onError={(e) => { e.currentTarget.src = '/images/brand/ajmart-logo-dark.png'; }}
+              />
             </Link>
 
             {/* Desktop Navigation Links */}
@@ -455,7 +453,7 @@ const Header = () => {
               <Link to="/cart" className="relative p-2 text-lightText dark:text-darkText hover:text-darkBlue dark:hover:text-cyan transition-colors" aria-label="Shopping Cart">
                 <ShoppingCart size={22} />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-darkBlue dark:bg-cyan text-white dark:text-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md animate-scale-in">
+                  <span className="absolute -top-1 -right-1 bg-brandGold text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md animate-scale-in">
                     {cartCount}
                   </span>
                 )}
@@ -499,8 +497,19 @@ const Header = () => {
           <div className="fixed top-0 left-0 bottom-0 w-4/5 max-w-sm bg-lightCard dark:bg-[#161616] border-r border-lightBorder dark:border-[#2a2a2a] shadow-2xl z-50 flex flex-col animate-in slide-in-from-left duration-300">
             {/* Drawer Header */}
             <div className="p-4 border-b border-lightBorder dark:border-[#2a2a2a] flex items-center justify-between">
-              <Link to="/" onClick={() => setIsMobileDrawerOpen(false)} className="text-xl font-bold text-darkBlue dark:text-cyan flex items-center gap-2">
-                <span>AJ<span className="text-lightBlue dark:text-aqua">Mart</span></span>
+              <Link to="/" onClick={() => setIsMobileDrawerOpen(false)} className="flex items-center" aria-label="AJMart Home">
+                <img 
+                  src="/images/brand/ajmart-logo-primary.webp" 
+                  alt="AJMart" 
+                  className="h-8 w-auto object-contain dark:hidden block" 
+                  onError={(e) => { e.currentTarget.src = '/images/brand/ajmart-logo-primary.png'; }}
+                />
+                <img 
+                  src="/images/brand/ajmart-logo-dark.webp" 
+                  alt="AJMart" 
+                  className="h-8 w-auto object-contain hidden dark:block" 
+                  onError={(e) => { e.currentTarget.src = '/images/brand/ajmart-logo-dark.png'; }}
+                />
               </Link>
               <button 
                 onClick={() => setIsMobileDrawerOpen(false)}

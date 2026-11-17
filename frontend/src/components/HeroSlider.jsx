@@ -124,7 +124,7 @@ const HeroSlider = () => {
             {/* Slide Content */}
             <div className="absolute inset-0 flex items-center p-6 sm:p-10 md:p-14 lg:p-16">
               <div className="max-w-xl md:max-w-2xl text-white space-y-3 md:space-y-4">
-                <span className="inline-block px-3.5 py-1.5 bg-darkBlue/80 dark:bg-cyan/80 text-white dark:text-black text-xs font-bold uppercase tracking-wider rounded-full backdrop-blur-xs shadow-sm">
+                <span className="inline-block px-3.5 py-1.5 bg-brandGold text-white text-xs font-black uppercase tracking-wider rounded-full backdrop-blur-xs shadow-sm">
                   Featured Special
                 </span>
                 <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight drop-shadow-lg text-white">
@@ -139,7 +139,7 @@ const HeroSlider = () => {
                   <div className="pt-2 md:pt-4">
                     <Link
                       to={slide.button_link || '/products'}
-                      className="inline-flex items-center gap-2 bg-darkBlue dark:bg-cyan hover:bg-lightBlue dark:hover:bg-aqua text-white dark:text-black font-extrabold px-6 py-3 md:px-8 md:py-3.5 rounded-2xl transition-all shadow-lg hover:shadow-2xl hover:scale-105 duration-200 text-sm md:text-base"
+                      className="inline-flex items-center gap-2 bg-brandGreen hover:bg-brandGreen-dark text-white font-extrabold px-6 py-3 md:px-8 md:py-3.5 rounded-2xl transition-all shadow-lg hover:shadow-2xl hover:scale-105 duration-200 text-sm md:text-base"
                     >
                       {slide.button_text} <ArrowRight size={18} />
                     </Link>
@@ -180,7 +180,7 @@ const HeroSlider = () => {
               onClick={() => setCurrentIndex(idx)}
               className={`transition-all rounded-full ${
                 idx === currentIndex
-                  ? 'w-6 md:w-8 h-2 bg-darkBlue dark:bg-cyan shadow-sm'
+                  ? 'w-6 md:w-8 h-2 bg-brandGreen shadow-sm'
                   : 'w-2 h-2 bg-white/50 hover:bg-white/80'
               }`}
               aria-label={`Go to slide ${idx + 1}`}
