@@ -41,7 +41,7 @@ const Terms = () => {
         <section className="space-y-2">
           <h2 className="text-xl font-bold text-lightText dark:text-darkText">4. Delivery Policy</h2>
           <p>
-            Deliveries are conducted within Rawalpindi & Islamabad and designated service areas. Delivery timeframes (standard next-day) are estimates. Delays caused by severe weather, traffic disruptions, or unforeseen events will be communicated to the customer at the earliest. Minimum order requirement is PKR 5,000.
+            Deliveries are conducted within Rawalpindi & Islamabad and designated service areas. Delivery timeframes (standard next-day) are estimates. Delays caused by severe weather, traffic disruptions, or unforeseen events will be communicated to the customer at the earliest. Minimum order requirement is PKR 2,000.
           </p>
         </section>
 

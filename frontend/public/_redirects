@@ -1,1 +1,16 @@
+# Category image aliases for case-insensitivity on Linux / Netlify CDN
+/images/categories/Household.png        /images/categories/Household.PNG 200
+/images/categories/household.png        /images/categories/Household.PNG 200
+/images/categories/household.webp       /images/categories/Household.webp 200
+/images/categories/personalcare.webp    /images/categories/personalcare.WEBP 200
+/images/categories/spices.webp          /images/categories/spices.WEBP 200
+/images/categories/cosmetics.webp       /images/categories/cosmetics.WEBP 200
+/images/categories/cleaning.webp        /images/categories/cleaning.WEBP 200
+/images/categories/coffetea.webp        /images/categories/Coffetea.WEBP 200
+/images/categories/Coffetea.webp        /images/categories/Coffetea.WEBP 200
+/images/categories/noodles.webp         /images/categories/noodles.WEBP 200
+/images/categories/cookingoil.webp      /images/categories/cookingoil.WEBP 200
+/images/categories/grocery.webp         /images/categories/grocery.WEBP 200
+
+# SPA catch-all fallback
 /*    /index.html   200

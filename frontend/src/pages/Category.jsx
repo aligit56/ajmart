@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import api from '../api/axios';
 import ProductCard from '../components/ProductCard';
 import { Loader2, ArrowUpDown, SlidersHorizontal } from 'lucide-react';
+import { normalizeImageUrl, handleCategoryImageError } from '../utils/imageHelpers';
 
 const Category = () => {
   const { id } = useParams();
@@ -83,17 +84,10 @@ const Category = () => {
               
               {/* Actual Image (Fully Visible) */}
               <img 
-                src={category.image_url ? category.image_url.replace(/^https?:\/\/[^\/]+:5000/, '') : ''} 
+                src={normalizeImageUrl(category.image_url)} 
                 alt={category.name} 
                 className="relative z-10 w-full h-full object-contain max-h-[250px] md:max-h-[300px] drop-shadow-md" 
-                onError={(e) => {
-                  e.target.onerror = null;
-                  if (e.target.src.endsWith('.webp') || e.target.src.endsWith('.WEBP')) {
-                    e.target.src = e.target.src.replace(/\.webp$/i, '.jpg');
-                  } else {
-                    e.target.src = '/images/placeholder.jpg';
-                  }
-                }}
+                onError={handleCategoryImageError}
               />
             </div>
           )}

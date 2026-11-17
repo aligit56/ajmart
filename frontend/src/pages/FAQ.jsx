@@ -10,7 +10,7 @@ const FAQS = [
   },
   {
     q: 'What are the delivery charges and minimum order requirement?',
-    a: 'We require a minimum order of PKR 5,000 for doorstep grocery and wholesale deliveries across Rawalpindi & Islamabad. Orders placed before 6:00 PM are dispatched for next-day delivery. Standard delivery charges apply based on your sector/location and will be confirmed on WhatsApp.'
+    a: 'We require a minimum order of PKR 2,000 for doorstep grocery and wholesale deliveries across Rawalpindi & Islamabad. Orders placed before 6:00 PM are dispatched for next-day delivery. Standard delivery charges apply based on your sector/location and will be confirmed on WhatsApp.'
   },
   {
     q: 'Can I pay with Cash on Delivery?',

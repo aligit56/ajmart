@@ -6,7 +6,7 @@ import CategoryCarousel from '../components/CategoryCarousel';
 import HeroSlider from '../components/HeroSlider';
 import FeaturedVideos from '../components/FeaturedVideos';
 import TrustStrip from '../components/TrustStrip';
-import { Loader2, Sparkles, Tag, Clock, ArrowRight } from 'lucide-react';
+import { Loader2, ShoppingBag, BadgePercent, PackagePlus, LayoutGrid, ArrowRight } from 'lucide-react';
 
 const Home = () => {
   const [categories, setCategories] = useState([]);
@@ -132,56 +132,56 @@ const Home = () => {
 
       {/* 2. Shop by Category */}
       <section id="categories" className="scroll-mt-24">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl md:text-3xl font-bold text-lightText dark:text-darkText border-l-4 border-darkBlue dark:border-cyan pl-3">
-            Shop by Category
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-lightText dark:text-darkText border-l-4 border-darkBlue dark:border-cyan pl-3 flex items-center gap-2">
+            <LayoutGrid className="text-darkBlue dark:text-cyan" size={22} /> Shop by Category
           </h2>
-          <Link to="/categories" className="text-xs md:text-sm font-semibold text-lightBlue dark:text-aqua hover:underline flex items-center gap-1">
+          <Link to="/categories" className="text-xs sm:text-sm font-semibold text-lightBlue dark:text-aqua hover:underline flex items-center gap-1">
             All Categories <ArrowRight size={14} />
           </Link>
         </div>
         <CategoryCarousel categories={categories} />
       </section>
 
-      {/* 3. Featured Products (Positioned ABOVE Deals) */}
+      {/* 3. Featured Products */}
       <section id="featured-products" className="scroll-mt-24">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
           <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-lightText dark:text-darkText border-l-4 border-darkBlue dark:border-cyan pl-3 flex items-center gap-2">
-              <Sparkles className="text-amber-500" size={24} /> Featured Products
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-lightText dark:text-darkText border-l-4 border-darkBlue dark:border-cyan pl-3 flex items-center gap-2">
+              <ShoppingBag className="text-darkBlue dark:text-cyan" size={22} /> Featured Products
             </h2>
-            <p className="text-xs md:text-sm text-lightTextSecondary dark:text-darkTextSecondary pl-4 mt-1">
+            <p className="text-xs sm:text-sm text-lightTextSecondary dark:text-darkTextSecondary pl-4 mt-0.5">
               Hand-picked bestsellers, staple grains, and daily household essentials
             </p>
           </div>
-          <Link to="/products" className="text-xs md:text-sm font-semibold text-lightBlue dark:text-aqua hover:underline flex items-center gap-1">
+          <Link to="/products" className="text-xs sm:text-sm font-semibold text-lightBlue dark:text-aqua hover:underline flex items-center gap-1">
             View All <ArrowRight size={14} />
           </Link>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
           {featuredProducts.slice(0, 8).map(product => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </section>
 
-      {/* 4. Today's Deals & Discounts (Positioned BELOW Featured Products) */}
+      {/* 4. Today's Deals & Discounts */}
       {dealsProducts.length > 0 && (
-        <section id="todays-deals" className="scroll-mt-24 bg-gradient-to-r from-red-500/10 via-amber-500/10 to-red-500/5 p-6 md:p-8 rounded-3xl border border-red-500/20 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
+        <section id="todays-deals" className="scroll-mt-24 bg-gradient-to-r from-red-500/10 via-amber-500/10 to-red-500/5 p-4 sm:p-6 md:p-8 rounded-2xl md:rounded-3xl border border-red-500/20 shadow-xs">
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-error-light/20 dark:bg-error-dark/30 text-error-light dark:text-error-dark text-xs font-bold uppercase tracking-wider mb-2">
-                <Tag size={13} /> Limited Time Offers
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-error-light/20 dark:bg-error-dark/30 text-error-light dark:text-error-dark text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-1.5">
+                <BadgePercent size={13} /> Limited Time Offers
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-lightText dark:text-darkText">
-                Today's Deals & Discounts
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-lightText dark:text-darkText">
+                Today's Deals &amp; Discounts
               </h2>
             </div>
-            <Link to="/offers" className="text-xs md:text-sm font-semibold text-error-light dark:text-error-dark hover:underline flex items-center gap-1">
+            <Link to="/offers" className="text-xs sm:text-sm font-semibold text-error-light dark:text-error-dark hover:underline flex items-center gap-1">
               See All Deals <ArrowRight size={14} />
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
             {dealsProducts.slice(0, 4).map(product => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -191,20 +191,20 @@ const Home = () => {
 
       {/* 5. New Arrivals */}
       <section id="new-arrivals" className="scroll-mt-24">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
           <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-lightText dark:text-darkText border-l-4 border-darkBlue dark:border-cyan pl-3 flex items-center gap-2">
-              <Clock className="text-darkBlue dark:text-cyan" size={24} /> New Arrivals
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-lightText dark:text-darkText border-l-4 border-darkBlue dark:border-cyan pl-3 flex items-center gap-2">
+              <PackagePlus className="text-darkBlue dark:text-cyan" size={22} /> New Arrivals
             </h2>
-            <p className="text-xs md:text-sm text-lightTextSecondary dark:text-darkTextSecondary pl-4 mt-1">
+            <p className="text-xs sm:text-sm text-lightTextSecondary dark:text-darkTextSecondary pl-4 mt-0.5">
               Recently added cosmetics, personal care, and grocery items
             </p>
           </div>
-          <Link to="/products" className="text-xs md:text-sm font-semibold text-lightBlue dark:text-aqua hover:underline flex items-center gap-1">
+          <Link to="/products" className="text-xs sm:text-sm font-semibold text-lightBlue dark:text-aqua hover:underline flex items-center gap-1">
             Browse Catalog <ArrowRight size={14} />
           </Link>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
           {newArrivals.slice(0, 8).map(product => (
             <ProductCard key={product.id} product={product} />
           ))}

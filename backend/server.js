@@ -652,6 +652,13 @@ app.put('/api/settings', verifyToken, isAdmin, (req, res) => {
 // --- ORDERS ENDPOINTS ---
 app.post('/api/orders', optionalAuth, async (req, res) => {
     try {
+        // Enforce admin restriction: administrators cannot place customer orders
+        if (req.user && req.user.role === 'admin') {
+            return res.status(403).json({
+                error: "Administrators cannot place customer orders. Please sign out and continue as a customer or guest."
+            });
+        }
+
         const { items, delivery_address, notes, customer_name, customer_phone } = req.body;
         const user_id = req.user ? req.user.id : null;
 
@@ -706,7 +713,7 @@ app.post('/api/orders', optionalAuth, async (req, res) => {
         ]);
 
         const minOrderSetting = (settingsRows || []).find(s => s.key === 'minimum_order_amount');
-        const minOrderAmount = minOrderSetting && Number(minOrderSetting.value) ? Number(minOrderSetting.value) : 5000;
+        const minOrderAmount = minOrderSetting && Number(minOrderSetting.value) ? Number(minOrderSetting.value) : 2000;
 
         const productMap = {};
         for (const p of products) {

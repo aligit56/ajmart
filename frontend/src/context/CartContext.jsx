@@ -17,10 +17,14 @@ export const CartProvider = ({ children }) => {
       const cartItemId = variant ? `${product.id}-${variant.name}` : `${product.id}`;
       const existing = prev.find(item => item.cart_id === cartItemId || (!item.cart_id && item.product_id === product.id && !variant));
       
+      const effectivePrice = (variant && Number(variant.price) > 0)
+        ? Number(variant.price)
+        : (Number(product.discounted_price) || Number(product.price) || 0);
+
       if (existing) {
         return prev.map(item => 
           (item.cart_id === cartItemId || (!item.cart_id && item.product_id === product.id && !variant))
-            ? { ...item, quantity: item.quantity + quantity }
+            ? { ...item, quantity: item.quantity + quantity, price: effectivePrice }
             : item
         );
       }
@@ -28,7 +32,7 @@ export const CartProvider = ({ children }) => {
         cart_id: cartItemId,
         product_id: product.id, 
         name: product.name, 
-        price: variant ? variant.price : product.price, 
+        price: effectivePrice, 
         image_url: product.image_url,
         variant_name: variant ? variant.name : null,
         quantity 

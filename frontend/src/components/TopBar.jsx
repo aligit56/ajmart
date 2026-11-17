@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, Truck, Tag, Phone, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Award, Truck, BadgePercent, Phone, ChevronLeft, ChevronRight } from 'lucide-react';
 import { WhatsAppIcon, TikTokIcon, FacebookIcon, InstagramIcon } from './SocialIcons';
 import api from '../api/axios';
 
 const PROMOTIONS = [
   {
     icon: Truck,
-    badge: 'MIN ORDER PKR 5,000',
-    text: 'Minimum order of PKR 5,000 required for doorstep delivery across Rawalpindi & Islamabad',
+    badge: 'MIN ORDER PKR 2,000',
+    text: 'Minimum order of PKR 2,000 required for doorstep delivery across Rawalpindi & Islamabad',
     link: '/products'
   },
   {
-    icon: Sparkles,
+    icon: Award,
     badge: '50 REWARD POINTS',
     text: 'Sign in & earn 50 reward points on every PKR 2,000 spent on grocery & wholesale!',
     link: '/login'
   },
   {
-    icon: Tag,
+    icon: BadgePercent,
     badge: 'WHOLESALE RATES',
     text: 'Special wholesale sack rates on Dalen, Premium Rice & Spices — Direct from Namak Mandi!',
     link: '/products'

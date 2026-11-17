@@ -2,20 +2,21 @@ import React, { useEffect, useState, useContext, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { CartContext } from '../context/CartContext';
-import { Loader2, ArrowLeft, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Loader2, ArrowLeft, ShoppingCart, ChevronLeft, ChevronRight, ShieldCheck, Truck, Store } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { normalizeImageUrl, handleProductImageError } from '../utils/imageHelpers';
 
 const parseImages = (imageUrl) => {
   if (!imageUrl) return [];
   if (typeof imageUrl === 'string' && imageUrl.trim().startsWith('[')) {
     try {
       const parsed = JSON.parse(imageUrl);
-      if (Array.isArray(parsed)) return parsed.filter(Boolean);
+      if (Array.isArray(parsed)) return parsed.filter(Boolean).map(normalizeImageUrl);
     } catch (e) {
       // fallback
     }
   }
-  return [imageUrl];
+  return [normalizeImageUrl(imageUrl)];
 };
 
 const ProductDetail = () => {
@@ -115,13 +116,13 @@ const ProductDetail = () => {
     setSelectedImage(allImages[nextIdx]);
   };
 
-  const handleAdd = () => {
-    addToCart(product, quantity, selectedVariant);
-    toast.success(`Added ${quantity} to cart!`);
-  };
-
   const currentPrice = selectedVariant ? selectedVariant.price : (product.discounted_price || product.price);
   const displayImage = selectedImage || allImages[0] || product.image_url;
+
+  const handleAdd = () => {
+    addToCart({ ...product, price: currentPrice }, quantity, selectedVariant);
+    toast.success(`Added ${quantity} to cart!`);
+  };
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -135,19 +136,16 @@ const ProductDetail = () => {
           <div className="relative min-h-[360px] md:min-h-[460px] h-96 md:h-[460px] bg-white rounded-xl flex items-center justify-center p-4 md:p-6 border border-lightBorder dark:border-darkBorder shadow-sm group">
             {displayImage ? (
               <img 
-                src={displayImage} 
+                src={normalizeImageUrl(displayImage)} 
                 alt={product.name} 
                 loading="lazy"
                 className="object-contain w-full h-full max-h-[420px] rounded-lg transition-transform duration-300 hover:scale-105" 
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = '/images/placeholder-product.jpg';
-                }}
+                onError={handleProductImageError}
               />
             ) : (
               <img 
                 src="/images/placeholder-product.jpg" 
-                alt="Image coming soon" 
+                alt="AJMart Product" 
                 className="object-contain w-full h-full max-h-[420px] opacity-80" 
               />
             )}

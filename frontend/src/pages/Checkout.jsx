@@ -6,11 +6,12 @@ import { generateWhatsAppLink } from '../utils/whatsapp';
 import { WhatsAppIcon } from '../components/SocialIcons';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
-import { Loader2, ShieldCheck, MapPin, User, Phone, FileText, Sparkles, AlertCircle, LogIn, ArrowRight } from 'lucide-react';
+import { Loader2, ShieldCheck, MapPin, User, Phone, FileText, Award, AlertCircle, LogIn, ArrowRight, ShieldAlert } from 'lucide-react';
+import { normalizeImageUrl, handleProductImageError } from '../utils/imageHelpers';
 
 const Checkout = () => {
   const { cart, cartTotal, clearCart } = useContext(CartContext);
-  const { user, refreshUser } = useContext(AuthContext);
+  const { user, refreshUser, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [settings, setSettings] = useState({});
@@ -46,9 +47,10 @@ const Checkout = () => {
   const aqibNumber = settings.owner_aqib || settings.whatsapp_number || '0335-7727555';
   const cleanAqibPhone = aqibNumber.replace(/\D/g, '').replace(/^0/, '92') || '923357727555';
 
-  const minOrderAmount = Number(settings.minimum_order_amount) || 5000;
+  const minOrderAmount = Number(settings.minimum_order_amount) || 2000;
   const isUnderMinOrder = cartTotal < minOrderAmount;
   const earnedPoints = Math.floor(cartTotal / 2000) * 50;
+  const isAdmin = user && user.role === 'admin';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -120,90 +122,114 @@ const Checkout = () => {
         </p>
       </div>
 
-      {/* Minimum Order Warning Alert if cartTotal < 5000 */}
-      {isUnderMinOrder && (
-        <div className="bg-amber-500/10 border-2 border-amber-500/30 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-800 dark:text-amber-200">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
-              <AlertCircle size={22} />
-            </div>
-            <div>
-              <div className="text-xs font-black uppercase tracking-wider text-amber-700 dark:text-amber-400">
-                Minimum Order Requirement
-              </div>
-              <div className="text-sm font-bold">
-                Orders must be at least <span className="font-black text-amber-600 dark:text-amber-300">PKR {minOrderAmount.toLocaleString()}</span> for delivery across Rawalpindi & Islamabad.
-              </div>
-              <div className="text-xs text-amber-700/80 dark:text-amber-300/80 mt-0.5">
-                Current Cart: PKR {cartTotal.toLocaleString()} • Add <strong className="font-black">PKR {(minOrderAmount - cartTotal).toLocaleString()}</strong> more to checkout.
-              </div>
-            </div>
-          </div>
-          <Link
-            to="/products"
-            className="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center gap-1.5 self-end sm:self-center transition-colors flex-shrink-0"
-          >
-            <span>Add Items</span>
-            <ArrowRight size={13} />
-          </Link>
-        </div>
-      )}
-
-      {/* Rewards Points Status Banner */}
-      {user ? (
-        <div className="bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-transparent border border-amber-500/30 rounded-2xl p-4 mb-6 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
-              <Sparkles size={20} />
-            </div>
-            <div>
-              <div className="text-xs font-black uppercase tracking-wider text-amber-700 dark:text-amber-400">
-                Customer Reward Points Program
-              </div>
-              <div className="text-sm font-black text-lightText dark:text-darkText">
-                {earnedPoints > 0 ? (
-                  <>
-                    You will earn <span className="text-amber-600 dark:text-amber-400 font-extrabold">+{earnedPoints} Points</span> on this order!
-                  </>
-                ) : (
-                  <>
-                    Earn 50 points on every PKR 2,000 spent!
-                  </>
-                )}
-              </div>
-              <div className="text-xs text-lightTextSecondary dark:text-darkTextSecondary">
-                Your current points balance: <strong className="text-amber-600 dark:text-amber-400 font-bold">{user.points || 0} pts</strong>
-              </div>
-            </div>
+      {/* Administrator Account Detected Notice */}
+      {isAdmin ? (
+        <div className="bg-amber-500/10 border-2 border-amber-500/30 rounded-2xl p-6 md:p-8 my-6 text-center shadow-xs">
+          <ShieldAlert className="w-14 h-14 text-amber-600 dark:text-amber-400 mx-auto mb-3" />
+          <h2 className="text-xl font-bold text-lightText dark:text-darkText mb-2">
+            Administrator Account Detected
+          </h2>
+          <p className="text-sm text-lightTextSecondary dark:text-darkTextSecondary mb-6 max-w-md mx-auto leading-relaxed">
+            You are logged in as an administrator. Customer ordering is not available from an admin account. Please sign out and continue as a customer or guest to place an order.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link to="/admin" className="btn-primary w-full sm:w-auto text-center">
+              Return to Admin Dashboard
+            </Link>
+            <button 
+              onClick={logout} 
+              className="px-5 py-2.5 border border-lightBorder dark:border-darkBorder rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors w-full sm:w-auto"
+            >
+              Sign Out
+            </button>
           </div>
         </div>
       ) : (
-        <div className="bg-gradient-to-r from-blue-500/10 via-cyan-500/5 to-transparent border border-blue-500/20 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-darkBlue dark:bg-cyan text-white dark:text-black flex items-center justify-center flex-shrink-0 shadow-sm">
-              <Sparkles size={20} />
+        <>
+          {/* Minimum Order Warning Alert if cartTotal < 2000 */}
+          {isUnderMinOrder && (
+            <div className="bg-amber-500/10 border-2 border-amber-500/30 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-800 dark:text-amber-200">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                  <AlertCircle size={22} />
+                </div>
+                <div>
+                  <div className="text-xs font-black uppercase tracking-wider text-amber-700 dark:text-amber-400">
+                    Minimum Order Requirement
+                  </div>
+                  <div className="text-sm font-bold">
+                    Orders must be at least <span className="font-black text-amber-600 dark:text-amber-300">PKR {minOrderAmount.toLocaleString()}</span> for delivery across Rawalpindi & Islamabad.
+                  </div>
+                  <div className="text-xs text-amber-700/80 dark:text-amber-300/80 mt-0.5">
+                    Current Cart: PKR {cartTotal.toLocaleString()} • Add <strong className="font-black">PKR {(minOrderAmount - cartTotal).toLocaleString()}</strong> more to checkout.
+                  </div>
+                </div>
+              </div>
+              <Link
+                to="/products"
+                className="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs flex items-center gap-1.5 self-end sm:self-center transition-colors flex-shrink-0"
+              >
+                <span>Add Items</span>
+                <ArrowRight size={13} />
+              </Link>
             </div>
-            <div>
-              <div className="text-xs font-black uppercase tracking-wider text-darkBlue dark:text-cyan">
-                Guest Checkout Allowed
-              </div>
-              <div className="text-sm font-bold text-lightText dark:text-darkText">
-                Want to earn <span className="text-amber-600 dark:text-amber-400 font-black">50 points</span> per PKR 2,000 spent?
-              </div>
-              <div className="text-xs text-lightTextSecondary dark:text-darkTextSecondary">
-                Sign in to collect loyalty reward points, or simply proceed as guest below!
+          )}
+
+          {/* Rewards Points Status Banner */}
+          {user ? (
+            <div className="bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-transparent border border-amber-500/30 rounded-2xl p-4 mb-6 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                  <Award size={20} />
+                </div>
+                <div>
+                  <div className="text-xs font-black uppercase tracking-wider text-amber-700 dark:text-amber-400">
+                    Customer Reward Points Program
+                  </div>
+                  <div className="text-sm font-black text-lightText dark:text-darkText">
+                    {earnedPoints > 0 ? (
+                      <>
+                        You will earn <span className="text-amber-600 dark:text-amber-400 font-extrabold">+{earnedPoints} Points</span> on this order!
+                      </>
+                    ) : (
+                      <>
+                        Earn 50 points on every PKR 2,000 spent!
+                      </>
+                    )}
+                  </div>
+                  <div className="text-xs text-lightTextSecondary dark:text-darkTextSecondary">
+                    Your current points balance: <strong className="text-amber-600 dark:text-amber-400 font-bold">{user.points || 0} pts</strong>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <Link
-            to="/login?redirect=checkout"
-            className="px-3.5 py-1.5 rounded-xl bg-darkBlue dark:bg-cyan text-white dark:text-black font-bold text-xs flex items-center gap-1.5 self-end sm:self-center transition-opacity hover:opacity-90 flex-shrink-0"
-          >
-            <LogIn size={13} />
-            <span>Sign In to Earn</span>
-          </Link>
-        </div>
-      )}
+          ) : (
+            <div className="bg-gradient-to-r from-blue-500/10 via-cyan-500/5 to-transparent border border-blue-500/20 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-darkBlue dark:bg-cyan text-white dark:text-black flex items-center justify-center flex-shrink-0 shadow-sm">
+                  <Award size={20} />
+                </div>
+                <div>
+                  <div className="text-xs font-black uppercase tracking-wider text-darkBlue dark:text-cyan">
+                    Guest Checkout Allowed
+                  </div>
+                  <div className="text-sm font-bold text-lightText dark:text-darkText">
+                    Want to earn <span className="text-amber-600 dark:text-amber-400 font-black">50 points</span> per PKR 2,000 spent?
+                  </div>
+                  <div className="text-xs text-lightTextSecondary dark:text-darkTextSecondary">
+                    Sign in to collect loyalty reward points, or simply proceed as guest below!
+                  </div>
+                </div>
+              </div>
+              <Link
+                to="/login?redirect=checkout"
+                className="px-3.5 py-1.5 rounded-xl bg-darkBlue dark:bg-cyan text-white dark:text-black font-bold text-xs flex items-center gap-1.5 self-end sm:self-center transition-opacity hover:opacity-90 flex-shrink-0"
+              >
+                <LogIn size={13} />
+                <span>Sign In to Earn</span>
+              </Link>
+            </div>
+          )}
 
       {/* Seller Verification Card */}
       <div className="bg-[#25D366]/10 border border-[#25D366]/30 rounded-2xl p-4 mb-6 flex items-center justify-between gap-3">
@@ -317,7 +343,7 @@ const Checkout = () => {
             {earnedPoints > 0 && user && (
               <div className="flex justify-between items-center text-xs font-bold text-amber-600 dark:text-amber-400 pt-1 border-t border-lightBorder dark:border-darkBorder">
                 <span className="flex items-center gap-1">
-                  <Sparkles size={13} />
+                  <Award size={13} />
                   <span>Points to be Earned:</span>
                 </span>
                 <span className="font-extrabold text-sm">+{earnedPoints} pts</span>
@@ -356,6 +382,8 @@ const Checkout = () => {
           </button>
         </form>
       </div>
+        </>
+      )}
     </div>
   );
 };

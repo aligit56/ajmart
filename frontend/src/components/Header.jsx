@@ -11,6 +11,7 @@ import { CartContext } from '../context/CartContext';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
 import api from '../api/axios';
+import { normalizeImageUrl, handleCategoryImageError } from '../utils/imageHelpers';
 
 const Header = () => {
   const { cartCount } = useContext(CartContext);
@@ -249,18 +250,11 @@ const Header = () => {
                           <div className="w-16 h-16 rounded-lg bg-lightBg dark:bg-[#0a0a0a] flex items-center justify-center p-1.5 mb-2 overflow-hidden shadow-xs group-hover:scale-105 transition-transform">
                             {cat.image_url ? (
                               <img 
-                                src={cat.image_url.replace(/^https?:\/\/[^\/]+:5000/, '')} 
+                                src={normalizeImageUrl(cat.image_url)} 
                                 alt={cat.name} 
                                 loading="lazy"
                                 className="w-full h-full object-contain"
-                                onError={(e) => {
-                                  e.target.onerror = null;
-                                  if (e.target.src.endsWith('.webp') || e.target.src.endsWith('.WEBP')) {
-                                    e.target.src = e.target.src.replace(/\.webp$/i, '.jpg');
-                                  } else {
-                                    e.target.src = '/images/placeholder.jpg';
-                                  }
-                                }}
+                                onError={handleCategoryImageError}
                               />
                             ) : (
                               <Grid size={24} className="text-lightTextSecondary dark:text-darkTextSecondary" />
