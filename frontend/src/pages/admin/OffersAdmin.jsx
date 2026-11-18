@@ -196,11 +196,19 @@ const OffersAdmin = () => {
 
     try {
       setSubmitting(true);
+      
+      const formatSqlDate = (d) => {
+        if (!d) return null;
+        let s = d.replace('T', ' ');
+        if (s.length === 16) s += ':00'; // Append seconds if missing from datetime-local
+        return s;
+      };
+
       const payload = {
         product_id: selectedProduct.id,
         discount_percent: numDiscountPct,
-        start_date: startDate ? startDate.replace('T', ' ') : null,
-        valid_until: endDate ? endDate.replace('T', ' ') : null,
+        start_date: formatSqlDate(startDate),
+        valid_until: formatSqlDate(endDate),
         is_active: isActive ? 1 : 0
       };
 
@@ -209,14 +217,18 @@ const OffersAdmin = () => {
         toast.success(`Updated ${numDiscountPct}% discount for ${selectedProduct.name}`);
       } else {
         await api.post('/discounts', payload);
-        toast.success(`Created ${numDiscountPct}% offer for ${selectedProduct.name}`);
+        toast.success(`Published ${numDiscountPct}% offer for ${selectedProduct.name}!`);
       }
 
       handleCloseModal();
-      fetchData();
+      await fetchData();
     } catch (err) {
       console.error('Error saving discount:', err);
-      toast.error(err.response?.data?.error || 'Failed to save promotion.');
+      if (err.response?.status === 404) {
+        toast.error('Render backend is deploying. Please click "Manual Deploy" on dashboard.render.com and retry.', { duration: 7000 });
+      } else {
+        toast.error(err.response?.data?.error || 'Failed to publish promotion.');
+      }
     } finally {
       setSubmitting(false);
     }
